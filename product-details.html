@@ -1,0 +1,613 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View detailed nutrition facts, farm harvest origin, and customer reviews for organic groceries on FreshBox.">
+  <title>Product Details - FreshBox Farm Harvest</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dark.css">
+  <link rel="stylesheet" href="assets/css/rtl.css">
+
+  <!-- Load Main Engine & Pre-resolve Selected Product synchronously to prevent any image/data mismatch flash -->
+  <script src="assets/js/main.js"></script>
+  <script>
+    (function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      var prodId = urlParams.get('id') || 'prod-1';
+      var mappedId = prodId.replace('item-', 'prod-').replace('sample-', 'prod-').replace('sb-', 'prod-');
+      var products = window.PRODUCTS || (window.freshboxApp && window.freshboxApp.products) || [];
+      window.selectedProd = products.find(function(p) { return p.id === prodId || p.id === mappedId; }) ||
+                            products.find(function(p) { return p.name.toLowerCase().includes(prodId.toLowerCase()); }) ||
+                            products[0];
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Global Header / Navbar -->
+  <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+        <span>Fresh</span>Box
+      </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-2 text-dark"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-xl-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Home</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="index.html">Home 1</a></li>
+              <li><a class="dropdown-item" href="home-2.html">Home 2</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Shop</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="shop.html">All Groceries</a></li>
+              <li><a class="dropdown-item" href="categories.html">Categories</a></li>
+              <li><a class="dropdown-item" href="sample-box.html">Sample Box</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Subscriptions</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
+              <li><a class="dropdown-item" href="how-it-works.html">How It Works</a></li>
+              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search produce, plans (Ctrl+K)">
+            <i class="bi bi-search search-icon"></i>
+            <span class="search-text">Search produce, plans...</span>
+          </div>
+          <!-- Wishlist Action Button -->
+          <a href="wishlist.html" class="nav-action-btn position-relative" title="View Saved Wishlist">
+            <i class="bi bi-heart"></i>
+            <span class="cart-badge bg-danger text-white wishlist-badge">0</span>
+          </a>
+          <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box">
+            <i class="bi bi-bag"></i>
+            <span class="cart-badge">4</span>
+          </button>
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode">
+            <i class="bi bi-moon-stars-fill"></i>
+          </button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode">
+            <i class="bi bi-arrow-left-right"></i>
+          </button>
+          <div class="nav-auth-slot ms-1">
+            <a href="login.html" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header / Breadcrumb -->
+  <section class="py-4 bg-white border-bottom">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="shop.html">Shop</a></li>
+          <li class="breadcrumb-item"><a href="shop.html" id="pdCatBreadcrumb">Vegetables</a></li>
+          <li class="breadcrumb-item active" aria-current="page" id="pdTitleBreadcrumb">Fresh Vine Tomatoes</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Single Product Details Section -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="row g-5 align-items-start mb-5">
+                <!-- Main Product Image Column -->
+        <div class="col-lg-6">
+          <div class="position-relative rounded-4 overflow-hidden shadow-sm bg-light" style="height: 440px;">
+            <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 z-2" id="pdBadge">Organic</span>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' style='background:%23f8f9fa;'%3E%3C/svg%3E" alt="Product Image" id="pdMainImg" class="w-100 h-100 object-fit-cover">
+          </div>
+        </div>
+
+        <!-- Product Overview & Buying Controls -->
+        <div class="col-lg-6">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-bold" id="pdCategory">Groceries</span>
+            <span class="text-success small fw-semibold"><i class="bi bi-check-circle-fill me-1"></i> In Stock & Fresh Today</span>
+          </div>
+
+          <h1 class="display-6 fw-bold mb-2 text-dark" id="pdName">Product Details</h1>
+
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="text-warning">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+            </div>
+            <span class="fw-bold text-dark" id="pdRating">4.9</span>
+            <span class="text-muted small">(<span id="pdReviewsCount">42</span> verified buyer reviews)</span>
+          </div>
+
+          <div class="d-flex align-items-baseline gap-3 mb-4">
+            <span class="display-5 fw-bold text-success" id="pdPrice">₹0</span>
+            <span class="fs-4 text-muted text-decoration-line-through" id="pdOriginalPrice">₹0</span>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 fw-bold" id="pdDiscountBadge">Save 0%</span>
+            <span class="text-muted" id="pdUnit">/ unit</span>
+          </div>
+
+          <p class="lead text-muted fs-6 mb-4" id="pdDescription">
+            Loading farm-fresh product details...
+          </p>
+
+          <script>
+            if (window.selectedProd) {
+              var p = window.selectedProd;
+              document.title = p.name + ' - FreshBox Grocery';
+              if (document.getElementById('pdMainImg')) {
+                document.getElementById('pdMainImg').src = p.image;
+                document.getElementById('pdMainImg').alt = p.name;
+              }
+              if (document.getElementById('pdName')) document.getElementById('pdName').textContent = p.name;
+              if (document.getElementById('pdTitleBreadcrumb')) document.getElementById('pdTitleBreadcrumb').textContent = p.name;
+              var catName = p.categoryName || 'Groceries';
+              if (document.getElementById('pdCatBreadcrumb')) {
+                document.getElementById('pdCatBreadcrumb').textContent = catName;
+                document.getElementById('pdCatBreadcrumb').href = 'shop.html?category=' + p.category;
+              }
+              if (document.getElementById('pdCategory')) document.getElementById('pdCategory').textContent = catName;
+              if (document.getElementById('pdPrice')) document.getElementById('pdPrice').textContent = '₹' + p.price;
+              var origPrice = p.originalPrice || Math.round(p.price * 1.25);
+              if (document.getElementById('pdOriginalPrice')) document.getElementById('pdOriginalPrice').textContent = '₹' + origPrice;
+              var discountPercent = Math.round(((origPrice - p.price) / origPrice) * 100);
+              if (document.getElementById('pdDiscountBadge')) document.getElementById('pdDiscountBadge').textContent = 'Save ' + discountPercent + '%';
+              if (document.getElementById('pdUnit')) document.getElementById('pdUnit').textContent = '/ ' + p.unit;
+              if (document.getElementById('pdRating')) document.getElementById('pdRating').textContent = p.rating || '4.9';
+              if (document.getElementById('pdReviewsCount')) document.getElementById('pdReviewsCount').textContent = p.reviewsCount || '42';
+              if (document.getElementById('pdDescription')) document.getElementById('pdDescription').textContent = p.description;
+              if (document.getElementById('pdBadge')) document.getElementById('pdBadge').textContent = p.badge || '100% Organic';
+              if (document.getElementById('pdSubBoxName')) document.getElementById('pdSubBoxName').textContent = catName + ' Subscription Box';
+              if (document.getElementById('pdWishlistBtn')) {
+                var wBtn = document.getElementById('pdWishlistBtn');
+                wBtn.setAttribute('data-wishlist-id', p.id);
+                if (window.freshboxApp && window.freshboxApp.isWishlisted(p.id)) {
+                  wBtn.classList.add('active');
+                  wBtn.innerHTML = '<i class="bi bi-heart-fill fs-5 text-danger"></i>';
+                } else {
+                  wBtn.classList.remove('active');
+                  wBtn.innerHTML = '<i class="bi bi-heart fs-5"></i>';
+                }
+              }
+            }
+          </script>
+
+          <!-- Key Highlights / Features -->
+          <div class="p-3 bg-light rounded-3 mb-4 border border-light-subtle">
+            <div class="row g-2 text-dark small">
+              <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-shield-check text-success fs-6"></i> <span>100% Certified Organic</span></div>
+              <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-truck text-success fs-6"></i> <span>Harvested within 24 Hours</span></div>
+              <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-snow text-success fs-6"></i> <span>Cold-Chain Protected</span></div>
+              <div class="col-6 d-flex align-items-center gap-2"><i class="bi bi-arrow-repeat text-success fs-6"></i> <span>Free Easy Returns</span></div>
+            </div>
+          </div>
+
+          <!-- Quantity & Purchase Actions -->
+          <div class="d-flex flex-wrap align-items-center gap-3 mb-4" style="min-height: 48px;">
+            <div class="quantity-control d-inline-flex align-items-center me-2">
+              <button type="button" class="qty-btn" id="pdMinus" onclick="changeProductQuantity(-1)">&minus;</button>
+              <span class="qty-input px-2 fs-5 fw-bold text-dark user-select-none" id="pdQtyDisplay">1</span>
+              <button type="button" class="qty-btn" id="pdPlus" onclick="changeProductQuantity(1)">+</button>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-lg px-4 flex-grow-1 d-inline-flex align-items-center justify-content-center gap-2 fw-bold shadow-sm" id="pdAddBtn" onclick="handleAddToCartClick(event)" style="height: 48px;">
+              <i class="bi bi-basket2-fill fs-5"></i>
+              <span>Add to Grocery Box</span>
+            </button>
+
+            <button type="button" class="btn btn-outline-dark btn-lg px-4 d-inline-flex align-items-center justify-content-center gap-2 fw-bold shadow-sm" id="pdBuyNowBtn" onclick="handleBuyNowClick(event)" style="height: 48px;">
+              <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+              <span>Buy Now</span>
+            </button>
+
+            <button type="button" class="btn btn-outline-danger btn-lg px-3 d-inline-flex align-items-center justify-content-center fw-bold shadow-sm" id="pdWishlistBtn" onclick="if(window.selectedProd) freshboxApp.toggleWishlist(window.selectedProd.id)" title="Save to Wishlist" style="height: 48px; width: 48px;">
+              <i class="bi bi-heart fs-5"></i>
+            </button>
+          </div>
+
+          <p class="text-muted small mb-0">
+            <i class="bi bi-box-seam me-1"></i> Part of the <strong id="pdSubBoxName">Veggie Subscription Box</strong>. Swap or add extra before Friday 8 PM.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tabs: Nutrition, Farm Traceability, Reviews -->
+      <div class="row">
+        <div class="col-12">
+          <ul class="nav nav-tabs fresh-tabs mb-4" id="productTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="nutrition-tab" data-bs-toggle="tab" data-bs-target="#nutrition" type="button" role="tab">Nutrition Facts</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="farm-tab" data-bs-toggle="tab" data-bs-target="#farm" type="button" role="tab">Farm Origin & Quality</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Customer Reviews (42)</button>
+            </li>
+          </ul>
+
+          <div class="tab-content p-4 bg-white rounded-3 border" id="productTabsContent">
+            <!-- Nutrition Tab -->
+            <div class="tab-pane fade show active" id="nutrition" role="tabpanel">
+              <h5 class="fw-bold mb-3">Nutritional Profile (Per 100g serving)</h5>
+              <div class="table-responsive" style="max-width: 600px;">
+                <table class="table table-bordered mb-0">
+                  <tbody>
+                    <tr><th class="bg-light" style="width: 40%;">Energy / Calories</th><td id="nutriCal">18 kcal</td></tr>
+                    <tr><th class="bg-light">Carbohydrates</th><td id="nutriCarbs">3.9 g</td></tr>
+                    <tr><th class="bg-light">Dietary Fiber</th><td id="nutriFiber">1.2 g</td></tr>
+                    <tr><th class="bg-light">Protein</th><td id="nutriProtein">0.9 g</td></tr>
+                    <tr><th class="bg-light">Key Vitamins</th><td id="nutriVit">Vitamin C (28% DV), Potassium (5% DV)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Farm Origin Tab -->
+            <div class="tab-pane fade" id="farm" role="tabpanel">
+              <h5 class="fw-bold mb-3">Farm Traceability & Sustainability</h5>
+              <p class="text-muted">
+                Cultivated by <strong>GreenRoots Agro Farm Cooperative</strong> located in Nashik, Maharashtra. Grown in pesticide-free volcanic soils using drip irrigation and non-GMO heirloom seeds.
+              </p>
+              <div class="row g-3 mt-2">
+                <div class="col-md-4">
+                  <div class="p-3 border rounded-3 text-center">
+                    <i class="bi bi-geo-alt-fill text-success fs-2 mb-2 d-block"></i>
+                    <h6 class="fw-bold">Nashik Valley Organic Farm</h6>
+                    <small class="text-muted">Direct Farm Partner since 2022</small>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="p-3 border rounded-3 text-center">
+                    <i class="bi bi-patch-check-fill text-success fs-2 mb-2 d-block"></i>
+                    <h6 class="fw-bold">NPOP & USDA Certified</h6>
+                    <small class="text-muted">100% Traceable Bio Batch</small>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="p-3 border rounded-3 text-center">
+                    <i class="bi bi-thermometer-snow text-success fs-2 mb-2 d-block"></i>
+                    <h6 class="fw-bold">Hydro-Cooled Dispatch</h6>
+                    <small class="text-muted">Retains crisp crunch up to 7 days</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+              <div class="row g-4">
+                <div class="col-md-4 text-center border-end">
+                  <h1 class="display-3 fw-bold text-success mb-0">4.9</h1>
+                  <div class="text-warning fs-5 my-2">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                  </div>
+                  <p class="text-muted small">Based on 42 verified customer box ratings</p>
+                </div>
+                <div class="col-md-8">
+                  <div class="mb-3 pb-3 border-bottom">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="fw-bold">Ananya Sharma <span class="badge bg-success-subtle text-success ms-2">Verified Subscriber</span></span>
+                      <small class="text-muted">2 days ago</small>
+                    </div>
+                    <div class="text-warning small mb-1"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                    <p class="text-muted small mb-0">The sweetest tomatoes I've tasted in years. Arrived completely fresh with zero bruising in our weekly box.</p>
+                  </div>
+                  <div class="mb-3 pb-3 border-bottom">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="fw-bold">Vikram Patel <span class="badge bg-success-subtle text-success ms-2">Verified Subscriber</span></span>
+                      <small class="text-muted">1 week ago</small>
+                    </div>
+                    <div class="text-warning small mb-1"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                    <p class="text-muted small mb-0">Consistently high quality. The aroma is amazing when cutting them up for salads.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Footer -->
+    <!-- Global Footer -->
+  <footer class="footer bg-white border-top py-5 text-dark">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
+            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+              <i class="bi bi-basket2-fill fs-5"></i>
+            </div>
+            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          </a>
+          <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
+            FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
+          </p>
+          <div class="d-flex align-items-center gap-2">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Facebook" aria-label="Facebook">
+              <i class="bi bi-facebook fs-6"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Instagram" aria-label="Instagram">
+              <i class="bi bi-instagram fs-6"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="X" aria-label="X">
+              <i class="bi bi-twitter-x fs-6"></i>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="YouTube" aria-label="YouTube">
+              <i class="bi bi-youtube fs-6"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Shop</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
+            <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Subscriptions</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
+            <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
+            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
+            <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Company</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="about.html" class="text-secondary text-decoration-none hover-success">About Us</a></li>
+            <li><a href="blog.html" class="text-secondary text-decoration-none hover-success">Blog & Recipes</a></li>
+            <li><a href="faq.html" class="text-secondary text-decoration-none hover-success">FAQ</a></li>
+            <li><a href="contact.html" class="text-secondary text-decoration-none hover-success">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Customer</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="login.html" class="text-secondary text-decoration-none hover-success">Sign In</a></li>
+            <li><a href="dashboard/index.html" class="text-secondary text-decoration-none hover-success">My Dashboard</a></li>
+            <li><a href="dashboard/orders.html" class="text-secondary text-decoration-none hover-success">My Orders</a></li>
+            <li><a href="dashboard/billing.html" class="text-secondary text-decoration-none hover-success">Billing & Invoices</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="mb-0 text-secondary small">&copy; 2026 FreshBox Inc. All rights reserved. Professional Grocery Subscription Template.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Privacy Policy</a>
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Search Modal & Cart Drawer -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-search text-success me-2"></i>Search FreshBox</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body search-modal-body">
+          <input type="text" id="globalSearchInput" class="form-control mb-3" placeholder="Search tomatoes, milk, plans, or recipes...">
+          <div id="globalSearchResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-end offcanvas-cart" tabindex="-1" id="cartDrawer">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="bi bi-box-seam text-success me-2"></i>Your Grocery Box</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+      <div id="cartDrawerItems" class="flex-grow-1 overflow-auto"></div>
+      <div class="p-3 border-top bg-light">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal:</span><span class="fw-bold" id="cartDrawerSubtotal">₹0</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Delivery Fee:</span><span class="text-success fw-bold" id="cartDrawerDelivery">FREE</span></div>
+        <div class="d-flex justify-content-between mb-3 fs-5 fw-bold"><span>Total:</span><span class="text-success" id="cartDrawerTotal">₹0</span></div>
+        <a href="cart.html" class="btn btn-outline-primary w-100 mb-2"><i class="bi bi-cart"></i> View Full Cart</a>
+        <a href="checkout.html" class="btn btn-primary w-100"><i class="bi bi-credit-card"></i> Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/rtl.js"></script>
+  <script src="assets/js/main.js"></script>
+
+    <script>
+    let currentQty = 1;
+    let selectedProd = null;
+
+    function changeProductQuantity(delta) {
+      if (delta === -1 && currentQty > 1) {
+        currentQty--;
+      } else if (delta === 1) {
+        currentQty++;
+      }
+      const display = document.getElementById('pdQtyDisplay');
+      if (display) display.textContent = currentQty;
+    }
+
+    function ensureSelectedProd() {
+      if (!selectedProd && window.freshboxApp && window.freshboxApp.products) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const prodId = urlParams.get('id') || 'prod-1';
+        const mappedId = prodId.replace('item-', 'prod-').replace('sample-', 'prod-').replace('sb-', 'prod-');
+        
+        selectedProd = window.freshboxApp.products.find(function(p) { return p.id === prodId || p.id === mappedId; }) ||
+                       window.freshboxApp.products.find(function(p) { return p.name.toLowerCase().includes(prodId.toLowerCase()); }) ||
+                       window.freshboxApp.products[0];
+      }
+    }
+
+    window.handleAddToCartClick = function(e) {
+      if (e) e.preventDefault();
+      ensureSelectedProd();
+      if (selectedProd && window.freshboxApp) {
+        window.freshboxApp.addToCart({
+          id: selectedProd.id,
+          name: selectedProd.name,
+          category: selectedProd.category,
+          price: selectedProd.price,
+          unit: selectedProd.unit,
+          image: selectedProd.image,
+          qty: currentQty
+        });
+      }
+    };
+
+    window.handleBuyNowClick = function(e) {
+      if (e) e.preventDefault();
+      ensureSelectedProd();
+      if (selectedProd && window.freshboxApp) {
+        window.freshboxApp.addToCart({
+          id: selectedProd.id,
+          name: selectedProd.name,
+          category: selectedProd.category,
+          price: selectedProd.price,
+          unit: selectedProd.unit,
+          image: selectedProd.image,
+          qty: currentQty
+        }, false);
+        window.location.href = 'checkout.html';
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      ensureSelectedProd();
+
+      if (selectedProd) {
+        document.title = selectedProd.name + ' - FreshBox Grocery';
+        if (document.getElementById('pdName')) document.getElementById('pdName').textContent = selectedProd.name;
+        if (document.getElementById('pdTitleBreadcrumb')) document.getElementById('pdTitleBreadcrumb').textContent = selectedProd.name;
+        
+        const catName = selectedProd.categoryName || 'Groceries';
+        if (document.getElementById('pdCatBreadcrumb')) {
+          document.getElementById('pdCatBreadcrumb').textContent = catName;
+          document.getElementById('pdCatBreadcrumb').href = 'shop.html?category=' + selectedProd.category;
+        }
+        if (document.getElementById('pdCategory')) document.getElementById('pdCategory').textContent = catName;
+        
+        if (document.getElementById('pdPrice')) document.getElementById('pdPrice').textContent = '₹' + selectedProd.price;
+        
+        const origPrice = selectedProd.originalPrice || Math.round(selectedProd.price * 1.25);
+        if (document.getElementById('pdOriginalPrice')) document.getElementById('pdOriginalPrice').textContent = '₹' + origPrice;
+        
+        const discountPercent = Math.round(((origPrice - selectedProd.price) / origPrice) * 100);
+        if (document.getElementById('pdDiscountBadge')) document.getElementById('pdDiscountBadge').textContent = 'Save ' + discountPercent + '%';
+        
+        if (document.getElementById('pdUnit')) document.getElementById('pdUnit').textContent = '/ ' + selectedProd.unit;
+        if (document.getElementById('pdRating')) document.getElementById('pdRating').textContent = selectedProd.rating || '4.9';
+        if (document.getElementById('pdReviewsCount')) document.getElementById('pdReviewsCount').textContent = selectedProd.reviewsCount || '42';
+        if (document.getElementById('pdDescription')) document.getElementById('pdDescription').textContent = selectedProd.description;
+        if (document.getElementById('pdMainImg')) document.getElementById('pdMainImg').src = selectedProd.image;
+        if (document.getElementById('pdBadge')) document.getElementById('pdBadge').textContent = selectedProd.badge || '100% Organic';
+        if (document.getElementById('pdSubBoxName')) document.getElementById('pdSubBoxName').textContent = catName + ' Subscription Box';
+
+        if (selectedProd.nutrition) {
+          if (document.getElementById('nutriCal')) document.getElementById('nutriCal').textContent = selectedProd.nutrition.calories || '25 kcal';
+          if (document.getElementById('nutriCarbs')) document.getElementById('nutriCarbs').textContent = selectedProd.nutrition.carbs || '4.2 g';
+          if (document.getElementById('nutriProtein')) document.getElementById('nutriProtein').textContent = selectedProd.nutrition.protein || '1.1 g';
+          if (document.getElementById('nutriFiber')) document.getElementById('nutriFiber').textContent = selectedProd.nutrition.fiber || '1.5 g';
+        }
+      }
+
+      const btnMinus = document.getElementById('pdMinus');
+      const btnPlus = document.getElementById('pdPlus');
+
+      if (btnMinus) {
+        btnMinus.onclick = function(e) {
+          if (e) e.preventDefault();
+          changeProductQuantity(-1);
+        };
+      }
+
+      if (btnPlus) {
+        btnPlus.onclick = function(e) {
+          if (e) e.preventDefault();
+          changeProductQuantity(1);
+        };
+      }
+
+      const btnAdd = document.getElementById('pdAddBtn');
+      if (btnAdd) {
+        btnAdd.onclick = function(e) {
+          if (e) e.preventDefault();
+          window.handleAddToCartClick(e);
+        };
+      }
+
+      const btnBuyNow = document.getElementById('pdBuyNowBtn');
+      if (btnBuyNow) {
+        btnBuyNow.onclick = function(e) {
+          if (e) e.preventDefault();
+          window.handleBuyNowClick(e);
+        };
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+

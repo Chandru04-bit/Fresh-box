@@ -1,0 +1,643 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read organic lifestyle guides, farm recipes, and nutrition tips on the FreshBox Blog.">
+  <title>Blog Article Details - FreshBox</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dark.css">
+  <link rel="stylesheet" href="assets/css/rtl.css">
+</head>
+<body>
+
+  <!-- Global Header / Navbar -->
+  <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+        <span>Fresh</span>Box
+      </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-2 text-dark"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-xl-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Home</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="index.html">Home 1</a></li>
+              <li><a class="dropdown-item" href="home-2.html">Home 2</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Shop</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="shop.html">All Groceries</a></li>
+              <li><a class="dropdown-item" href="categories.html">Categories</a></li>
+              <li><a class="dropdown-item" href="sample-box.html">Sample Box</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Subscriptions</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
+              <li><a class="dropdown-item" href="how-it-works.html">How It Works</a></li>
+              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link active" href="blog.html">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search products, plans & recipes (Ctrl+K)">
+            <i class="bi bi-search search-icon"></i>
+            <span class="search-text">Search produce, plans...</span>
+          </div>
+          <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box"><i class="bi bi-bag"></i><span class="cart-badge">4</span></button>
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode"><i class="bi bi-moon-stars-fill"></i></button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+          <div class="nav-auth-slot ms-1">
+            <a href="login.html" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <div class="py-3 bg-light border-bottom">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted">Home</a></li>
+          <li class="breadcrumb-item"><a href="blog.html" class="text-decoration-none text-muted">Blog</a></li>
+          <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page" id="breadcrumbTitle">Article Details</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Article Layout (70% Left / 30% Right) -->
+  <section class="section-padding bg-white">
+    <div class="container">
+      <div class="row g-4 g-lg-5">
+        
+        <!-- Left Column: Main Article Content (70%) -->
+        <div class="col-lg-8">
+          <article class="pe-lg-2">
+            <span class="badge bg-success px-3 py-2 fs-6 mb-3" id="articleCategory">Farm Recipes</span>
+            <h1 class="display-5 fw-bold mb-3 text-dark" id="articleTitle">Quick 15-Minute Mediterranean Salad Using Weekly Harvest Box</h1>
+            
+            <div class="d-flex align-items-center gap-3 py-3 border-top border-bottom mb-4 text-muted small flex-wrap">
+              <div class="d-flex align-items-center gap-2">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Author" id="articleAuthorImg" class="rounded-circle" style="width: 42px; height: 42px; object-fit: cover;">
+                <span class="fw-bold text-dark fs-6" id="articleAuthor">Chef Rahul Verma</span>
+              </div>
+              <span class="text-muted">•</span>
+              <span><i class="bi bi-calendar3 me-1 text-success"></i> <span id="articleDate">August 20, 2026</span></span>
+              <span class="text-muted">•</span>
+              <span><i class="bi bi-clock me-1 text-success"></i> <span id="articleReadTime">4 min read</span></span>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="mb-4 rounded-4 overflow-hidden shadow-sm" style="max-height: 480px;">
+              <img src="assets/images/blog/mediterranean-salad.jpg" alt="Article Cover" id="articleImg" class="w-100 h-100 object-fit-cover">
+            </div>
+
+            <!-- Dynamic Article Content -->
+            <div class="article-content fs-5" id="articleBody" style="line-height: 1.8; color: var(--text-main);">
+              <!-- Rendered via JavaScript -->
+            </div>
+
+            <!-- Share Buttons & Tags -->
+            <div class="mt-5 pt-4 border-top">
+              <div class="d-flex align-items-center justify-content-between p-3.5 p-md-4 rounded-4 bg-light flex-wrap gap-3 mb-4 border">
+                <span class="fw-bold text-dark fs-6"><i class="bi bi-share-fill text-success me-2 fs-5"></i>Share this article:</span>
+                <div class="d-flex align-items-center gap-3">
+                  <a href="https://www.facebook.com/" class="footer-social-link" data-social-platform="facebook" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="FreshBox on Facebook"><i class="bi bi-facebook"></i></a>
+                  <a href="https://www.instagram.com/" class="footer-social-link" data-social-platform="instagram" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="FreshBox on Instagram"><i class="bi bi-instagram"></i></a>
+                  <a href="https://x.com/" class="footer-social-link" data-social-platform="x" target="_blank" rel="noopener noreferrer" title="X (formerly Twitter)" aria-label="FreshBox on X"><i class="bi bi-twitter-x"></i></a>
+                  <a href="https://www.youtube.com/" class="footer-social-link" data-social-platform="youtube" target="_blank" rel="noopener noreferrer" title="YouTube" aria-label="FreshBox on YouTube"><i class="bi bi-youtube"></i></a>
+                </div>
+              </div>
+
+              <!-- Topic Tags -->
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-secondary-subtle text-dark border px-3 py-2">#OrganicHarvest</span>
+                <span class="badge bg-secondary-subtle text-dark border px-3 py-2">#MediterraneanRecipe</span>
+                <span class="badge bg-secondary-subtle text-dark border px-3 py-2">#FarmToTable</span>
+                <span class="badge bg-secondary-subtle text-dark border px-3 py-2">#HealthyLiving</span>
+              </div>
+            </div>
+
+            <!-- Author Bio Card -->
+            <div class="author-bio-card p-4 rounded-4 bg-light border border-light-subtle my-5">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" alt="Author Bio" class="author-bio-avatar rounded-circle shadow-xs">
+              <div class="author-bio-content">
+                <h5 class="fw-bold mb-1 text-dark">About <span id="bioAuthorName">Chef Rahul Verma</span></h5>
+                <p class="text-muted small mb-0">Culinary consultant and farm-to-table chef with 12+ years of experience crafting organic seasonal meals. Dedicated to zero-waste cooking and fresh produce nutrition.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Right Column: Interactive Sidebar (30%) -->
+        <div class="col-lg-4">
+          <div class="sticky-top" style="top: 95px;">
+            <div class="d-flex flex-column gap-4">
+              
+              <!-- Shop Ingredient Quick Links -->
+              <div class="fresh-card p-4 border shadow-xs bg-white rounded-4">
+                <h5 class="fw-bold mb-3 d-flex align-items-center justify-content-between">
+                  <span>Shop Featured Produce</span>
+                  <i class="bi bi-bag-check text-success"></i>
+                </h5>
+                <div class="d-flex flex-column gap-3">
+                  <div class="d-flex align-items-center justify-content-between pb-2 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="assets/images/products/fresh-vine-tomatoes.jpg" alt="Tomatoes" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;">
+                      <div>
+                        <h6 class="mb-0 fw-semibold fs-6">Fresh Vine Tomatoes</h6>
+                        <small class="text-muted">₹60 / 1 kg</small>
+                      </div>
+                    </div>
+                    <a href="shop.html" class="btn btn-sm btn-outline-primary rounded-circle"><i class="bi bi-plus"></i></a>
+                  </div>
+
+                  <div class="d-flex align-items-center justify-content-between pb-2 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="assets/images/products/organic-baby-spinach.jpg" alt="Spinach" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;">
+                      <div>
+                        <h6 class="mb-0 fw-semibold fs-6">Organic Baby Spinach</h6>
+                        <small class="text-muted">₹45 / 250 g</small>
+                      </div>
+                    </div>
+                    <a href="shop.html" class="btn btn-sm btn-outline-primary rounded-circle"><i class="bi bi-plus"></i></a>
+                  </div>
+
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="assets/images/products/farm-fresh-a2-milk.jpg" alt="A2 Milk" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;">
+                      <div>
+                        <h6 class="mb-0 fw-semibold fs-6">Farm A2 Organic Milk</h6>
+                        <small class="text-muted">₹75 / 1 L</small>
+                      </div>
+                    </div>
+                    <a href="shop.html" class="btn btn-sm btn-outline-primary rounded-circle"><i class="bi bi-plus"></i></a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Categories Widget -->
+              <div class="fresh-card p-4 border shadow-xs bg-white rounded-4">
+                <h5 class="fw-bold mb-3">Blog Categories</h5>
+                <div class="d-flex flex-column gap-2">
+                  <a href="blog.html" class="d-flex justify-content-between align-items-center text-dark text-decoration-none py-1 border-bottom">
+                    <span><i class="bi bi-tag text-success me-2"></i>Healthy Living</span>
+                    <span class="badge bg-light text-dark">14</span>
+                  </a>
+                  <a href="blog.html" class="d-flex justify-content-between align-items-center text-dark text-decoration-none py-1 border-bottom">
+                    <span><i class="bi bi-tag text-success me-2"></i>Farm Recipes</span>
+                    <span class="badge bg-light text-dark">28</span>
+                  </a>
+                  <a href="blog.html" class="d-flex justify-content-between align-items-center text-dark text-decoration-none py-1 border-bottom">
+                    <span><i class="bi bi-tag text-success me-2"></i>Grocery Tips</span>
+                    <span class="badge bg-light text-dark">19</span>
+                  </a>
+                  <a href="blog.html" class="d-flex justify-content-between align-items-center text-dark text-decoration-none py-1 border-bottom">
+                    <span><i class="bi bi-tag text-success me-2"></i>Organic Food</span>
+                    <span class="badge bg-light text-dark">22</span>
+                  </a>
+                  <a href="blog.html" class="d-flex justify-content-between align-items-center text-dark text-decoration-none py-1">
+                    <span><i class="bi bi-tag text-success me-2"></i>Sustainability</span>
+                    <span class="badge bg-light text-dark">11</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Recent Posts Widget -->
+              <div class="fresh-card p-4 border shadow-xs bg-white rounded-4">
+                <h5 class="fw-bold mb-3">Popular Articles</h5>
+                <div class="d-flex flex-column gap-3">
+                  <a href="blog-details.html?id=post-1" class="d-flex gap-3 text-dark text-decoration-none">
+                    <img src="assets/images/veggie-box.jpg" alt="Leafy greens" class="rounded-3" style="width: 70px; height: 60px; object-fit: cover;">
+                    <div>
+                      <h6 class="mb-1 fw-bold fs-6 lh-sm">10 Secrets to Keeping Leafy Greens Crisp</h6>
+                      <small class="text-muted">Aug 18, 2026</small>
+                    </div>
+                  </a>
+                  <a href="blog-details.html?id=post-3" class="d-flex gap-3 text-dark text-decoration-none">
+                    <img src="assets/images/blog/regenerative-soil.jpg" alt="Soil health" class="rounded-3" style="width: 70px; height: 60px; object-fit: cover;">
+                    <div>
+                      <h6 class="mb-1 fw-bold fs-6 lh-sm">Why Regenerative Soil Health Matters</h6>
+                      <small class="text-muted">Aug 15, 2026</small>
+                    </div>
+                  </a>
+                  <a href="blog-details.html?id=post-4" class="d-flex gap-3 text-dark text-decoration-none">
+                    <img src="assets/images/products/farm-fresh-a2-milk.jpg" alt="A2 Milk" class="rounded-3" style="width: 70px; height: 60px; object-fit: cover;">
+                    <div>
+                      <h6 class="mb-1 fw-bold fs-6 lh-sm">Science of Pure A2 Beta-Casein Milk</h6>
+                      <small class="text-muted">Aug 12, 2026</small>
+                    </div>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Newsletter Card -->
+              <div class="fresh-card p-4 border shadow-xs bg-white rounded-4">
+                <h5 class="fw-bold mb-2 text-dark">Weekly Harvest Recipes</h5>
+                <p class="small text-muted mb-3">Get our registered dietitian's seasonal recipes and storage tips delivered directly to your inbox.</p>
+                <form onsubmit="event.preventDefault(); freshboxApp.showToast('Subscribed!', 'Thank you for subscribing to weekly recipes.', 'success');">
+                  <input type="email" class="form-control mb-2 border" placeholder="Your email address" required>
+                  <button type="submit" class="btn btn-primary fw-bold w-100">Subscribe Free</button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+    <!-- Global Footer -->
+  <footer class="footer bg-white border-top py-5 text-dark">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
+            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+              <i class="bi bi-basket2-fill fs-5"></i>
+            </div>
+            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          </a>
+          <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
+            FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
+          </p>
+          <div class="d-flex align-items-center gap-2">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Facebook" aria-label="Facebook">
+              <i class="bi bi-facebook fs-6"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Instagram" aria-label="Instagram">
+              <i class="bi bi-instagram fs-6"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="X" aria-label="X">
+              <i class="bi bi-twitter-x fs-6"></i>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="YouTube" aria-label="YouTube">
+              <i class="bi bi-youtube fs-6"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Shop</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
+            <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Subscriptions</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
+            <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
+            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
+            <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Company</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="about.html" class="text-secondary text-decoration-none hover-success">About Us</a></li>
+            <li><a href="blog.html" class="text-secondary text-decoration-none hover-success">Blog & Recipes</a></li>
+            <li><a href="faq.html" class="text-secondary text-decoration-none hover-success">FAQ</a></li>
+            <li><a href="contact.html" class="text-secondary text-decoration-none hover-success">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Customer</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="login.html" class="text-secondary text-decoration-none hover-success">Sign In</a></li>
+            <li><a href="dashboard/index.html" class="text-secondary text-decoration-none hover-success">My Dashboard</a></li>
+            <li><a href="dashboard/orders.html" class="text-secondary text-decoration-none hover-success">My Orders</a></li>
+            <li><a href="dashboard/billing.html" class="text-secondary text-decoration-none hover-success">Billing & Invoices</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="mb-0 text-secondary small">&copy; 2026 FreshBox Inc. All rights reserved. Professional Grocery Subscription Template.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Privacy Policy</a>
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Search Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-search text-success me-2"></i>Search FreshBox</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body search-modal-body">
+          <input type="text" id="globalSearchInput" class="form-control mb-3" placeholder="Search...">
+          <div id="globalSearchResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="offcanvas offcanvas-end offcanvas-cart" tabindex="-1" id="cartDrawer">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="bi bi-box-seam text-success me-2"></i>Your Grocery Box</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+      <div id="cartDrawerItems" class="flex-grow-1 overflow-auto"></div>
+      <div class="p-3 border-top bg-light">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal:</span><span class="fw-bold" id="cartDrawerSubtotal">₹0</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Delivery Fee:</span><span class="text-success fw-bold" id="cartDrawerDelivery">FREE</span></div>
+        <div class="d-flex justify-content-between mb-3 fs-5 fw-bold"><span>Total:</span><span class="text-success" id="cartDrawerTotal">₹0</span></div>
+        <a href="cart.html" class="btn btn-outline-primary w-100 mb-2"><i class="bi bi-cart"></i> View Full Cart</a>
+        <a href="checkout.html" class="btn btn-primary w-100"><i class="bi bi-credit-card"></i> Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/rtl.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const articleId = urlParams.get('id') || 'post-2';
+
+      const ARTICLES = {
+        'post-1': {
+          title: '10 Secrets to Keeping Leafy Greens Crisp for 14 Days',
+          category: 'Nutrition & Storage Tips',
+          author: 'Meera Sen',
+          date: 'August 18, 2026',
+          readTime: '5 min read',
+          image: 'assets/images/veggie-box.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Nothing is more frustrating than unboxing tender organic baby spinach on Friday only to find it limp and soggy by Tuesday. Fortunately, with simple thermodynamic principles and proper moisture shielding, you can keep greens crunchy for two full weeks.</p>
+                 
+                 <h3 class="fw-bold mt-4 mb-3"><i class="bi bi-droplet-half text-success me-2"></i>1. The Vinegar & Cold Water Pre-Wash</h3>
+                 <p>As soon as your FreshBox tote arrives, fill a clean sink or large basin with cold water and 1 tablespoon of apple cider vinegar. Swirl your spinach, kale, and arugula gently for 60 seconds. The mild acetic acid kills mold spores without affecting flavor.</p>
+
+                 <blockquote class="p-4 bg-success-subtle rounded-3 border-start border-4 border-success my-4 fst-italic text-dark">
+                   "Chlorophyll cells in fresh produce remain biologically active even after harvesting. Excessive surface moisture speeds up microbial rot, while zero moisture causes cellular dehydration."
+                 </blockquote>
+
+                 <h3 class="fw-bold mt-4 mb-3"><i class="bi bi-arrow-repeat text-success me-2"></i>2. Spin Dry & Cotton Towel Storage</h3>
+                 <p>Use a salad spinner to remove 95% of surface water. Line a sealed glass container with an unbleached cotton towel or paper towel to absorb excess humidity while keeping the leaves perfectly hydrated.</p>
+
+                 <h3 class="fw-bold mt-4 mb-3"><i class="bi bi-thermometer-half text-success me-2"></i>3. Temperature Zone Management</h3>
+                 <p>Store tender leafy greens in the middle shelf of your refrigerator (3°C to 5°C) rather than the coldest back wall, preventing micro-freezing that ruptures leaf cell membranes.</p>
+
+                 <div class="p-4 rounded-4 bg-light border border-light-subtle my-4">
+                   <h5 class="fw-bold mb-3"><i class="bi bi-clipboard-check text-success me-2"></i>Summary Checklist for Max Freshness</h5>
+                   <ul class="list-unstyled mb-0">
+                     <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Step 1:</strong> Pre-wash in diluted vinegar cold bath.</li>
+                     <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Step 2:</strong> Spin thoroughly until leaves are touch-dry.</li>
+                     <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Step 3:</strong> Store in airtight container lined with organic cotton towel.</li>
+                   </ul>
+                 </div>`
+        },
+        'post-2': {
+          title: 'Quick 15-Minute Mediterranean Salad Using Weekly Harvest Box',
+          category: 'Farm Recipes',
+          author: 'Chef Rahul Verma',
+          date: 'August 20, 2026',
+          readTime: '4 min read',
+          image: 'assets/images/blog/mediterranean-salad.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Craft a restaurant-grade Mediterranean salad using fresh vine tomatoes, cucumbers, organic feta cheese, and cold-pressed extra virgin olive oil directly from your weekly organic delivery.</p>
+
+                 <div class="row g-4 my-4">
+                   <div class="col-md-6">
+                     <div class="p-4 rounded-4 bg-success-subtle border border-success-subtle h-100">
+                       <h5 class="fw-bold mb-3 text-success-emphasis"><i class="bi bi-basket2 me-2"></i>Fresh Ingredients</h5>
+                       <ul class="mb-0 ps-3">
+                         <li class="mb-2"><strong>4 Ripe Vine Tomatoes:</strong> Diced into 1/4-inch chunks</li>
+                         <li class="mb-2"><strong>2 Crisp Farm Cucumbers:</strong> Sliced & quartered</li>
+                         <li class="mb-2"><strong>100g Artisan Feta Cheese:</strong> Crumbled</li>
+                         <li class="mb-2"><strong>1/2 Red Onion:</strong> Finely diced</li>
+                         <li class="mb-2"><strong>Kalamata Olives:</strong> Pitted & halved</li>
+                         <li class="mb-2"><strong>3 tbsp Extra Virgin Olive Oil:</strong> Cold-pressed</li>
+                         <li class="mb-0"><strong>1 tbsp Fresh Lemon Juice:</strong> Plus sea salt & black pepper</li>
+                       </ul>
+                     </div>
+                   </div>
+                   <div class="col-md-6">
+                     <div class="p-4 rounded-4 bg-light border h-100">
+                       <h5 class="fw-bold mb-3"><i class="bi bi-speedometer2 me-2"></i>Recipe Info</h5>
+                       <p class="mb-2"><strong>Prep Time:</strong> 15 minutes</p>
+                       <p class="mb-2"><strong>Servings:</strong> 4 Portions</p>
+                       <p class="mb-2"><strong>Difficulty:</strong> Beginner Easy</p>
+                       <p class="mb-2"><strong>Diet:</strong> Vegetarian / Gluten-Free</p>
+                       <p class="mb-0"><strong>Key Benefit:</strong> High Vitamin C & Polyphenols</p>
+                     </div>
+                   </div>
+                 </div>
+
+                 <h3 class="fw-bold mt-4 mb-3">Simple Ingredients, Maximum Flavor</h3>
+                 <p>Whisk cold-pressed extra virgin olive oil with fresh lemon juice, sea salt, and freshly cracked black pepper. Dice ripe vine tomatoes into quarter-inch chunks and toss gently with crisp cucumbers and fresh oregano.</p>
+
+                 <blockquote class="p-4 bg-success-subtle rounded-3 border-start border-4 border-success my-4 fst-italic text-dark fs-5">
+                   "Peak seasonal tomatoes need zero complex dressings. Natural sunshine sweetness paired with quality cold-pressed olive oil delivers unmatched nutrition and taste."
+                 </blockquote>
+
+                 <h3 class="fw-bold mt-4 mb-3">Step-by-Step Preparation</h3>
+                 <ol class="ps-3 mb-4">
+                   <li class="mb-3"><strong>Chop the Produce:</strong> Wash and dice vine tomatoes and cucumbers. Keep cuts uniform so every bite contains a balanced mix of sweet tomato juice and crunch.</li>
+                   <li class="mb-3"><strong>Whisk the Emulsion:</strong> In a small glass bowl, combine 3 tbsp cold-pressed olive oil, 1 tbsp fresh lemon juice, a pinch of coarse sea salt, and freshly cracked black pepper until emulsified.</li>
+                   <li class="mb-3"><strong>Assemble & Season:</strong> Combine the chopped vegetables, red onion, and Kalamata olives in a wide ceramic bowl. Drizzle the dressing over the top and gently fold.</li>
+                   <li class="mb-3"><strong>Garnish & Serve:</strong> Top with crumbled artisan feta cheese and fresh garden oregano sprigs right before serving.</li>
+                 </ol>
+
+                 <div class="p-4 rounded-4 bg-white border shadow-xs my-4">
+                   <h5 class="fw-bold mb-3 text-success"><i class="bi bi-lightning-charge me-2"></i>Nutritional Value Per Serving</h5>
+                   <div class="row text-center g-3">
+                     <div class="col-3">
+                       <div class="p-2 rounded bg-light">
+                         <span class="d-block fw-bold fs-5 text-dark">210</span>
+                         <small class="text-muted">Calories</small>
+                       </div>
+                     </div>
+                     <div class="col-3">
+                       <div class="p-2 rounded bg-light">
+                         <span class="d-block fw-bold fs-5 text-success">14g</span>
+                         <small class="text-muted">Healthy Fats</small>
+                       </div>
+                     </div>
+                     <div class="col-3">
+                       <div class="p-2 rounded bg-light">
+                         <span class="d-block fw-bold fs-5 text-dark">6g</span>
+                         <small class="text-muted">Protein</small>
+                       </div>
+                     </div>
+                     <div class="col-3">
+                       <div class="p-2 rounded bg-light">
+                         <span class="d-block fw-bold fs-5 text-success">4g</span>
+                         <small class="text-muted">Fiber</small>
+                       </div>
+                     </div>
+                   </div>
+                 </div>`
+        },
+        'post-3': {
+          title: 'Why Regenerative Soil Health Matters More Than Organic Labels',
+          category: 'Sustainability',
+          author: 'Dr. Ananya Roy',
+          date: 'August 15, 2026',
+          readTime: '6 min read',
+          image: 'assets/images/blog/regenerative-soil.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Organic certification is a great first step, but true nutrient density stems from living, biodiverse soil rich in mycorrhizal fungi and organic matter.</p>
+                 
+                 <h3 class="fw-bold mt-4 mb-3">Living Soil vs Synthetic Fertilizers</h3>
+                 <p>When soil microbiomes thrive, plants produce higher concentrations of polyphenols and phytonutrients to naturally protect themselves against pests without synthetic chemicals.</p>
+
+                 <blockquote class="p-4 bg-success-subtle rounded-3 border-start border-4 border-success my-4 fst-italic text-dark">
+                   "Healthy soil is not dirt—it is a thriving ecosystem containing billions of beneficial microbes per teaspoon that unlock essential minerals for growing crops."
+                 </blockquote>
+
+                 <h3 class="fw-bold mt-4 mb-3">Key Benefits of Regenerative Farming</h3>
+                 <ul class="ps-3 mb-4">
+                   <li class="mb-2"><strong>Higher Mineral Density:</strong> Crops absorb higher calcium, iron, and magnesium.</li>
+                   <li class="mb-2"><strong>Carbon Sequestration:</strong> Cover cropping pulls atmospheric carbon deep into the topsoil.</li>
+                   <li class="mb-2"><strong>Water Retention:</strong> Organic soil holds 5x more moisture, mitigating drought risks.</li>
+                 </ul>`
+        },
+        'post-4': {
+          title: 'The Science of Pure A2 Beta-Casein Cow Milk Explained',
+          category: 'Dairy & Health',
+          author: 'Vikram Sethi',
+          date: 'August 12, 2026',
+          readTime: '5 min read',
+          image: 'assets/images/products/farm-fresh-a2-milk.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Discover why indigenous grass-fed cows produce A2 beta-casein protein milk that is significantly easier to digest for individuals with dairy sensitivities.</p>
+                 
+                 <h3 class="fw-bold mt-4 mb-3">A1 vs A2 Protein Structures</h3>
+                 <p>Unlike A1 milk which releases BCM-7 during digestion, A2 protein breaks down cleanly without causing gastrointestinal inflammation or bloat.</p>
+
+                 <h3 class="fw-bold mt-4 mb-3">Health & Digestion Highlights</h3>
+                 <ul class="ps-3 mb-4">
+                   <li class="mb-2"><strong>Zero Artificial Hormones:</strong> Sourced from pasture-raised Gir and Sahiwal breeds.</li>
+                   <li class="mb-2"><strong>Glass Bottle Bottling:</strong> Sterilized returnable glass containers keep milk cold and pure.</li>
+                   <li class="mb-2"><strong>Natural Omega-3 Fatty Acids:</strong> Grass-fed diet produces optimal fat profiles.</li>
+                 </ul>`
+        },
+        'post-5': {
+          title: 'How Switching to Weekly Subscriptions Cuts Household Food Waste by 70%',
+          category: 'Zero Waste',
+          author: 'Priya Nair',
+          date: 'August 10, 2026',
+          readTime: '7 min read',
+          image: 'assets/images/blog/weekly-subscription-food-waste.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Subscribing to a scheduled weekly farm box eliminates supermarket impulse buys and ensures your kitchen only receives fresh produce that will be consumed.</p>
+                 
+                 <h3 class="fw-bold mt-4 mb-3">The Zero-Waste Supply Chain</h3>
+                 <p>By harvesting directly against active weekly box orders, partner farms eliminate produce rot before it ever reaches distribution hubs.</p>
+
+                 <blockquote class="p-4 bg-success-subtle rounded-3 border-start border-4 border-success my-4 fst-italic text-dark">
+                   "When your weekly box is tailored to your cooking habits, you eliminate food decay in the fridge and save thousands of rupees annually."
+                 </blockquote>`
+        },
+        'post-6': {
+          title: 'Artisan Sourdough vs Commercial Bread: Fermentation Truth',
+          category: 'Grocery Tips',
+          author: 'Meera Sen',
+          date: 'August 08, 2026',
+          readTime: '4 min read',
+          image: 'assets/images/blog/artisan-sourdough.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Why a natural 36-hour slow fermentation process breaks down gluten and phytic acid for optimal gut comfort and mineral absorption.</p>
+
+                 <h3 class="fw-bold mt-4 mb-3">Wild Fermentation vs Industrial Yeast</h3>
+                 <p>Commercial white bread uses fast-acting industrial yeast and chemical conditioners that bake in under 2 hours, leaving heavy gluten bonds intact that irritate digestion. True artisan sourdough relies on a live wild starter and 36 hours of cold fermentation.</p>
+
+                 <blockquote class="p-4 bg-success-subtle rounded-3 border-start border-4 border-success my-4 fst-italic text-dark">
+                   "Slow lactobacilli fermentation pre-digests gluten proteins and degrades anti-nutrients like phytic acid, making bioavailable minerals like magnesium and zinc accessible to your digestive system."
+                 </blockquote>`
+        },
+        'post-7': {
+          title: 'Top 5 Antioxidant-Packed Fruits for Your Autumn Box',
+          category: 'Organic Food',
+          author: 'Rohan Patel',
+          date: 'August 08, 2026',
+          readTime: '3 min read',
+          image: 'assets/images/blog/autumn-antioxidant-fruits.jpg',
+          authorImg: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80',
+          body: `<p class="lead fw-semibold text-dark">Discover seasonal berries and pomegranate varieties harvested at peak ripeness this month, packed with anti-aging antioxidants and immune-boosting Vitamin C.</p>
+
+                 <h3 class="fw-bold mt-4 mb-3">Top 5 Autumn Fruit Picks</h3>
+                 <ol class="ps-3 mb-4">
+                   <li class="mb-2"><strong>Wild Organic Blueberries:</strong> Rich in anthocyanins for brain health and cell protection.</li>
+                   <li class="mb-2"><strong>Ruby Red Pomegranates:</strong> Powerful polyphenols that support heart health.</li>
+                   <li class="mb-2"><strong>Crisp Royal Gala Apples:</strong> High dietary fiber for smooth digestion.</li>
+                   <li class="mb-2"><strong>Blackberries:</strong> Abundant Vitamin K and natural antioxidants.</li>
+                   <li class="mb-2"><strong>Fresh Raspberries & Figs:</strong> Natural prebiotic fiber for gut microbiome vitality.</li>
+                 </ol>`
+        }
+      };
+
+      const article = ARTICLES[articleId] || ARTICLES['post-2'];
+      document.title = article.title + ' - FreshBox Blog';
+      if (document.getElementById('articleCategory')) document.getElementById('articleCategory').textContent = article.category;
+      if (document.getElementById('articleTitle')) document.getElementById('articleTitle').textContent = article.title;
+      if (document.getElementById('breadcrumbTitle')) document.getElementById('breadcrumbTitle').textContent = article.title;
+      if (document.getElementById('articleAuthor')) document.getElementById('articleAuthor').textContent = 'By ' + article.author;
+      if (document.getElementById('bioAuthorName')) document.getElementById('bioAuthorName').textContent = article.author;
+      if (document.getElementById('articleDate')) document.getElementById('articleDate').textContent = article.date;
+      if (document.getElementById('articleReadTime')) document.getElementById('articleReadTime').textContent = article.readTime;
+      if (document.getElementById('articleImg')) { document.getElementById('articleImg').src = article.image; document.getElementById('articleImg').alt = article.title; }
+      if (document.getElementById('articleAuthorImg') && article.authorImg) document.getElementById('articleAuthorImg').src = article.authorImg;
+      if (document.getElementById('articleBody')) document.getElementById('articleBody').innerHTML = article.body;
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+

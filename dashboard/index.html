@@ -1,0 +1,414 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Dashboard - FreshBox</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dark.css">
+  <link rel="stylesheet" href="../assets/css/rtl.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header d-flex align-items-center justify-content-between">
+        <a class="navbar-brand mb-0" href="../index.html">
+          <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+          <span>Fresh</span>Box
+        </a>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li class="menu-category">Subscriber Portal</li>
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html">
+            <i class="bi bi-grid-fill"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="subscription.html">
+            <i class="bi bi-card-checklist"></i> My Subscription
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="my-box.html">
+            <i class="bi bi-box-seam-fill"></i> My Box
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="deliveries.html">
+            <i class="bi bi-truck"></i> Upcoming Deliveries
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="orders.html">
+            <i class="bi bi-clock-history"></i> Order History
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="billing.html">
+            <i class="bi bi-receipt"></i> Billing & Invoices
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../wishlist.html">
+            <i class="bi bi-heart"></i> Saved Wishlist
+          </a>
+        </li>
+
+        <li class="menu-category">Account</li>
+        <li class="nav-item">
+          <a class="nav-link" href="profile.html">
+            <i class="bi bi-person-gear"></i> Saved Addresses & Profile
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="settings.html">
+            <i class="bi bi-gear"></i> Settings
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../index.html" class="nav-link text-danger d-flex align-items-center gap-2" onclick="freshboxApp.setAuth({ role: 'guest' });">
+          <i class="bi bi-power fs-5"></i> Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dashboard-main">
+      <!-- Topbar -->
+      <header class="dashboard-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-secondary btn-sm d-lg-none" id="sidebarToggle">
+            <i class="bi bi-list fs-5"></i>
+          </button>
+          <div>
+            <h5 class="fw-bold mb-0">Subscriber Overview</h5>
+            <small class="text-muted">Welcome back, Chandru</small>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <a href="../shop.html" class="btn btn-sm btn-outline-primary d-none d-sm-inline-flex">
+            <i class="bi bi-plus-circle"></i> Add Extras
+          </a>
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Theme"><i class="bi bi-moon-stars-fill"></i></button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+          <div class="dropdown nav-user-dropdown ms-1">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+              <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
+              <span class="d-none d-sm-inline">Chandru</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+              <li>
+                <a class="dropdown-item" href="index.html">
+                  <i class="bi bi-grid-fill text-success"></i>
+                  <span>User Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="../login.html" onclick="freshboxApp.setAuth({ role: 'guest' });">
+                  <i class="bi bi-power"></i>
+                  <span>Logout</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="dashboard-content">
+        <!-- 4 KPI Cards -->
+        <div class="row g-4 mb-4">
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon green"><i class="bi bi-patch-check-fill"></i></div>
+              <div class="stat-info">
+                <h3>Active</h3>
+                <p>Family Essentials Plan</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon orange"><i class="bi bi-calendar2-event-fill"></i></div>
+              <div class="stat-info">
+                <h3>This Friday</h3>
+                <p>7:00 AM&ndash;11:00 AM</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon blue"><i class="bi bi-basket3-fill"></i></div>
+              <div class="stat-info">
+                <h3>14 Items</h3>
+                <p>Curated in Next Box</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon purple"><i class="bi bi-wallet2"></i></div>
+              <div class="stat-info">
+                <h3>&#8377;3,596</h3>
+                <p>August Spending</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Delivery Action Card & Timeline -->
+        <div class="row g-4 mb-4">
+          <!-- Next Delivery Card -->
+          <div class="col-lg-7">
+            <div class="fresh-card h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-success px-3 py-2 fs-6">Next Delivery Status</span>
+                <span class="text-muted small"><i class="bi bi-shield-check text-success"></i> Payment Confirmed</span>
+              </div>
+              <h4 class="fw-bold mb-1">Family Essentials Box #FB-8842</h4>
+              <p class="text-muted small mb-3">Scheduled for Friday, August 28, 2026 • Morning Slot (07:00 AM – 11:00 AM)</p>
+
+              <div class="p-3 bg-light rounded-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="fw-bold fs-6">Packing & Harvest Progress:</span>
+                  <span class="badge bg-primary">Preparing on Farm</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 45%;"></div>
+                </div>
+                <div class="d-flex justify-content-between small text-muted mt-2">
+                  <span>Harvested at Dawn</span>
+                  <span>Quality Inspected</span>
+                  <span>Dispatched</span>
+                  <span>Delivered</span>
+                </div>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2">
+                <a href="my-box.html" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-sliders"></i> Swap or Edit Items
+                </a>
+                <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#skipDeliveryModal">
+                  <i class="bi bi-arrow-right-circle"></i> Skip This Delivery
+                </button>
+                <a href="deliveries.html" class="btn btn-secondary-fresh btn-sm">
+                  <i class="bi bi-geo-alt"></i> Live Tracking
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Subscription Summary -->
+          <div class="col-lg-5">
+            <div class="fresh-card h-100">
+              <h5 class="fw-bold mb-3">Subscription Controls</h5>
+              <ul class="list-unstyled d-flex flex-column gap-3 mb-4">
+                <li class="d-flex justify-content-between">
+                  <span class="text-muted">Current Plan:</span>
+                  <span class="fw-bold text-dark">Family Essentials (&#8377;899/wk)</span>
+                </li>
+                <li class="d-flex justify-content-between">
+                  <span class="text-muted">Delivery Frequency:</span>
+                  <span class="fw-bold text-success">Weekly (Every Friday)</span>
+                </li>
+                <li class="d-flex justify-content-between">
+                  <span class="text-muted">Default Address:</span>
+                  <span class="fw-bold text-dark text-truncate" style="max-width: 180px;">HSR Layout, Sector 1</span>
+                </li>
+                <li class="d-flex justify-content-between">
+                  <span class="text-muted">Auto-Debit Method:</span>
+                  <span class="fw-bold text-dark"><i class="bi bi-credit-card"></i> Visa •••• 4242</span>
+                </li>
+              </ul>
+
+              <div class="d-grid gap-2">
+                <a href="subscription.html" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-gear-fill"></i> Manage Full Subscription
+                </a>
+                <a href="billing.html" class="btn btn-light btn-sm text-muted">
+                  <i class="bi bi-download me-1"></i> Download Latest Invoice (PDF)
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Box Orders Table -->
+        <div class="fresh-card p-0">
+          <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">Recent Deliveries</h5>
+            <a href="orders.html" class="small text-success fw-bold">View All Orders &rarr;</a>
+          </div>
+          <div class="table-responsive">
+            <table class="table custom-table mb-0">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Delivery Date</th>
+                  <th>Box Plan</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fw-bold">#FB-8841</td>
+                  <td>Aug 21, 2026</td>
+                  <td>Family Essentials (14 Items)</td>
+                  <td>&#8377;899</td>
+                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
+                  <td><a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">#FB-8835</td>
+                  <td>Aug 14, 2026</td>
+                  <td>Family Essentials + Extra Milk</td>
+                  <td>&#8377;974</td>
+                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
+                  <td><a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">#FB-8829</td>
+                  <td>Aug 07, 2026</td>
+                  <td>Family Essentials (14 Items)</td>
+                  <td>&#8377;899</td>
+                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
+                  <td><a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Profile Information & Saved Addresses & Account Settings -->
+        <div class="row g-4 mt-1">
+          <!-- Profile & Saved Address Card -->
+          <div class="col-lg-6">
+            <div class="fresh-card h-100 p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-person-badge text-success me-2"></i>Profile & Saved Addresses</h5>
+                <a href="profile.html" class="btn btn-sm btn-outline-primary">Edit Details</a>
+              </div>
+              <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded-3">
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; font-size: 1.25rem;">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Chandru K.</h6>
+                  <span class="text-muted small">chandru@freshbox.com • +91 98450-12345</span>
+                </div>
+              </div>
+              <div class="p-3 border rounded-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-house-door-fill me-1"></i>Primary Delivery Address</span>
+                  <a href="profile.html" class="small text-success fw-semibold">Change</a>
+                </div>
+                <p class="text-dark small mb-1 fw-semibold">Flat 402, Green Meadows Apartment</p>
+                <p class="text-muted small mb-0">14th Main, HSR Layout, Sector 1, Bangalore, Karnataka 560102</p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center text-muted small">
+                <span><i class="bi bi-bell-fill text-warning me-1"></i> Delivery Gate Code: <strong>#4402</strong></span>
+                <a href="profile.html" class="text-success fw-bold">+ Add New Address</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Settings & Security Card -->
+          <div class="col-lg-6">
+            <div class="fresh-card h-100 p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-shield-lock-fill text-success me-2"></i>Account & Preferences</h5>
+                <a href="settings.html" class="btn btn-sm btn-outline-primary">Settings</a>
+              </div>
+              <ul class="list-unstyled d-flex flex-column gap-3 mb-3">
+                <li class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light">
+                  <div>
+                    <span class="fw-semibold text-dark d-block">WhatsApp & SMS Delivery Alerts</span>
+                    <span class="text-muted small">Live dispatch & delivery arrival notifications</span>
+                  </div>
+                  <span class="badge bg-success">Enabled</span>
+                </li>
+                <li class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light">
+                  <div>
+                    <span class="fw-semibold text-dark d-block">Dietary Filter: 100% Organic</span>
+                    <span class="text-muted small">Automatic replacement with organic alternatives</span>
+                  </div>
+                  <span class="badge bg-success">Active</span>
+                </li>
+                <li class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light">
+                  <div>
+                    <span class="fw-semibold text-dark d-block">Password & Session Security</span>
+                    <span class="text-muted small">Last updated 14 days ago</span>
+                  </div>
+                  <a href="settings.html" class="btn btn-sm btn-light py-1 px-2">Update</a>
+                </li>
+              </ul>
+              <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+                <span class="small text-muted">Signed in as <strong>Chandru</strong></span>
+                <a href="../index.html" class="btn btn-outline-danger btn-sm" onclick="freshboxApp.setAuth({ role: 'guest' });">
+                  <i class="bi bi-power me-1"></i> Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Skip Delivery Modal -->
+  <div class="modal fade" id="skipDeliveryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold"><i class="bi bi-calendar-x text-warning me-2"></i>Skip Next Delivery?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to skip your scheduled grocery delivery for <strong>Friday, August 28, 2026</strong>?</p>
+          <div class="p-3 bg-light rounded-3 small text-muted">
+            <i class="bi bi-info-circle text-success me-1"></i> You will not be billed. Your next delivery will automatically resume on <strong>Friday, September 4, 2026</strong>.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Keep Delivery</button>
+          <button type="button" class="btn btn-warning" id="confirmSkipDeliveryBtn">Yes, Skip Delivery</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/rtl.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

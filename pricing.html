@@ -1,0 +1,377 @@
+?<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FreshBox Pricing - Simple, transparent subscription pricing for fresh grocery boxes.">
+  <title>Pricing & Plans Comparison - FreshBox</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dark.css">
+  <link rel="stylesheet" href="assets/css/rtl.css">
+</head>
+<body>
+
+  <!-- Global Header / Navbar -->
+  <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+        <span>Fresh</span>Box
+      </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-2 text-dark"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-xl-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Home</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="index.html">Home 1</a></li>
+              <li><a class="dropdown-item" href="home-2.html">Home 2</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Shop</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="shop.html">All Groceries</a></li>
+              <li><a class="dropdown-item" href="categories.html">Categories</a></li>
+              <li><a class="dropdown-item" href="sample-box.html">Sample Box</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Subscriptions</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
+              <li><a class="dropdown-item" href="how-it-works.html">How It Works</a></li>
+              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search products, plans & recipes (Ctrl+K)">
+            <i class="bi bi-search search-icon"></i>
+            <span class="search-text">Search produce, plans...</span>
+          </div>
+          <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box"><i class="bi bi-bag"></i><span class="cart-badge">4</span></button>
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode"><i class="bi bi-moon-stars-fill"></i></button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+          <div class="nav-auth-slot ms-1">
+            <a href="login.html" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="py-5" style="background: linear-gradient(180deg, #edf7ee 0%, var(--body-bg) 100%);">
+    <div class="container text-center py-4">
+      <span class="section-subtitle"><i class="bi bi-tag-fill"></i> Transparent Pricing</span>
+      <h1 class="display-4 fw-bold mb-3">Simple Plans for Every Household</h1>
+      <p class="text-muted fs-5 max-w-600 mx-auto">No hidden packaging fees or subscription lock-in. Switch or cancel whenever you wish.</p>
+    </div>
+  </section>
+
+  <!-- Pricing Cards -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="row g-4 justify-content-center">
+        <!-- Plan 1 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="plan-card">
+            <h4 class="fw-bold mb-2">Veggie Box</h4>
+            <p class="text-muted small">Daily cooking vegetables</p>
+            <div class="plan-price-wrap">
+              <span class="plan-price">&#8377;499</span>
+              <span class="plan-period">/ week</span>
+            </div>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> 8-10 kg Vegetables</li>
+              <li><i class="bi bi-check-circle-fill"></i> 10-12 Varieties</li>
+              <li><i class="bi bi-check-circle-fill"></i> 3 Weekly Item Swaps</li>
+              <li><i class="bi bi-check-circle-fill"></i> Pause or Skip Anytime</li>
+            </ul>
+            <a href="delivery-frequency.html?plan=veggie" class="btn btn-outline-primary w-100">Get Started</a>
+          </div>
+        </div>
+
+        <!-- Plan 2 (Popular) -->
+        <div class="col-lg-3 col-md-6">
+          <div class="plan-card featured">
+            <span class="popular-tag">Most Popular</span>
+            <h4 class="fw-bold mb-2">Family Essentials</h4>
+            <p class="text-muted small">Veggies, fruits & farm milk</p>
+            <div class="plan-price-wrap">
+              <span class="plan-price">&#8377;899</span>
+              <span class="plan-period">/ week</span>
+            </div>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> 14-16 kg Produce</li>
+              <li><i class="bi bi-check-circle-fill"></i> 18+ Varieties</li>
+              <li><i class="bi bi-check-circle-fill"></i> 2L Farm Milk Included</li>
+              <li><i class="bi bi-check-circle-fill"></i> Unlimited Item Swaps</li>
+            </ul>
+            <a href="delivery-frequency.html?plan=family" class="btn btn-primary w-100">Get Started</a>
+          </div>
+        </div>
+
+        <!-- Plan 3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="plan-card">
+            <h4 class="fw-bold mb-2">Organic Box</h4>
+            <p class="text-muted small">100% Certified organic</p>
+            <div class="plan-price-wrap">
+              <span class="plan-price">&#8377;1,199</span>
+              <span class="plan-period">/ week</span>
+            </div>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> Certified Organic Produce</li>
+              <li><i class="bi bi-check-circle-fill"></i> 12-14 kg Produce</li>
+              <li><i class="bi bi-check-circle-fill"></i> A2 Milk + Brown Eggs</li>
+              <li><i class="bi bi-check-circle-fill"></i> Dietitian Hotline</li>
+            </ul>
+            <a href="delivery-frequency.html?plan=organic" class="btn btn-outline-primary w-100">Get Started</a>
+          </div>
+        </div>
+
+        <!-- Plan 4 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="plan-card">
+            <h4 class="fw-bold mb-2">Premium Harvest</h4>
+            <p class="text-muted small">Exotic produce & artisanal</p>
+            <div class="plan-price-wrap">
+              <span class="plan-price">&#8377;1,599</span>
+              <span class="plan-period">/ week</span>
+            </div>
+            <ul class="plan-features">
+              <li><i class="bi bi-check-circle-fill"></i> Hydroponics & Berries</li>
+              <li><i class="bi bi-check-circle-fill"></i> Artisanal Bakery & Honey</li>
+              <li><i class="bi bi-check-circle-fill"></i> VIP Delivery Slots</li>
+              <li><i class="bi bi-check-circle-fill"></i> Carbon-Neutral Cert</li>
+            </ul>
+            <a href="delivery-frequency.html?plan=premium" class="btn btn-outline-primary w-100">Get Started</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Matrix -->
+  <section class="section-padding bg-white">
+    <div class="container">
+      <div class="section-title-wrap text-center">
+        <h2 class="section-title">Full Pricing Breakdown</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="table custom-table text-center">
+          <thead>
+            <tr>
+              <th class="text-start">Features</th>
+              <th>Veggie Box</th>
+              <th class="bg-success-subtle text-success">Family Essentials</th>
+              <th>Organic Box</th>
+              <th>Premium Harvest</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-start fw-bold">Weekly Price</td>
+              <td>&#8377;499</td>
+              <td class="fw-bold text-success">&#8377;899</td>
+              <td>&#8377;1,199</td>
+              <td>&#8377;1,599</td>
+            </tr>
+            <tr>
+              <td class="text-start">Monthly Price (Save 15%)</td>
+              <td>&#8377;1,899</td>
+              <td class="fw-bold text-success">&#8377;3,399</td>
+              <td>&#8377;4,499</td>
+              <td>&#8377;5,999</td>
+            </tr>
+            <tr>
+              <td class="text-start">Vegetables Weight</td>
+              <td>8-10 kg</td>
+              <td>10-12 kg</td>
+              <td>8-10 kg</td>
+              <td>10-12 kg</td>
+            </tr>
+            <tr>
+              <td class="text-start">Fruits Weight</td>
+              <td>-</td>
+              <td>3-4 kg</td>
+              <td>4-5 kg</td>
+              <td>5-6 kg (Exotic)</td>
+            </tr>
+            <tr>
+              <td class="text-start">Free Delivery</td>
+              <td><i class="bi bi-check-circle-fill text-success"></i></td>
+              <td><i class="bi bi-check-circle-fill text-success"></i></td>
+              <td><i class="bi bi-check-circle-fill text-success"></i></td>
+              <td><i class="bi bi-check-circle-fill text-success"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="cta-banner text-center py-5">
+        <h2 class="mb-3">Ready to Simplify Your Weekly Groceries?</h2>
+        <a href="plans.html" class="btn btn-primary btn-lg mt-2"><i class="bi bi-box-seam me-1"></i> Choose Your Weekly Plan</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+    <!-- Global Footer -->
+  <footer class="footer bg-white border-top py-5 text-dark">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
+            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+              <i class="bi bi-basket2-fill fs-5"></i>
+            </div>
+            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          </a>
+          <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
+            FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
+          </p>
+          <div class="d-flex align-items-center gap-2">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Facebook" aria-label="Facebook">
+              <i class="bi bi-facebook fs-6"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Instagram" aria-label="Instagram">
+              <i class="bi bi-instagram fs-6"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="X" aria-label="X">
+              <i class="bi bi-twitter-x fs-6"></i>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="YouTube" aria-label="YouTube">
+              <i class="bi bi-youtube fs-6"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Shop</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
+            <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Subscriptions</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
+            <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
+            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
+            <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Company</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="about.html" class="text-secondary text-decoration-none hover-success">About Us</a></li>
+            <li><a href="blog.html" class="text-secondary text-decoration-none hover-success">Blog & Recipes</a></li>
+            <li><a href="faq.html" class="text-secondary text-decoration-none hover-success">FAQ</a></li>
+            <li><a href="contact.html" class="text-secondary text-decoration-none hover-success">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Customer</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="login.html" class="text-secondary text-decoration-none hover-success">Sign In</a></li>
+            <li><a href="dashboard/index.html" class="text-secondary text-decoration-none hover-success">My Dashboard</a></li>
+            <li><a href="dashboard/orders.html" class="text-secondary text-decoration-none hover-success">My Orders</a></li>
+            <li><a href="dashboard/billing.html" class="text-secondary text-decoration-none hover-success">Billing & Invoices</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="mb-0 text-secondary small">&copy; 2026 FreshBox Inc. All rights reserved. Professional Grocery Subscription Template.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Privacy Policy</a>
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Search Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-search text-success me-2"></i>Search FreshBox</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body search-modal-body">
+          <input type="text" id="globalSearchInput" class="form-control mb-3" placeholder="Search...">
+          <div id="globalSearchResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="offcanvas offcanvas-end offcanvas-cart" tabindex="-1" id="cartDrawer">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="bi bi-box-seam text-success me-2"></i>Your Grocery Box</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+      <div id="cartDrawerItems" class="flex-grow-1 overflow-auto"></div>
+      <div class="p-3 border-top bg-light">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal:</span><span class="fw-bold" id="cartDrawerSubtotal">?0</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Delivery Fee:</span><span class="text-success fw-bold" id="cartDrawerDelivery">FREE</span></div>
+        <div class="d-flex justify-content-between mb-3 fs-5 fw-bold"><span>Total:</span><span class="text-success" id="cartDrawerTotal">?0</span></div>
+        <a href="cart.html" class="btn btn-outline-primary w-100 mb-2"><i class="bi bi-cart"></i> View Full Cart</a>
+        <a href="checkout.html" class="btn btn-primary w-100"><i class="bi bi-credit-card"></i> Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/rtl.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

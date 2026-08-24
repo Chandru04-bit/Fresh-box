@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Choose Delivery Frequency - Select weekly, biweekly, or monthly recurring grocery delivery for your household.">
+  <title>Choose Delivery Frequency - FreshBox</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dark.css">
+  <link rel="stylesheet" href="assets/css/rtl.css">
+</head>
+<body>
+
+  <!-- Global Header / Navbar -->
+  <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+        <span>Fresh</span>Box
+      </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-2 text-dark"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-xl-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Home</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="index.html">Home 1</a></li>
+              <li><a class="dropdown-item" href="home-2.html">Home 2</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Shop</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="shop.html">All Groceries</a></li>
+              <li><a class="dropdown-item" href="categories.html">Categories</a></li>
+              <li><a class="dropdown-item" href="sample-box.html">Sample Box</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">Subscriptions</a>
+            <ul class="dropdown-menu shadow-sm">
+              <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
+              <li><a class="dropdown-item" href="how-it-works.html">How It Works</a></li>
+              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search products, plans & recipes (Ctrl+K)">
+            <i class="bi bi-search search-icon"></i>
+            <span class="search-text">Search produce, plans...</span>
+          </div>
+          <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box"><i class="bi bi-bag"></i><span class="cart-badge">4</span></button>
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode"><i class="bi bi-moon-stars-fill"></i></button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+          <div class="nav-auth-slot ms-1">
+            <a href="login.html" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Choose Frequency Main Section -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="section-title-wrap text-center">
+        <h2 class="section-title">How Often Would You Like Delivery?</h2>
+        <p class="section-desc">You can pause, skip individual weeks, or switch frequency anytime with no cancellation fees.</p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <!-- Option 1: Weekly (Selected Default) -->
+        <div class="col-lg-4 col-md-6">
+          <div class="frequency-card selected" id="freqCardWeekly" onclick="selectFrequency('weekly', this)">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="feature-icon-bubble bg-success text-white mb-0">
+                <i class="bi bi-calendar-check-fill"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-0">Weekly Delivery</h4>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">Recommended</span>
+              </div>
+            </div>
+            <p class="text-muted mb-4">Delivered every single week. Perfect for fresh cooking with zero produce spoilage.</p>
+            <div class="p-3 bg-light rounded-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Billed Per Delivery:</span>
+                <span class="fw-bold fs-5 text-dark">₹899</span>
+              </div>
+              <small class="text-success fw-semibold"><i class="bi bi-check2"></i> Includes Free Priority Morning Slot</small>
+            </div>
+            <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Peak vegetable freshness</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Free item swaps each week</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Skip any week with 1 click</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 2: Biweekly -->
+        <div class="col-lg-4 col-md-6">
+          <div class="frequency-card" id="freqCardBiweekly" onclick="selectFrequency('biweekly', this)">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="feature-icon-bubble bg-light text-success border mb-0">
+                <i class="bi bi-calendar2-week"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-0">Biweekly Delivery</h4>
+                <span class="text-muted small">Every 2 Weeks</span>
+              </div>
+            </div>
+            <p class="text-muted mb-4">Delivered every other week. Great for small households or light cooking schedules.</p>
+            <div class="p-3 bg-light rounded-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Billed Every 2 Weeks:</span>
+                <span class="fw-bold fs-5 text-dark">₹949</span>
+              </div>
+              <small class="text-muted"><i class="bi bi-info-circle"></i> 2 Deliveries / Month</small>
+            </div>
+            <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Longer shelf-life vegetables & pantry</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Flexible schedule modification</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> No lock-in period</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 3: Monthly -->
+        <div class="col-lg-4 col-md-6">
+          <div class="frequency-card" id="freqCardMonthly" onclick="selectFrequency('monthly', this)">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="feature-icon-bubble bg-light text-success border mb-0">
+                <i class="bi bi-calendar3"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-0">Monthly Delivery</h4>
+                <span class="badge bg-warning text-dark">Bulk Pantry</span>
+              </div>
+            </div>
+            <p class="text-muted mb-4">Delivered once a month with bulk grains, pantry staples, and cold-pressed oils.</p>
+            <div class="p-3 bg-light rounded-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Billed Monthly:</span>
+                <span class="fw-bold fs-5 text-dark">₹3,399</span>
+              </div>
+              <small class="text-success fw-semibold"><i class="bi bi-tag-fill"></i> Save 15% Bulk Discount</small>
+            </div>
+            <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Bulk grain sacks & cold-pressed oils</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Free premium wooden crate</li>
+              <li><i class="bi bi-check-circle-fill text-success me-2"></i> Dedicated account manager</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Continuation Box -->
+      <div class="row justify-content-center mt-5">
+        <div class="col-lg-6 text-center">
+          <div class="p-4 bg-white rounded-4 border shadow-sm">
+            <h5 class="fw-bold mb-2">Selected Schedule: <span class="text-success" id="selectedFreqText">Weekly (Every Friday)</span></h5>
+            <p class="text-muted small mb-4">You will receive an automated WhatsApp confirmation 24 hours prior to dispatch.</p>
+            
+            <a href="checkout.html" class="btn btn-primary btn-lg w-100 mb-2">
+              <i class="bi bi-credit-card-fill"></i> Proceed to Secure Checkout
+            </a>
+            <a href="shop.html" class="btn btn-link text-muted small text-decoration-none">
+              &larr; Back to customize items
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Footer -->
+    <!-- Global Footer -->
+  <footer class="footer bg-white border-top py-5 text-dark">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
+            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+              <i class="bi bi-basket2-fill fs-5"></i>
+            </div>
+            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          </a>
+          <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
+            FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
+          </p>
+          <div class="d-flex align-items-center gap-2">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Facebook" aria-label="Facebook">
+              <i class="bi bi-facebook fs-6"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Instagram" aria-label="Instagram">
+              <i class="bi bi-instagram fs-6"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="X" aria-label="X">
+              <i class="bi bi-twitter-x fs-6"></i>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="YouTube" aria-label="YouTube">
+              <i class="bi bi-youtube fs-6"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Shop</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
+            <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Subscriptions</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
+            <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
+            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
+            <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Company</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="about.html" class="text-secondary text-decoration-none hover-success">About Us</a></li>
+            <li><a href="blog.html" class="text-secondary text-decoration-none hover-success">Blog & Recipes</a></li>
+            <li><a href="faq.html" class="text-secondary text-decoration-none hover-success">FAQ</a></li>
+            <li><a href="contact.html" class="text-secondary text-decoration-none hover-success">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Customer</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="login.html" class="text-secondary text-decoration-none hover-success">Sign In</a></li>
+            <li><a href="dashboard/index.html" class="text-secondary text-decoration-none hover-success">My Dashboard</a></li>
+            <li><a href="dashboard/orders.html" class="text-secondary text-decoration-none hover-success">My Orders</a></li>
+            <li><a href="dashboard/billing.html" class="text-secondary text-decoration-none hover-success">Billing & Invoices</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="mb-0 text-secondary small">&copy; 2026 FreshBox Inc. All rights reserved. Professional Grocery Subscription Template.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Privacy Policy</a>
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Search Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-search text-success me-2"></i>Search FreshBox</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body search-modal-body">
+          <input type="text" id="globalSearchInput" class="form-control mb-3" placeholder="Search...">
+          <div id="globalSearchResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="offcanvas offcanvas-end offcanvas-cart" tabindex="-1" id="cartDrawer">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="bi bi-box-seam text-success me-2"></i>Your Grocery Box</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+      <div id="cartDrawerItems" class="flex-grow-1 overflow-auto"></div>
+      <div class="p-3 border-top bg-light">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal:</span><span class="fw-bold" id="cartDrawerSubtotal">₹0</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Delivery Fee:</span><span class="text-success fw-bold" id="cartDrawerDelivery">FREE</span></div>
+        <div class="d-flex justify-content-between mb-3 fs-5 fw-bold"><span>Total:</span><span class="text-success" id="cartDrawerTotal">₹0</span></div>
+        <a href="cart.html" class="btn btn-outline-primary w-100 mb-2"><i class="bi bi-cart"></i> View Full Cart</a>
+        <a href="checkout.html" class="btn btn-primary w-100"><i class="bi bi-credit-card"></i> Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/rtl.js"></script>
+  <script src="assets/js/main.js"></script>
+    <script>
+    let currentSelectedFreq = 'weekly';
+
+    function selectFrequency(type, cardEl) {
+      if (typeof type === 'object' && type !== null) {
+        const temp = type;
+        type = cardEl;
+        cardEl = temp;
+      }
+
+      currentSelectedFreq = type || 'weekly';
+
+      document.querySelectorAll('.frequency-card').forEach(function(c) {
+        c.classList.remove('selected');
+      });
+
+      if (cardEl) {
+        cardEl.classList.add('selected');
+      } else {
+        const targetId = currentSelectedFreq === 'biweekly' ? 'freqCardBiweekly' : (currentSelectedFreq === 'monthly' ? 'freqCardMonthly' : 'freqCardWeekly');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) targetEl.classList.add('selected');
+      }
+
+      let labelText = 'Weekly (Every Friday)';
+      if (currentSelectedFreq === 'weekly') {
+        labelText = 'Weekly (Every Friday)';
+      } else if (currentSelectedFreq === 'biweekly') {
+        labelText = 'Biweekly (Every 2nd Friday)';
+      } else if (currentSelectedFreq === 'monthly') {
+        labelText = 'Monthly (1st Friday of Month)';
+      }
+
+      const textEl = document.getElementById('selectedFreqText');
+      if (textEl) {
+        textEl.textContent = labelText;
+      }
+
+      localStorage.setItem('freshbox_frequency', currentSelectedFreq);
+      localStorage.setItem('freshbox_subscription_freq', currentSelectedFreq);
+      localStorage.setItem('freshbox_selected_frequency', labelText);
+
+      if (typeof freshboxApp !== 'undefined' && freshboxApp.showToast) {
+        freshboxApp.showToast('Frequency Selected', labelText + ' saved. Proceeding to Delivery Address...', 'success');
+      }
+
+      setTimeout(function() {
+        window.location.href = 'checkout.html';
+      }, 350);
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+

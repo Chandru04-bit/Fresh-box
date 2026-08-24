@@ -1,0 +1,166 @@
+/* 
+   FreshBox - RTL (Right-to-Left) Stylesheet
+   For Arabic, Hebrew, Persian layouts
+   Activated via [dir="rtl"] or body.rtl-mode
+*/
+
+[dir="rtl"],
+body.rtl-mode {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .navbar-brand,
+body.rtl-mode .navbar-brand {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+[dir="rtl"] .navbar-nav,
+body.rtl-mode .navbar-nav {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+[dir="rtl"] .navbar-nav .dropdown-toggle::after,
+body.rtl-mode .navbar-nav .dropdown-toggle::after {
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+[dir="rtl"] .nav-actions,
+body.rtl-mode .nav-actions {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+[dir="rtl"] .cart-badge,
+body.rtl-mode .cart-badge {
+  right: auto;
+  left: -4px;
+}
+
+[dir="rtl"] .nav-user-dropdown .dropdown-toggle::after,
+body.rtl-mode .nav-user-dropdown .dropdown-toggle::after {
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+[dir="rtl"] .nav-user-dropdown .dropdown-menu,
+body.rtl-mode .nav-user-dropdown .dropdown-menu {
+  right: auto !important;
+  left: 0 !important;
+}
+
+@media (min-width: 1200px) {
+  [dir="rtl"] .navbar-nav .nav-item.dropdown > .dropdown-menu,
+  body.rtl-mode .navbar-nav .nav-item.dropdown > .dropdown-menu {
+    left: auto !important;
+    right: 0 !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  [dir="rtl"] .navbar-nav .dropdown-menu,
+  body.rtl-mode .navbar-nav .dropdown-menu {
+    margin: 4px 12px 8px 0;
+  }
+}
+
+[dir="rtl"] .navbar-nav .dropdown-toggle::after,
+body.rtl-mode .navbar-nav .dropdown-toggle::after {
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+/* Hero Floating cards */
+[dir="rtl"] .hero-floating-card.card-1,
+body.rtl-mode .hero-floating-card.card-1 {
+  left: auto;
+  right: -20px;
+}
+
+[dir="rtl"] .hero-floating-card.card-2,
+body.rtl-mode .hero-floating-card.card-2 {
+  right: auto;
+  left: -15px;
+}
+
+/* Step Numbers */
+[dir="rtl"] .step-number,
+body.rtl-mode .step-number {
+  right: auto;
+  left: 18px;
+}
+
+/* Product Badges */
+[dir="rtl"] .product-badge,
+body.rtl-mode .product-badge {
+  left: auto;
+  right: 12px;
+}
+
+/* Frequency Selected Icon */
+[dir="rtl"] .frequency-card.selected::after,
+body.rtl-mode .frequency-card.selected::after {
+  right: auto;
+  left: 18px;
+}
+
+/* Timeline */
+[dir="rtl"] .delivery-timeline,
+body.rtl-mode .delivery-timeline {
+  padding-left: 0;
+  padding-right: 28px;
+}
+
+[dir="rtl"] .delivery-timeline::before,
+body.rtl-mode .delivery-timeline::before {
+  left: auto;
+  right: 10px;
+}
+
+[dir="rtl"] .timeline-dot,
+body.rtl-mode .timeline-dot {
+  left: auto;
+  right: -28px;
+}
+
+/* Footer Links Hover */
+[dir="rtl"] .footer-links a:hover,
+body.rtl-mode .footer-links a:hover {
+  padding-left: 0;
+  padding-right: 5px;
+}
+
+/* Dashboard Sidebar */
+[dir="rtl"] .dashboard-sidebar,
+body.rtl-mode .dashboard-sidebar {
+  border-right: none;
+  border-left: 1px solid var(--border-color);
+}
+
+@media (max-width: 991.98px) {
+  [dir="rtl"] .dashboard-sidebar,
+  body.rtl-mode .dashboard-sidebar {
+    left: auto;
+    right: -280px;
+  }
+  [dir="rtl"] .dashboard-sidebar.show,
+  body.rtl-mode .dashboard-sidebar.show {
+    right: 0;
+  }
+}
+
+/* Dropdown Menu alignment */
+[dir="rtl"] .dropdown-menu,
+body.rtl-mode .dropdown-menu {
+  text-align: right;
+}
+
+/* Toast Container */
+[dir="rtl"] .fresh-toast-container,
+body.rtl-mode .fresh-toast-container {
+  right: auto;
+  left: 24px;
+}

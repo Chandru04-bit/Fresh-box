@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Box Customizer - FreshBox</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dark.css">
+  <link rel="stylesheet" href="../assets/css/rtl.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header d-flex align-items-center justify-content-between">
+        <a class="navbar-brand mb-0" href="../index.html">
+          <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+          <span>Fresh</span>Box
+        </a>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li class="menu-category">Subscriber Portal</li>
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-grid-fill"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="subscription.html"><i class="bi bi-card-checklist"></i> My Subscription</a></li>
+        <li class="nav-item"><a class="nav-link active" href="my-box.html"><i class="bi bi-box-seam-fill"></i> My Box</a></li>
+        <li class="nav-item"><a class="nav-link" href="deliveries.html"><i class="bi bi-truck"></i> Upcoming Deliveries</a></li>
+        <li class="nav-item"><a class="nav-link" href="orders.html"><i class="bi bi-clock-history"></i> Order History</a></li>
+        <li class="nav-item"><a class="nav-link" href="billing.html"><i class="bi bi-receipt"></i> Billing & Invoices</a></li>
+        <li class="menu-category">Account</li>
+        <li class="nav-item"><a class="nav-link" href="profile.html"><i class="bi bi-person-gear"></i> Saved Addresses & Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="settings.html"><i class="bi bi-gear"></i> Settings</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="../index.html" class="nav-link text-danger d-flex align-items-center gap-2" onclick="freshboxApp.setAuth({ role: 'guest' });">
+          <i class="bi bi-power fs-5"></i> Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-secondary btn-sm d-lg-none" id="sidebarToggle"><i class="bi bi-list fs-5"></i></button>
+          <div>
+            <h5 class="fw-bold mb-0">My Upcoming Grocery Box</h5>
+            <small class="text-muted">Friday, August 28, 2026 Delivery</small>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Theme"><i class="bi bi-moon-stars-fill"></i></button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+          <div class="dropdown nav-user-dropdown ms-1">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+              <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
+              <span class="d-none d-sm-inline">Chandru</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+              <li>
+                <a class="dropdown-item" href="index.html">
+                  <i class="bi bi-grid-fill text-success"></i>
+                  <span>User Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="../login.html" onclick="freshboxApp.setAuth({ role: 'guest' });">
+                  <i class="bi bi-power"></i>
+                  <span>Logout</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Box Customizer Header -->
+        <div class="fresh-card p-4 mb-4">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+              <span class="badge bg-success mb-2">Cutoff: Thursday 8:00 PM</span>
+              <h3 class="fw-bold mb-1">Customize Your Box Items</h3>
+              <p class="text-muted small mb-0">You can adjust quantities, swap vegetables, or add fresh extra dairy/fruits.</p>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addExtraModal">
+                <i class="bi bi-plus-circle"></i> Add Fresh Extras
+              </button>
+              <button class="btn btn-primary btn-sm" id="saveBoxChangesBtn">
+                <i class="bi bi-check2-circle"></i> Save Box Changes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box Items Table / Grid -->
+        <div class="fresh-card p-0 mb-4">
+          <div class="table-responsive">
+            <table class="table custom-table mb-0">
+              <thead>
+                <tr>
+                  <th>Product Details</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Item Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1 -->
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="../assets/images/products/fresh-vine-tomatoes.jpg" alt="Tomatoes" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;">
+                      <div>
+                        <h6 class="fw-bold mb-0">Fresh Vine Tomatoes</h6>
+                        <small class="text-muted">1 kg / pack</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge bg-light text-success border border-success-subtle">Vegetables</span></td>
+                  <td>
+                    <div class="quantity-control">
+                      <button class="qty-btn">-</button>
+                      <span class="qty-input">1</span>
+                      <button class="qty-btn">+</button>
+                    </div>
+                  </td>
+                  <td class="fw-bold text-success">â‚¹60</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
+                      <i class="bi bi-arrow-repeat"></i> Swap
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="../assets/images/products/organic-baby-spinach.jpg" alt="Spinach" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;">
+                      <div>
+                        <h6 class="fw-bold mb-0">Organic Baby Spinach</h6>
+                        <small class="text-muted">250 g / pack</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge bg-light text-success border border-success-subtle">Vegetables</span></td>
+                  <td>
+                    <div class="quantity-control">
+                      <button class="qty-btn">-</button>
+                      <span class="qty-input">2</span>
+                      <button class="qty-btn">+</button>
+                    </div>
+                  </td>
+                  <td class="fw-bold text-success">â‚¹90</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
+                      <i class="bi bi-arrow-repeat"></i> Swap
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=100&auto=format&fit=crop&q=80" alt="Apples" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;">
+                      <div>
+                        <h6 class="fw-bold mb-0">Royal Gala Apples</h6>
+                        <small class="text-muted">1 kg (4-5 pcs)</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge bg-light text-success border border-success-subtle">Fruits</span></td>
+                  <td>
+                    <div class="quantity-control">
+                      <button class="qty-btn">-</button>
+                      <span class="qty-input">1</span>
+                      <button class="qty-btn">+</button>
+                    </div>
+                  </td>
+                  <td class="fw-bold text-success">â‚¹120</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
+                      <i class="bi bi-arrow-repeat"></i> Swap
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="assets/images/products/farm-fresh-a2-milk.jpg" alt="Milk" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;">
+                      <div>
+                        <h6 class="fw-bold mb-0">Farm Fresh A2 Milk</h6>
+                        <small class="text-muted">1 L / Glass Bottle</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge bg-light text-success border border-success-subtle">Dairy</span></td>
+                  <td>
+                    <div class="quantity-control">
+                      <button class="qty-btn">-</button>
+                      <span class="qty-input">2</span>
+                      <button class="qty-btn">+</button>
+                    </div>
+                  </td>
+                  <td class="fw-bold text-success">â‚¹150</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
+                      <i class="bi bi-arrow-repeat"></i> Swap
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Total Footer -->
+          <div class="p-4 border-top bg-light d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted small d-block">Scheduled Box Value:</span>
+              <span class="fs-4 fw-bold text-success">â‚¹899 (Subscription Covered)</span>
+            </div>
+            <button class="btn btn-primary" onclick="document.getElementById('saveBoxChangesBtn').click();">
+              <i class="bi bi-save me-1"></i> Save Selections
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Swap Modal -->
+  <div class="modal fade" id="swapItemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold"><i class="bi bi-arrow-left-right text-success me-2"></i>Swap With Seasonal Alternative</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small mb-3">Choose a seasonal equivalent from this week's harvest:</p>
+          <div class="row row-cols-1 row-cols-sm-3 g-3">
+            <div class="col">
+              <div class="p-3 border rounded-3 text-center bg-light">
+                <img src="assets/images/products/farm-fresh-carrots.jpg" class="rounded-3 mb-2" style="width: 70px; height: 70px; object-fit: cover;">
+                <h6 class="fw-bold mb-1 fs-6">Ooty Carrots (1kg)</h6>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="swapBoxItem('Tomatoes', 'Ooty Carrots')">Select</button>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-3 border rounded-3 text-center bg-light">
+                <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=150&auto=format&fit=crop&q=80" class="rounded-3 mb-2" style="width: 70px; height: 70px; object-fit: cover;">
+                <h6 class="fw-bold mb-1 fs-6">Baby Potatoes (1.5kg)</h6>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="swapBoxItem('Tomatoes', 'Baby Potatoes')">Select</button>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-3 border rounded-3 text-center bg-light">
+                <img src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=150&auto=format&fit=crop&q=80" class="rounded-3 mb-2" style="width: 70px; height: 70px; object-fit: cover;">
+                <h6 class="fw-bold mb-1 fs-6">Nasik Onions (1.5kg)</h6>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="swapBoxItem('Tomatoes', 'Nasik Onions')">Select</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Extra Modal -->
+  <div class="modal fade" id="addExtraModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Add Extra Item to Next Box</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label small fw-bold">Select Fresh Product:</label>
+          <select class="form-select mb-3">
+            <option>Pasture Brown Eggs (6 pcs) - â‚¹85</option>
+            <option>Artisan Sourdough Loaf (450g) - â‚¹95</option>
+            <option>Wildflower Raw Honey (250g) - â‚¹180</option>
+            <option>Hass Avocados (2 pcs) - â‚¹140</option>
+          </select>
+          <label class="form-label small fw-bold">Quantity:</label>
+          <input type="number" class="form-control" value="1" min="1" max="5">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('addExtraModal')).hide(); freshboxApp.showToast('Item Added', 'Extra item scheduled with Friday delivery.', 'success');">Add to Box</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/rtl.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>
+
+
+
+
+

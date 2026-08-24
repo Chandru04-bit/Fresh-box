@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="We're Preparing Something Fresh - FreshBox Coming Soon">
+  <title>Coming Soon - FreshBox Grocery Subscription</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dark.css">
+  <link rel="stylesheet" href="assets/css/rtl.css">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light text-center">
+
+  <nav class="navbar navbar-expand-lg fresh-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+        <span>Fresh</span>Box
+      </a>
+      <div class="d-flex gap-2">
+        <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode"><i class="bi bi-moon-stars-fill"></i></button>
+        <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+          <span class="section-subtitle mb-3"><i class="bi bi-hourglass-split"></i> New Cities Launching Soon</span>
+          <h1 class="display-4 fw-bold mb-3">We're Preparing Something Fresh</h1>
+          <p class="text-muted fs-5 mb-5 max-w-600 mx-auto">Our zero-waste organic grocery subscription network is launching in 10 new metro cities across the country.</p>
+
+          <!-- Live Countdown Timer -->
+          <div class="countdown-timer d-flex justify-content-center gap-3 mb-5">
+            <div class="fresh-card p-3 p-md-4 text-center" style="min-width: 90px;">
+              <span class="display-5 fw-bold text-success timer-days">07</span>
+              <small class="text-muted d-block uppercase fw-bold">Days</small>
+            </div>
+            <div class="fresh-card p-3 p-md-4 text-center" style="min-width: 90px;">
+              <span class="display-5 fw-bold text-success timer-hours">14</span>
+              <small class="text-muted d-block uppercase fw-bold">Hours</small>
+            </div>
+            <div class="fresh-card p-3 p-md-4 text-center" style="min-width: 90px;">
+              <span class="display-5 fw-bold text-success timer-minutes">32</span>
+              <small class="text-muted d-block uppercase fw-bold">Mins</small>
+            </div>
+            <div class="fresh-card p-3 p-md-4 text-center" style="min-width: 90px;">
+              <span class="display-5 fw-bold text-success timer-seconds">45</span>
+              <small class="text-muted d-block uppercase fw-bold">Secs</small>
+            </div>
+          </div>
+
+          <!-- Email Notify Form -->
+          <div class="mx-auto mb-5" style="max-width: 500px;">
+            <form onsubmit="event.preventDefault(); freshboxApp.showToast('Subscribed!', 'We will alert you on launch day.', 'success'); this.reset();">
+              <div class="input-group shadow-sm bg-white rounded-pill p-1 border">
+                <input type="email" class="form-control border-0 ps-3" placeholder="Enter your email for early bird perks" required>
+                <button class="btn btn-primary rounded-pill px-4" type="submit">Notify Me</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="d-flex justify-content-center gap-3">
+            <a href="https://www.facebook.com/" class="footer-social-link" data-social-platform="facebook" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="FreshBox on Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/" class="footer-social-link" data-social-platform="instagram" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="FreshBox on Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://x.com/" class="footer-social-link" data-social-platform="x" target="_blank" rel="noopener noreferrer" title="X (formerly Twitter)" aria-label="FreshBox on X"><i class="bi bi-twitter-x"></i></a>
+            <a href="https://www.youtube.com/" class="footer-social-link" data-social-platform="youtube" target="_blank" rel="noopener noreferrer" title="YouTube" aria-label="FreshBox on YouTube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+    <!-- Global Footer -->
+  <footer class="footer bg-white border-top py-5 text-dark">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
+            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+              <i class="bi bi-basket2-fill fs-5"></i>
+            </div>
+            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          </a>
+          <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
+            FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
+          </p>
+          <div class="d-flex align-items-center gap-2">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Facebook" aria-label="Facebook">
+              <i class="bi bi-facebook fs-6"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="Instagram" aria-label="Instagram">
+              <i class="bi bi-instagram fs-6"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="X" aria-label="X">
+              <i class="bi bi-twitter-x fs-6"></i>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn bg-success-subtle text-success rounded-circle p-0 d-inline-flex align-items-center justify-content-center border-0" style="width: 36px; height: 36px; transition: all 0.2s ease;" title="YouTube" aria-label="YouTube">
+              <i class="bi bi-youtube fs-6"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Shop</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
+            <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
+            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Subscriptions</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
+            <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
+            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
+            <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Company</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="about.html" class="text-secondary text-decoration-none hover-success">About Us</a></li>
+            <li><a href="blog.html" class="text-secondary text-decoration-none hover-success">Blog & Recipes</a></li>
+            <li><a href="faq.html" class="text-secondary text-decoration-none hover-success">FAQ</a></li>
+            <li><a href="contact.html" class="text-secondary text-decoration-none hover-success">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="fw-bold text-dark mb-3">Customer</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+            <li><a href="login.html" class="text-secondary text-decoration-none hover-success">Sign In</a></li>
+            <li><a href="dashboard/index.html" class="text-secondary text-decoration-none hover-success">My Dashboard</a></li>
+            <li><a href="dashboard/orders.html" class="text-secondary text-decoration-none hover-success">My Orders</a></li>
+            <li><a href="dashboard/billing.html" class="text-secondary text-decoration-none hover-success">Billing & Invoices</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="mb-0 text-secondary small">&copy; 2026 FreshBox Inc. All rights reserved. Professional Grocery Subscription Template.</p>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Privacy Policy</a>
+          <a href="#" class="text-secondary small text-decoration-none hover-success">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/rtl.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
+
+
+
+
