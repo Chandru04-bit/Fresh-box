@@ -19,93 +19,137 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/dark.css">
   <link rel="stylesheet" href="assets/css/rtl.css">
+  <style>
+    :root { --login-green: #24834a; --login-green-dark: #1c6739; --login-ink: #1c3024; --login-muted: #718076; --login-border: #dfe9e2; }
+    .login-page { background: radial-gradient(circle at 15% 10%, #edf8ef 0, transparent 32%), linear-gradient(135deg, #f8fbf8 0%, #f2f6f3 100%); }
+    .login-main { padding: 3rem 0; }
+    .login-card { width: 100%; max-width: 480px; padding: 2.5rem; border: 1px solid var(--login-border); border-radius: 1.25rem; background: #fff; box-shadow: 0 18px 45px rgba(26, 72, 41, .08); }
+    .login-brand-mark { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; border-radius: 14px; color: var(--login-green); background: #eaf6ee; font-size: 1.2rem; }
+    .login-title { color: var(--login-ink); font: 700 clamp(1.55rem, 3vw, 1.9rem)/1.2 Outfit, sans-serif; letter-spacing: -.035em; }
+    .login-subtitle { max-width: 340px; margin: .55rem auto 0; color: var(--login-muted); font-size: .89rem; line-height: 1.65; }
+    .login-card .form-label { margin-bottom: .45rem; color: #34443a; font: 600 .83rem/1.2 "Plus Jakarta Sans", sans-serif; }
+    .login-card .input-group { border-radius: .7rem; }
+    .login-card .input-group-text, .login-card .form-control, .login-card .password-toggle { height: 48px; border-color: var(--login-border); background: #fff; }
+    .login-card .input-group-text { width: 48px; justify-content: center; border-right: 0; color: #6b7d70; border-radius: .7rem 0 0 .7rem; }
+    .login-card .form-control { border-left: 0; padding: .7rem .75rem; color: var(--login-ink); font-size: .88rem; box-shadow: none; }
+    .login-card .form-control::placeholder { color: #a3afa6; opacity: 1; }
+    .login-card .password-toggle { border-left: 0; border-radius: 0 .7rem .7rem 0; padding: 0 .9rem; color: #6b7d70; }
+    .login-card .input-group:focus-within .input-group-text, .login-card .input-group:focus-within .form-control, .login-card .input-group:focus-within .password-toggle { border-color: #5aa878; }
+    .login-card .input-group:focus-within { box-shadow: 0 0 0 .22rem rgba(36, 131, 74, .12); }
+    .login-card .form-control:focus { box-shadow: none; }
+    .login-card .input-group:has(.is-invalid) + .invalid-feedback { display: block; }
+    .login-card .form-check-input { width: 1.05rem; height: 1.05rem; border-color: #aebbb2; }
+    .login-card .form-check-input:checked { background-color: var(--login-green); border-color: var(--login-green); }
+    .login-card .form-check-input:focus { box-shadow: 0 0 0 .2rem rgba(36, 131, 74, .14); }
+    .login-card .form-check-label { color: #56645a; font-size: .8rem; }
+    .login-link { color: var(--login-green); font-weight: 700; text-decoration: none; }
+    .login-link:hover { color: var(--login-green-dark); text-decoration: underline; }
+    .login-submit { min-height: 50px; border: 0; border-radius: .7rem; background: var(--login-green); box-shadow: 0 8px 16px rgba(36, 131, 74, .18); font-size: .9rem; font-weight: 700; transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
+    .login-submit:hover, .login-submit:focus { background: var(--login-green-dark); box-shadow: 0 10px 20px rgba(36, 131, 74, .22); transform: translateY(-1px); }
+    .login-submit:active { transform: translateY(0); }
+    [data-bs-theme="dark"] .login-page { background: radial-gradient(circle at 15% 10%, rgba(37, 112, 66, .18) 0, transparent 32%), linear-gradient(135deg, #111a15 0%, #17211b 100%); }
+    [data-bs-theme="dark"] .login-card { background: #1c2820; border-color: #34483a; box-shadow: 0 18px 45px rgba(0, 0, 0, .24); }
+    [data-bs-theme="dark"] .login-title { color: #edf5ef; }
+    [data-bs-theme="dark"] .login-subtitle, [data-bs-theme="dark"] .login-card .form-check-label { color: #aebcaf; }
+    [data-bs-theme="dark"] .login-card .form-label { color: #e0e9e1; }
+    [data-bs-theme="dark"] .login-brand-mark { background: #243c2b; color: #7ed09b; }
+    [data-bs-theme="dark"] .login-card .input-group-text, [data-bs-theme="dark"] .login-card .form-control, [data-bs-theme="dark"] .login-card .password-toggle { background: #162019; border-color: #3a4d3f; color: #e8f0e9; }
+    [data-bs-theme="dark"] .login-card .input-group-text, [data-bs-theme="dark"] .login-card .password-toggle { color: #aab9ad; }
+    [data-bs-theme="dark"] .login-card .form-control::placeholder { color: #829086; }
+    [data-bs-theme="dark"] .login-page .navbar-toggler { color: #edf5ef; }
+    @media (max-width: 575.98px) { .login-main { padding: 1.5rem 0; align-items: flex-start !important; } .login-card { padding: 1.5rem 1.1rem; border-radius: 1rem; } .login-header { margin-bottom: 1.6rem !important; } }
+  </style>
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body class="login-page d-flex flex-column min-vh-100">
 
-  <!-- Minimal Header -->
-  <div class="py-3 bg-white border-bottom">
-    <div class="container d-flex justify-content-between align-items-center">
+  <!-- Global Header / Navbar -->
+  <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
+    <div class="container">
       <a class="navbar-brand" href="index.html">
         <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
         <span>Fresh</span>Box
       </a>
-      <div class="d-flex align-items-center gap-2">
-        <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode"><i class="bi bi-moon-stars-fill"></i></button>
-        <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
-        <a href="index.html" class="btn nav-home-btn btn-sm"><i class="bi bi-house-door-fill"></i> Home</a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list fs-2"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-xl-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search products, plans and recipes">
+            <i class="bi bi-search search-icon"></i>
+            <span class="search-text">Search produce, plans...</span>
+          </div>
+          <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box" aria-label="View Current Box">
+            <i class="bi bi-bag"></i><span class="cart-badge">0</span>
+          </button>
+          <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode"><i class="bi bi-moon-stars-fill"></i></button>
+          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
+          <div class="nav-auth-slot ms-1">
+            <a href="login.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </nav>
 
   <!-- Login Card Form -->
-  <main class="flex-grow-1 d-flex align-items-center py-5">
+  <main class="login-main flex-grow-1 d-flex align-items-center">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-5">
-          <div class="fresh-card p-4 p-md-5">
-            <div class="text-center mb-4">
-              <h2 class="fw-bold mb-1">Welcome Back</h2>
-              <p class="text-muted small">Sign in to manage your grocery box and delivery schedule</p>
+        <div class="col-md-8 col-lg-6">
+          <div class="login-card mx-auto">
+            <div class="login-header text-center mb-4">
+              <div class="login-brand-mark"><i class="bi bi-basket2-fill"></i></div>
+              <h1 class="login-title mb-0">Welcome Back</h1>
+              <p class="login-subtitle">Sign in to continue enjoying fresh, farm-to-table groceries.</p>
             </div>
 
-            <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+            <form id="loginForm" novalidate onsubmit="handleLoginSubmit(event)" autocomplete="off">
               <div class="mb-3">
                 <label class="form-label" for="loginEmail">Email Address</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-                  <input type="email" id="loginEmail" class="form-control form-control-lg fs-6" placeholder="name@example.com" value="chandru@freshbox.com" required>
+                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                  <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" autocomplete="off" required>
                 </div>
+                <div class="invalid-feedback">Enter a valid email address.</div>
               </div>
 
               <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                  <label class="form-label mb-0" for="loginPassword">Password</label>
-                  <a href="forgot-password.html" class="small fw-semibold text-success text-decoration-none">Forgot password?</a>
-                </div>
+                <label class="form-label" for="loginPassword">Password</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
-                  <input type="password" id="loginPassword" class="form-control form-control-lg fs-6" placeholder="••••••••" value="password123" required>
-                  <button type="button" class="btn btn-outline-secondary bg-light password-toggle-btn border-start-0 px-3" id="togglePasswordBtn" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility" title="Show or hide password">
+                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                  <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" autocomplete="new-password" minlength="8" required>
+                  <button type="button" class="btn password-toggle" id="togglePasswordBtn" aria-label="Show password">
                     <i class="bi bi-eye" id="togglePasswordIcon"></i>
                   </button>
                 </div>
+                <div class="invalid-feedback">Enter your password (at least 8 characters).</div>
               </div>
 
               <div class="d-flex align-items-center justify-content-between mb-4">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+                  <input class="form-check-input" type="checkbox" id="rememberMe">
                   <label class="form-check-label small" for="rememberMe">Remember me</label>
                 </div>
+                <a href="forgot-password.html" class="login-link small">Forgot Password?</a>
               </div>
 
-              <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" style="min-height: 52px; font-weight: 700;">
-                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+              <button type="submit" class="login-submit btn btn-primary w-100 mb-3">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
               </button>
 
-              <div class="social-divider">or</div>
-
-              <div class="social-auth-group mb-4">
-                <!-- Google Social Login Button -->
-                <button type="button" class="btn-social-auth" onclick="handleSocialAuth('google')" aria-label="Continue with Google">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
-                  </svg>
-                  <span>Continue with Google</span>
-                </button>
-
-                <!-- Apple Social Login Button -->
-                <button type="button" class="btn-social-auth" onclick="handleSocialAuth('apple')" aria-label="Continue with Apple">
-                  <i class="bi bi-apple fs-5"></i>
-                  <span>Continue with Apple</span>
-                </button>
-              </div>
-
-              <div class="text-center pt-2">
-                <span class="text-muted small">Don't have a subscription yet?</span>
-                <a href="register.html" class="small fw-bold text-success text-decoration-none ms-1">Create Account</a>
+              <div class="text-center pt-1">
+                <span class="text-muted small">Don't have an account?</span>
+                <a href="register.html" class="login-link small ms-1">Create Account</a>
               </div>
             </form>
           </div>
@@ -113,6 +157,39 @@
       </div>
     </div>
   </main>
+
+  <!-- Shared search and cart controls used by the site navbar -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-search text-success me-2"></i>Search FreshBox</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body search-modal-body">
+          <input type="search" id="globalSearchInput" class="form-control mb-3" placeholder="Search...">
+          <div id="globalSearchResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-end offcanvas-cart" tabindex="-1" id="cartDrawer">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="bi bi-box-seam text-success me-2"></i>Your Grocery Box</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+      <div id="cartDrawerItems" class="flex-grow-1 overflow-auto"></div>
+      <div class="p-3 border-top bg-light">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal:</span><span class="fw-bold" id="cartDrawerSubtotal">₹0</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Delivery Fee:</span><span class="text-success fw-bold" id="cartDrawerDelivery">FREE</span></div>
+        <div class="d-flex justify-content-between mb-3 fs-5 fw-bold"><span>Total:</span><span class="text-success" id="cartDrawerTotal">₹0</span></div>
+        <a href="cart.html" class="btn btn-outline-primary w-100 mb-2"><i class="bi bi-cart"></i> View Full Cart</a>
+        <a href="checkout.html" class="btn btn-primary w-100"><i class="bi bi-credit-card"></i> Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
 
     <!-- Global Footer -->
   <footer class="footer bg-white border-top py-5 text-dark d-none">
@@ -148,9 +225,7 @@
           <h6 class="fw-bold text-dark mb-3">Shop</h6>
           <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
             <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
-            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
             <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
-            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
           </ul>
         </div>
 
@@ -203,57 +278,62 @@
     function togglePasswordVisibility() {
       const pwd = document.getElementById('loginPassword');
       const icon = document.getElementById('togglePasswordIcon');
-      if (pwd.type === 'password') {
-        pwd.type = 'text';
-        icon.classList.remove('bi-eye');
-        icon.classList.add('bi-eye-slash');
-      } else {
-        pwd.type = 'password';
-        icon.classList.remove('bi-eye-slash');
-        icon.classList.add('bi-eye');
-      }
-    }
-
-    function handleSocialAuth(provider) {
-      if (provider === 'google') {
-        freshboxApp.showToast('Google Sign-In', 'Google OAuth integration ready. Connect your client credentials to authorize.', 'info');
-      } else if (provider === 'apple') {
-        freshboxApp.showToast('Apple Sign-In', 'Apple Sign-In service ready. Connect your Apple Service ID to authorize.', 'info');
-      }
-    }
-
-    function loginAs() {
-      const remember = document.getElementById('rememberMe').checked;
-      const emailInput = document.getElementById('loginEmail').value;
-      if (remember && emailInput) {
-        localStorage.setItem('freshbox_remember_email', emailInput);
-      } else if (!remember) {
-        localStorage.removeItem('freshbox_remember_email');
-      }
-
-      freshboxApp.setAuth({ role: 'customer', name: 'Chandru', email: 'chandru@freshbox.com' });
-      freshboxApp.showToast('Welcome Chandru!', 'Redirecting to FreshBox Home...', 'success');
-      setTimeout(() => window.location.href = 'index.html', 500);
+      const isHidden = pwd.type === 'password';
+      pwd.type = isHidden ? 'text' : 'password';
+      icon.classList.toggle('bi-eye', !isHidden);
+      icon.classList.toggle('bi-eye-slash', isHidden);
+      document.getElementById('togglePasswordBtn').setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
     }
 
     function handleLoginSubmit(e) {
       e.preventDefault();
-      loginAs();
+      const form = document.getElementById('loginForm');
+      const email = document.getElementById('loginEmail');
+      const password = document.getElementById('loginPassword');
+      const submitButton = form.querySelector('[type="submit"]');
+
+      [email, password].forEach(field => field.classList.remove('is-invalid'));
+      if (!form.checkValidity()) {
+        [email, password].forEach(field => {
+          if (!field.validity.valid) field.classList.add('is-invalid');
+        });
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Signing in...';
+      freshboxApp.setAuth({ role: 'customer', name: email.value.trim().split('@')[0], email: email.value.trim() });
+      freshboxApp.showToast('Welcome back!', 'Redirecting to FreshBox...', 'success');
+      setTimeout(() => window.location.href = 'index.html', 500);
+    }
+
+    function clearLoginForm() {
+      const form = document.getElementById('loginForm');
+      const email = document.getElementById('loginEmail');
+      const password = document.getElementById('loginPassword');
+      form.reset();
+      email.value = '';
+      password.value = '';
+      email.classList.remove('is-invalid');
+      password.classList.remove('is-invalid');
+      password.type = 'password';
+      document.getElementById('togglePasswordIcon').className = 'bi bi-eye';
+      document.getElementById('togglePasswordBtn').setAttribute('aria-label', 'Show password');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const remembered = localStorage.getItem('freshbox_remember_email');
-      if (remembered) {
-        document.getElementById('loginEmail').value = remembered;
-        document.getElementById('rememberMe').checked = true;
-      }
+      const email = document.getElementById('loginEmail');
+      const password = document.getElementById('loginPassword');
+      localStorage.removeItem('freshbox_remember_email');
+      sessionStorage.removeItem('freshbox_remember_email');
+      clearLoginForm();
+      [email, password].forEach(field => field.addEventListener('input', () => field.classList.remove('is-invalid')));
+      document.getElementById('togglePasswordBtn').addEventListener('click', togglePasswordVisibility);
+    });
+
+    window.addEventListener('pageshow', () => {
+      clearLoginForm();
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-

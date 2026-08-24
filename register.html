@@ -1,4 +1,4 @@
-﻿?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -19,16 +19,58 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/dark.css">
   <link rel="stylesheet" href="assets/css/rtl.css">
+  <style>
+    :root { --register-green: #24834a; --register-green-dark: #1c6739; --register-ink: #1c3024; --register-muted: #718076; --register-border: #dfe9e2; }
+    .register-page { background: radial-gradient(circle at 15% 10%, #edf8ef 0, transparent 32%), linear-gradient(135deg, #f8fbf8 0%, #f2f6f3 100%); }
+    .register-main { padding: 3rem 0; }
+    .register-card { width: 100%; max-width: 710px; padding: 2.5rem; border: 1px solid var(--register-border); border-radius: 1.25rem; background: #fff; box-shadow: 0 18px 45px rgba(26, 72, 41, .08); }
+    .register-brand-mark { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; border-radius: 14px; color: var(--register-green); background: #eaf6ee; font-size: 1.2rem; }
+    .register-title { color: var(--register-ink); font: 700 clamp(1.55rem, 3vw, 1.9rem)/1.2 Outfit, sans-serif; letter-spacing: -.035em; }
+    .register-subtitle { max-width: 460px; margin: .55rem auto 0; color: var(--register-muted); font-size: .89rem; line-height: 1.65; }
+    .register-card .form-label { margin-bottom: .45rem; color: #34443a; font: 600 .83rem/1.2 "Plus Jakarta Sans", sans-serif; }
+    .required-mark { color: #aa6655; font-weight: 600; }
+    .register-card .input-group { border-radius: .7rem; }
+    .register-card .input-group-text, .register-card .form-control, .register-card .password-toggle { height: 48px; border-color: var(--register-border); background: #fff; }
+    .register-card .input-group-text { width: 48px; justify-content: center; border-right: 0; color: #6b7d70; border-radius: .7rem 0 0 .7rem; }
+    .register-card .form-control { border-left: 0; padding: .7rem .75rem; color: var(--register-ink); font-size: .88rem; box-shadow: none; }
+    .register-card .form-control::placeholder { color: #a3afa6; opacity: 1; }
+    .register-card .password-toggle { border-left: 0; border-radius: 0 .7rem .7rem 0; padding: 0 .9rem; color: #6b7d70; }
+    .register-card .input-group:focus-within .input-group-text, .register-card .input-group:focus-within .form-control, .register-card .input-group:focus-within .password-toggle { border-color: #5aa878; }
+    .register-card .input-group:focus-within { box-shadow: 0 0 0 .22rem rgba(36, 131, 74, .12); }
+    .register-card .form-control:focus { box-shadow: none; }
+    .register-card .input-group:has(.is-invalid) + .invalid-feedback, .register-card .form-check-input.is-invalid ~ .invalid-feedback { display: block; }
+    .register-card .form-check { padding: .8rem .9rem .8rem 2.35rem; border: 1px solid var(--register-border); border-radius: .7rem; background: #fbfdfb; }
+    .register-card .form-check-input { margin-left: -1.45rem; width: 1.05rem; height: 1.05rem; border-color: #aebbb2; }
+    .register-card .form-check-input:checked { background-color: var(--register-green); border-color: var(--register-green); }
+    .register-card .form-check-input:focus { box-shadow: 0 0 0 .2rem rgba(36, 131, 74, .14); }
+    .register-card .form-check-label { color: #56645a; font-size: .78rem; line-height: 1.55; }
+    .register-link { color: var(--register-green); font-weight: 700; text-decoration: none; }
+    .register-link:hover { color: var(--register-green-dark); text-decoration: underline; }
+    .register-submit { min-height: 50px; border: 0; border-radius: .7rem; background: var(--register-green); box-shadow: 0 8px 16px rgba(36, 131, 74, .18); font-size: .9rem; font-weight: 700; transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
+    .register-submit:hover, .register-submit:focus { background: var(--register-green-dark); box-shadow: 0 10px 20px rgba(36, 131, 74, .22); transform: translateY(-1px); }
+    .register-submit:active { transform: translateY(0); }
+    [data-bs-theme="dark"] .register-page { background: radial-gradient(circle at 15% 10%, rgba(37, 112, 66, .18) 0, transparent 32%), linear-gradient(135deg, #111a15 0%, #17211b 100%); }
+    [data-bs-theme="dark"] .register-card { background: #1c2820; border-color: #34483a; box-shadow: 0 18px 45px rgba(0, 0, 0, .24); }
+    [data-bs-theme="dark"] .register-title { color: #edf5ef; }
+    [data-bs-theme="dark"] .register-subtitle, [data-bs-theme="dark"] .register-card .form-check-label { color: #aebcaf; }
+    [data-bs-theme="dark"] .register-card .form-label { color: #e0e9e1; }
+    [data-bs-theme="dark"] .register-brand-mark { background: #243c2b; color: #7ed09b; }
+    [data-bs-theme="dark"] .register-card .input-group-text, [data-bs-theme="dark"] .register-card .form-control, [data-bs-theme="dark"] .register-card .password-toggle { background: #162019; border-color: #3a4d3f; color: #e8f0e9; }
+    [data-bs-theme="dark"] .register-card .input-group-text, [data-bs-theme="dark"] .register-card .password-toggle { color: #aab9ad; }
+    [data-bs-theme="dark"] .register-card .form-control::placeholder { color: #829086; }
+    [data-bs-theme="dark"] .register-card .form-check { background: #18231b; border-color: #3a4d3f; }
+    @media (max-width: 575.98px) { .register-page > .py-3 .container { gap: .7rem; } .register-main { padding: 1.5rem 0; align-items: flex-start !important; } .register-card { padding: 1.5rem 1.1rem; border-radius: 1rem; } .register-header { margin-bottom: 1.6rem !important; } }
+  </style>
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body class="register-page d-flex flex-column min-vh-100">
 
   <div class="py-3 bg-white border-bottom">
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
       <a class="navbar-brand" href="index.html">
         <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
         <span>Fresh</span>Box
       </a>
-      <div class="d-flex align-items-center gap-2">
+      <div class="d-flex flex-wrap justify-content-end align-items-center gap-2">
         <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode"><i class="bi bi-moon-stars-fill"></i></button>
         <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
         <a href="index.html" class="btn nav-home-btn btn-sm"><i class="bi bi-house-door-fill"></i> Home</a>
@@ -37,73 +79,82 @@
     </div>
   </div>
 
-  <main class="flex-grow-1 d-flex align-items-center py-5">
+  <main class="register-main flex-grow-1 d-flex align-items-center">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-          <div class="fresh-card p-4 p-md-5">
-            <div class="text-center mb-4">
-              <h2 class="fw-bold mb-1">Create Your Account</h2>
-              <p class="text-muted small">Join 10,000+ happy households enjoying farm-to-table groceries</p>
+        <div class="col-lg-8 col-xl-7">
+          <div class="register-card mx-auto">
+            <div class="register-header text-center mb-4">
+              <div class="register-brand-mark"><i class="bi bi-basket2-fill"></i></div>
+              <h1 class="register-title mb-0">Create Your Account</h1>
+              <p class="register-subtitle">Join thousands of happy households enjoying fresh, farm-to-table groceries.</p>
             </div>
 
-            <form id="registerForm" onsubmit="handleRegisterSubmit(event)">
+            <form id="registerForm" novalidate onsubmit="handleRegisterSubmit(event)">
               <div class="mb-3">
-                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                <label class="form-label" for="regName">Full Name <span class="required-mark">*</span></label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
-                  <input type="text" id="regName" class="form-control" placeholder="e.g. Chandru" required>
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" id="regName" class="form-control" placeholder="Your full name" autocomplete="name" minlength="2" required>
+                </div>
+                <div class="invalid-feedback">Please enter your full name.</div>
+              </div>
+
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="regEmail">Email Address <span class="required-mark">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" autocomplete="email" required>
+                  </div>
+                  <div class="invalid-feedback">Enter a valid email address.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="regPhone">Phone Number <span class="required-mark">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210" autocomplete="tel" inputmode="tel" required>
+                  </div>
+                  <div class="invalid-feedback">Enter a valid phone number.</div>
                 </div>
               </div>
 
-              <div class="row g-2 mb-3">
+              <div class="row g-3 mb-3">
                 <div class="col-md-6">
-                  <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                  <label class="form-label" for="regPass">Password <span class="required-mark">*</span></label>
                   <div class="input-group">
-                    <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-                    <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" required>
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" id="regPass" class="form-control" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required>
+                    <button class="btn password-toggle" type="button" data-password-toggle="regPass" aria-label="Show password"><i class="bi bi-eye"></i></button>
                   </div>
+                  <div class="invalid-feedback">Use at least 8 characters.</div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <label class="form-label" for="regConfirmPass">Confirm Password <span class="required-mark">*</span></label>
                   <div class="input-group">
-                    <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
-                    <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210" required>
+                    <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                    <input type="password" id="regConfirmPass" class="form-control" placeholder="Re-enter your password" autocomplete="new-password" required>
+                    <button class="btn password-toggle" type="button" data-password-toggle="regConfirmPass" aria-label="Show confirm password"><i class="bi bi-eye"></i></button>
                   </div>
-                </div>
-              </div>
-
-              <div class="row g-2 mb-3">
-                <div class="col-md-6">
-                  <label class="form-label">Password <span class="text-danger">*</span></label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
-                    <input type="password" id="regPass" class="form-control" placeholder="********" required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light"><i class="bi bi-shield-check"></i></span>
-                    <input type="password" id="regConfirmPass" class="form-control" placeholder="********" required>
-                  </div>
+                  <div class="invalid-feedback">Passwords must match.</div>
                 </div>
               </div>
 
               <div class="form-check mb-4">
-                <input class="form-check-input" type="checkbox" id="termsCheck" required checked>
-                <label class="form-check-label small" for="termsCheck">
-                  I agree to the <a href="#" class="text-success">Terms & Conditions</a> and <a href="#" class="text-success">Privacy Policy</a>
+                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                <label class="form-check-label" for="termsCheck">
+                  I agree to the <a href="#terms" class="register-link">Terms &amp; Conditions</a> and <a href="#privacy" class="register-link">Privacy Policy</a>
                 </label>
+                <div class="invalid-feedback">Please agree before creating your account.</div>
               </div>
 
-              <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                <i class="bi bi-person-plus-fill me-1"></i> Create Account
+              <button type="submit" class="register-submit btn btn-primary w-100 mb-3">
+                <i class="bi bi-person-plus-fill me-2"></i>Create Account
               </button>
 
               <div class="text-center">
-                <span class="text-muted small">Already a subscriber?</span>
-                <a href="login.html" class="small fw-bold text-success ms-1">Sign In</a>
+                <span class="text-muted small">Already have an account?</span>
+                <a href="login.html" class="register-link small ms-1">Sign In</a>
               </div>
             </form>
           </div>
@@ -146,9 +197,7 @@
           <h6 class="fw-bold text-dark mb-3">Shop</h6>
           <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
             <li><a href="shop.html" class="text-secondary text-decoration-none hover-success">All Groceries</a></li>
-            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Categories</a></li>
             <li><a href="sample-box.html" class="text-secondary text-decoration-none hover-success">Sample Box</a></li>
-            <li><a href="categories.html" class="text-secondary text-decoration-none hover-success">Fresh Produce</a></li>
           </ul>
         </div>
 
@@ -200,14 +249,59 @@
   <script>
     function handleRegisterSubmit(e) {
       e.preventDefault();
-      const name = document.getElementById('regName').value;
-      const email = document.getElementById('regEmail').value;
-      freshboxApp.setAuth({ role: 'customer', name: name || 'Chandru', email: email });
-      freshboxApp.showToast('Account Created!', `Welcome to FreshBox, ${name}!`, 'success');
+      const form = document.getElementById('registerForm');
+      const name = document.getElementById('regName');
+      const email = document.getElementById('regEmail');
+      const phone = document.getElementById('regPhone');
+      const password = document.getElementById('regPass');
+      const confirmPassword = document.getElementById('regConfirmPass');
+      const terms = document.getElementById('termsCheck');
+      const phoneIsValid = /^[+]?[-()\s\d]{7,20}$/.test(phone.value.trim()) && /\d/.test(phone.value);
+
+      [name, email, phone, password, confirmPassword, terms].forEach(field => field.classList.remove('is-invalid'));
+      phone.setCustomValidity(phoneIsValid ? '' : 'Please enter a valid phone number.');
+      confirmPassword.setCustomValidity(password.value === confirmPassword.value ? '' : 'Passwords must match.');
+
+      if (!form.checkValidity()) {
+        [name, email, phone, password, confirmPassword, terms].forEach(field => {
+          if (!field.validity.valid) field.classList.add('is-invalid');
+        });
+        return;
+      }
+
+      const submitButton = form.querySelector('[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Creating account...';
+
+      freshboxApp.setAuth({ role: 'guest' });
+      freshboxApp.showToast('Account Created!', 'Your FreshBox account is ready. Please sign in to continue.', 'success');
       setTimeout(() => {
         window.location.href = 'login.html';
       }, 700);
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-password-toggle]').forEach(button => {
+        button.addEventListener('click', () => {
+          const input = document.getElementById(button.dataset.passwordToggle);
+          const icon = button.querySelector('i');
+          const isHidden = input.type === 'password';
+          input.type = isHidden ? 'text' : 'password';
+          icon.classList.toggle('bi-eye', !isHidden);
+          icon.classList.toggle('bi-eye-slash', isHidden);
+          button.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+        });
+      });
+
+      document.querySelectorAll('#registerForm input').forEach(field => {
+        field.addEventListener('input', () => {
+          field.classList.remove('is-invalid');
+          if (field.id === 'regPass' || field.id === 'regConfirmPass') {
+            document.getElementById('regConfirmPass').setCustomValidity('');
+          }
+        });
+      });
+    });
   </script>
 </body>
 </html>
