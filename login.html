@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -308,9 +308,14 @@
         subscription: user.subscription || null,
         notifications: user.notifications || []
       });
+      let redirectTarget = sessionStorage.getItem('freshbox_login_redirect') || 'index.html';
+      if (redirectTarget.includes('dashboard')) {
+        redirectTarget = 'index.html';
+      }
+      sessionStorage.removeItem('freshbox_login_redirect');
       sessionStorage.removeItem('freshbox_login_notice');
-      freshboxApp.showToast('Welcome back!', 'Redirecting to your dashboard...', 'success');
-      setTimeout(() => window.location.href = 'dashboard/index.html', 500);
+      freshboxApp.showToast('Welcome back!', 'Signing you in...', 'success');
+      setTimeout(() => window.location.href = redirectTarget, 500);
     }
 
     function clearLoginForm() {

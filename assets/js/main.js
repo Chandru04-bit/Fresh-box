@@ -1140,6 +1140,193 @@
     }
   }
 
+  function getCheckoutItemsData() {
+    const params = new URLSearchParams(window.location.search);
+    const planParam = params.get('plan');
+    const buyNowParam = params.get('buy_now') || params.get('product') || params.get('id');
+    const qtyParam = Math.max(1, parseInt(params.get('qty') || '1', 10));
+
+    // 1. Explicit Buy Now via Query Parameter (e.g. checkout.html?buy_now=prod-8&qty=1)
+    if (buyNowParam) {
+      const prod = PRODUCTS.find(p => p.id === buyNowParam || p.id === buyNowParam.replace('item-', 'prod-').replace('sample-', 'prod-'));
+      if (prod) {
+        return {
+          mode: 'buy_now',
+          title: prod.name,
+          frequencyLabel: 'One-time Order',
+          items: [{
+            id: prod.id,
+            name: prod.name,
+            price: Number(prod.price),
+            quantity: qtyParam,
+            unit: prod.unit || '1 pack',
+            image: prod.image,
+            category: prod.category || 'groceries'
+          }]
+        };
+      }
+    }
+
+    // 2. Buy Now item stored in localStorage / sessionStorage
+    const checkoutMode = localStorage.getItem('freshbox_checkout_mode') || sessionStorage.getItem('freshbox_checkout_mode');
+    const buyNowRaw = localStorage.getItem('freshbox_buy_now_item') || sessionStorage.getItem('freshbox_buy_now_item');
+    if (buyNowRaw && (!planParam || checkoutMode === 'buy_now')) {
+      try {
+        const item = JSON.parse(buyNowRaw);
+        if (item && item.name && item.price !== undefined) {
+          const qty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
+          return {
+            mode: 'buy_now',
+            title: item.name,
+            frequencyLabel: 'One-time Order',
+            items: [{
+              id: item.id || 'prod-custom',
+              name: item.name,
+              price: Number(item.price),
+              quantity: qty,
+              unit: item.unit || '1 pack',
+              image: item.image || 'assets/images/products/fresh-vine-tomatoes.jpg',
+              category: item.category || 'groceries'
+            }]
+          };
+        }
+      } catch (e) {}
+    }
+
+    // 3. Explicit Subscription Plan in URL (e.g. checkout.html?plan=veggie)
+    if (planParam) {
+      const namedPlans = {
+        veggie: { name: 'Veggie Box', price: 499, frequencyLabel: 'Every Week', key: 'veggie' },
+        family: { name: 'Family Essentials', price: 899, frequencyLabel: 'Every Week', key: 'family' },
+        organic: { name: 'Organic Box', price: 1199, frequencyLabel: 'Every Week', key: 'organic' },
+        premium: { name: 'Premium Box', price: 1599, frequencyLabel: 'Every Week', key: 'premium' }
+      };
+      const plan = namedPlans[planParam.toLowerCase()] || namedPlans.family;
+      return {
+        mode: 'plan',
+        title: plan.name,
+        frequencyLabel: plan.frequencyLabel,
+        items: [{
+          id: 'plan_' + plan.key,
+          name: plan.name + ' Subscription',
+          price: plan.price,
+          quantity: 1,
+          unit: plan.frequencyLabel,
+          image: 'assets/images/plans/premium-harvest.jpg',
+          category: 'subscription'
+        }]
+      };
+    }
+
+    // 4. Cart items (if cart is not empty and mode is not plan)
+    const cart = getCart();
+    if (cart && cart.length > 0 && checkoutMode !== 'plan') {
+      return {
+        mode: 'cart',
+        title: 'Grocery Box Order',
+        frequencyLabel: 'One-time Order',
+        items: cart.map(it => ({
+          id: it.id,
+          name: it.name,
+          price: Number(it.price || 0),
+          quantity: Math.max(1, parseInt(it.qty || it.quantity || 1, 10)),
+          unit: it.unit || '1 pack',
+          image: it.image || 'assets/images/products/fresh-vine-tomatoes.jpg',
+          category: it.category || 'groceries'
+        }))
+      };
+    }
+
+    // 5. Subscription Plan from saved configuration
+    const selectedPlan = getSelectedPlanConfig();
+    return {
+      mode: 'plan',
+      title: selectedPlan.name,
+      frequencyLabel: selectedPlan.frequencyLabel,
+      items: [{
+        id: 'plan_' + selectedPlan.key,
+        name: selectedPlan.itemName || selectedPlan.name,
+        price: Number(selectedPlan.price || 899),
+        quantity: 1,
+        unit: selectedPlan.frequencyLabel,
+        image: 'assets/images/plans/premium-harvest.jpg',
+        category: 'subscription'
+      }]
+    };
+  }
+
+  function buyNow(productOrId, qty = 1) {
+    let item = null;
+    if (typeof productOrId === 'string') {
+      const prod = PRODUCTS.find(p => p.id === productOrId || p.id === productOrId.replace('item-', 'prod-').replace('sample-', 'prod-'));
+      if (prod) {
+        item = {
+          id: prod.id,
+          name: prod.name,
+          category: prod.category || 'groceries',
+          price: Number(prod.price),
+          unit: prod.unit || '1 pack',
+          image: prod.image,
+          qty: Math.max(1, parseInt(qty, 10))
+        };
+      }
+    } else if (productOrId && typeof productOrId === 'object') {
+      item = {
+        id: productOrId.id || 'prod-custom',
+        name: productOrId.name,
+        category: productOrId.category || 'groceries',
+        price: Number(productOrId.price),
+        unit: productOrId.unit || '1 pack',
+        image: productOrId.image || 'assets/images/products/fresh-vine-tomatoes.jpg',
+        qty: Math.max(1, parseInt(qty || productOrId.qty || 1, 10))
+      };
+    }
+
+    if (!item) return;
+
+    localStorage.setItem('freshbox_checkout_mode', 'buy_now');
+    localStorage.setItem('freshbox_buy_now_item', JSON.stringify(item));
+    sessionStorage.setItem('freshbox_checkout_mode', 'buy_now');
+    sessionStorage.setItem('freshbox_buy_now_item', JSON.stringify(item));
+
+    window.location.href = 'checkout.html?buy_now=' + encodeURIComponent(item.id) + '&qty=' + encodeURIComponent(item.qty);
+  }
+
+  function updateCheckoutItemQty(itemId, delta) {
+    const checkoutData = getCheckoutItemsData();
+    if (checkoutData.mode === 'buy_now') {
+      const buyNowRaw = localStorage.getItem('freshbox_buy_now_item') || sessionStorage.getItem('freshbox_buy_now_item');
+      if (buyNowRaw) {
+        try {
+          const item = JSON.parse(buyNowRaw);
+          let currentQty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
+          currentQty = Math.max(1, currentQty + delta);
+          item.qty = currentQty;
+          localStorage.setItem('freshbox_buy_now_item', JSON.stringify(item));
+          sessionStorage.setItem('freshbox_buy_now_item', JSON.stringify(item));
+          renderCheckoutSummary();
+        } catch (e) {}
+      } else {
+        const params = new URLSearchParams(window.location.search);
+        let q = Math.max(1, parseInt(params.get('qty') || '1', 10) + delta);
+        params.set('qty', String(q));
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+        renderCheckoutSummary();
+      }
+    } else if (checkoutData.mode === 'cart') {
+      const cart = getCart();
+      const item = cart.find(i => i.id === itemId);
+      if (item) {
+        let currentQty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
+        currentQty = Math.max(1, currentQty + delta);
+        item.qty = currentQty;
+        localStorage.setItem(getCartKey(), JSON.stringify(cart));
+        renderCheckoutSummary();
+        updateCartBadges();
+      }
+    }
+  }
+
   function renderCheckoutSummary() {
     const listEl = document.getElementById('checkoutOrderItemsList');
     const subtotalEl = document.getElementById('checkoutSubtotal');
@@ -1151,33 +1338,87 @@
 
     if (!listEl) return;
 
-    const selectedPlan = getSelectedPlanConfig();
-    const subtotal = Number(selectedPlan.price || 0);
+    const checkoutData = getCheckoutItemsData();
+    const items = checkoutData.items;
+
+    if (!items || items.length === 0) {
+      listEl.innerHTML = `
+        <div class="text-center py-4 text-muted">
+          <i class="bi bi-bag-x fs-3 d-block mb-2"></i>
+          <span class="small">No items selected for checkout.</span>
+          <div class="mt-2"><a href="shop.html" class="btn btn-sm btn-outline-primary">Browse Groceries</a></div>
+        </div>
+      `;
+      if (subtotalEl) subtotalEl.textContent = '₹0';
+      if (totalEl) totalEl.textContent = '₹0';
+      if (payBtn) payBtn.innerHTML = '<i class="bi bi-lock-fill me-2"></i> Pay ₹0';
+      return;
+    }
+
+    const isDashboard = window.location.pathname.includes('/dashboard/') || !!document.querySelector('.dashboard-wrapper');
+    const defaultFallbackImg = isDashboard ? '../assets/images/categories/vegetables.jpg' : 'assets/images/categories/vegetables.jpg';
+
+    listEl.innerHTML = items.map(item => {
+      const price = Number(item.price || 0);
+      const qty = Number(item.quantity || 1);
+      const lineTotal = price * qty;
+      let imgSrc = item.image || defaultFallbackImg;
+      if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:')) {
+        if (isDashboard && !imgSrc.startsWith('../')) {
+          imgSrc = '../' + imgSrc;
+        } else if (!isDashboard && imgSrc.startsWith('../')) {
+          imgSrc = imgSrc.replace(/^\.\.\//, '');
+        }
+      }
+
+      const showQtyControls = checkoutData.mode !== 'plan';
+      const qtyControlsHtml = showQtyControls ? `
+        <div class="d-flex align-items-center gap-2 mt-1">
+          <div class="quantity-control quantity-control-sm d-inline-flex align-items-center">
+            <button type="button" class="qty-btn py-0 px-2" onclick="freshboxApp.updateCheckoutItemQty('${item.id}', -1)">&minus;</button>
+            <span class="qty-input px-2 small fw-bold text-dark">${qty}</span>
+            <button type="button" class="qty-btn py-0 px-2" onclick="freshboxApp.updateCheckoutItemQty('${item.id}', 1)">+</button>
+          </div>
+          <small class="text-muted">× ₹${price} ${item.unit ? `(${item.unit})` : ''}</small>
+        </div>
+      ` : `
+        <small class="text-muted d-block text-truncate mt-1">${qty} × ₹${price} (${item.unit || checkoutData.frequencyLabel})</small>
+      `;
+
+      return `
+        <div class="checkout-item-row d-flex align-items-center justify-content-between py-2 border-bottom">
+          <div class="d-flex align-items-center gap-3 min-width-0 flex-grow-1">
+            <div class="checkout-item-img-wrap flex-shrink-0">
+              <img src="${imgSrc}" alt="${item.name}" class="rounded-2" style="width: 48px; height: 48px; object-fit: cover;" onerror="this.onerror=null; this.src='${defaultFallbackImg}';">
+            </div>
+            <div class="min-width-0 flex-grow-1">
+              <span class="fw-semibold text-dark fs-6 d-block text-truncate" title="${item.name}">${item.name}</span>
+              ${qtyControlsHtml}
+            </div>
+          </div>
+          <div class="checkout-item-price text-end ms-2 flex-shrink-0">
+            <span class="fw-bold text-dark fs-6">₹${lineTotal}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const subtotal = items.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
     const delivery = 0;
-    const finalTotal = subtotal;
-
-    listEl.innerHTML = `
-      <div class="checkout-item-row">
-        <div class="d-flex align-items-center gap-3 min-width-0 flex-grow-1">
-          <div class="checkout-item-img-wrap">
-            <img src="assets/images/plans/premium-harvest.jpg" alt="${selectedPlan.name}" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/family-essentials.jpg';">
-          </div>
-          <div class="min-width-0 flex-grow-1">
-            <span class="fw-semibold text-dark fs-6 d-block text-truncate">${selectedPlan.name}</span>
-            <small class="text-muted d-block text-truncate">1 × ₹${selectedPlan.price} (${selectedPlan.frequencyLabel})</small>
-          </div>
-        </div>
-        <div class="checkout-item-price">
-          <span class="fw-bold text-dark">₹${selectedPlan.price}</span>
-        </div>
-      </div>
-    `;
-
-    if (subtotalEl) subtotalEl.textContent = `₹${subtotal}`;
-    if (discountRow) {
-      discountRow.classList.add('d-none');
+    const coupon = getAppliedCoupon();
+    let discount = 0;
+    if (coupon && coupon.discountPercent) {
+      discount = Math.round((subtotal * coupon.discountPercent) / 100);
+      if (discountRow) discountRow.classList.remove('d-none');
+      if (discountEl) discountEl.textContent = `-₹${discount}`;
+    } else {
+      if (discountRow) discountRow.classList.add('d-none');
       if (discountEl) discountEl.textContent = '-₹0';
     }
+
+    const finalTotal = Math.max(0, subtotal - discount + delivery);
+
+    if (subtotalEl) subtotalEl.textContent = `₹${subtotal}`;
     if (deliveryEl) deliveryEl.textContent = 'FREE';
     if (totalEl) totalEl.textContent = `₹${finalTotal}`;
     if (payBtn) {
@@ -1469,6 +1710,7 @@
   }
 
   function buildOrderFromCheckout() {
+    const checkoutData = getCheckoutItemsData();
     const form = document.getElementById('checkoutForm');
     const customerName = form ? (document.getElementById('customerFullName')?.value || '').trim() : '';
     const customerEmail = form ? (document.getElementById('customerEmail')?.value || '').trim() : '';
@@ -1479,62 +1721,90 @@
     const state = form ? (document.getElementById('deliveryState')?.value || '').trim() : '';
     const postalCode = form ? (document.getElementById('deliveryPostalCode')?.value || '').trim() : '';
     const deliveryAddress = [customerAddress, city, state, postalCode].filter(Boolean).join(', ');
-    const selectedPlanConfig = getSelectedPlanConfig();
-    const selectedPlan = selectedPlanConfig.name;
-    const planPrice = Number(selectedPlanConfig.price || 0);
+
     const paymentMethod = document.querySelector('input[name="paymentOption"]:checked')?.id || 'payUPI';
     const paymentMethodLabel = paymentMethod === 'payCard' ? 'Card' : paymentMethod === 'payNet' ? 'Net Banking' : paymentMethod === 'payCOD' ? 'Cash on Delivery' : 'UPI';
+
     const today = new Date();
     const startDate = new Date(today);
     const endDate = new Date(today);
     endDate.setMonth(endDate.getMonth() + 1);
-    const orderTotal = planPrice;
+
+    const isDashboard = window.location.pathname.includes('/dashboard/') || !!document.querySelector('.dashboard-wrapper');
+    const defaultFallbackImg = isDashboard ? '../assets/images/categories/vegetables.jpg' : 'assets/images/categories/vegetables.jpg';
+
+    const items = checkoutData.items.map(item => ({
+      id: item.id,
+      name: item.name,
+      image: item.image || defaultFallbackImg,
+      price: Number(item.price || 0),
+      quantity: Number(item.quantity || 1),
+      unit: item.unit || '1 pack',
+      subtotal: Number(item.price || 0) * Number(item.quantity || 1),
+      category: item.category || 'groceries'
+    }));
+
+    const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const deliveryFee = 0;
+    const coupon = getAppliedCoupon();
+    let discount = 0;
+    if (coupon && coupon.discountPercent) {
+      discount = Math.round((subtotal * coupon.discountPercent) / 100);
+    }
+    const totalAmount = Math.max(0, subtotal - discount + deliveryFee);
+
+    const primaryPlanTitle = checkoutData.mode === 'plan'
+      ? checkoutData.title
+      : (items.length === 1 ? items[0].name : `${items[0].name} (+${items.length - 1} more)`);
+
+    const user = getLoggedUser() || getCurrentCustomerProfile();
 
     return {
       orderId: 'ORD-' + String(Math.floor(100000 + Math.random() * 900000)),
-      customerName,
-      customerEmail,
-      customerPhone,
+      transactionId: 'TXN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase(),
+      userId: user ? user.id : '',
+      customerName: customerName || (user ? user.name : ''),
+      customerEmail: (customerEmail || (user ? user.email : '')).toLowerCase(),
+      customerPhone: customerPhone || (user ? user.phone : ''),
       alternativePhone: altPhone,
-      selectedPlan,
-      planPrice,
-      subscriptionFrequency: selectedPlanConfig.frequencyLabel,
+      selectedPlan: primaryPlanTitle,
+      planPrice: subtotal,
+      subscriptionFrequency: checkoutData.mode === 'plan' ? checkoutData.frequencyLabel : 'One-time Order',
+      isSubscription: checkoutData.mode === 'plan',
       orderDate: today.toISOString(),
       paymentDate: today.toISOString(),
       paymentMethod: paymentMethodLabel,
       paymentStatus: paymentMethod === 'payCOD' ? 'Pending' : 'Paid',
       orderStatus: 'Confirmed',
-      deliveryAddress,
+      deliveryAddress: deliveryAddress,
       subscriptionStartDate: startDate.toISOString(),
       subscriptionEndDate: endDate.toISOString(),
-      amount: orderTotal,
-      items: [{
-        id: 'plan_' + selectedPlanConfig.key,
-        name: selectedPlanConfig.itemName,
-        image: 'assets/images/plans/premium-harvest.jpg',
-        price: planPrice,
-        quantity: 1,
-        unit: selectedPlanConfig.frequencyLabel
-      }],
-      subtotal: orderTotal,
-      deliveryFee: 0,
-      discount: 0,
-      totalAmount: orderTotal,
+      amount: totalAmount,
+      items: items,
+      subtotal: subtotal,
+      deliveryFee: deliveryFee,
+      discount: discount,
+      totalAmount: totalAmount,
       currency: 'INR'
     };
   }
 
   function getUserOrders() {
-    const user = getCurrentCustomerProfile();
+    const user = getLoggedUser() || getCurrentCustomerProfile();
     const normalizedEmail = (user.email || '').trim().toLowerCase();
+    const userId = user.id || '';
     const orders = getStoredOrders();
 
-    if (!normalizedEmail) {
+    if (!normalizedEmail && !userId) {
       return [];
     }
 
     return orders
-      .filter(order => (order.customerEmail || '').trim().toLowerCase() === normalizedEmail)
+      .filter(order => {
+        const orderEmail = (order.customerEmail || '').trim().toLowerCase();
+        const orderUserId = order.userId || '';
+        return (normalizedEmail && orderEmail === normalizedEmail) || (userId && orderUserId === userId);
+      })
       .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
   }
 
@@ -1612,7 +1882,7 @@
           nextDeliveryProgressBadge.textContent = 'Paused';
           nextDeliveryProgressBadge.className = 'badge bg-warning text-dark';
         }
-        if (nextDeliveryProgressBar) {
+        if (nextDeliveryProgressBar && nextDeliveryProgressBar.style) {
           nextDeliveryProgressBar.style.width = '0%';
           nextDeliveryProgressBar.className = 'progress-bar bg-warning';
         }
@@ -1647,7 +1917,7 @@
           nextDeliveryProgressBadge.textContent = badgeText;
           nextDeliveryProgressBadge.className = badgeClass;
         }
-        if (nextDeliveryProgressBar) {
+        if (nextDeliveryProgressBar && nextDeliveryProgressBar.style) {
           nextDeliveryProgressBar.style.width = `${progressPercent}%`;
           nextDeliveryProgressBar.className = `progress-bar bg-success progress-bar-striped progress-bar-animated`;
         }
@@ -1796,6 +2066,7 @@
         : '';
       const isDashboard = window.location.pathname.includes('/dashboard/') || !!document.querySelector('.dashboard-wrapper');
       const fallbackImg = isDashboard ? '../assets/images/categories/vegetables.jpg' : 'assets/images/categories/vegetables.jpg';
+      const orderItems = Array.isArray(order.items) ? order.items : [];
       const itemsHtml = orderItems.length ? orderItems.map(item => {
         const quantity = Number(item.quantity || item.qty || 1);
         const price = Number(item.price || 0);
@@ -2382,7 +2653,7 @@
     const totalVal = Number(order.totalAmount || order.amount || 0);
     const subtotal = (totalVal / 1.05).toFixed(2);
     const gst = (totalVal - subtotal).toFixed(2);
-    const user = getLoggedUser() || { name: 'Customer', email: 'customer@example.com', phone: 'Not provided' };
+    const user = getLoggedUser() || { name: order.customerName || 'Customer', email: order.customerEmail || '', phone: order.customerPhone || '' };
 
     bodyEl.innerHTML = `
       <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3 text-dark">
@@ -2584,64 +2855,235 @@
     }
   }
 
-  function fillDemoCheckoutDetails(notify = true) {
-    const isCheckoutPage = window.location.pathname.includes('checkout.html');
-    if (!isCheckoutPage) return;
+  function renderDeliveriesPage() {
+    const isDeliveriesPage = window.location.pathname.includes('deliveries.html');
+    if (!isDeliveriesPage) return;
 
-    const fields = {
-      customerFullName: 'Priya Sharma',
-      customerEmail: 'priya.sharma@example.com',
-      customerPhone: '9876543210',
-      deliveryStreetAddress: '42, Green Avenue, Indiranagar',
-      deliveryCity: 'Bengaluru',
-      deliveryState: 'Karnataka',
-      deliveryPostalCode: '560038'
-    };
+    const user = getLoggedUser();
+    if (!user) return;
 
-    Object.keys(fields).forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.value = fields[id];
-        el.classList.remove('is-invalid');
-      }
+    const container = document.getElementById('upcomingDeliveriesContainer');
+    if (!container) return;
+
+    const orders = getUserOrders();
+    const activeSub = user.subscription && user.subscription.status !== 'Cancelled' ? user.subscription : null;
+    const activeOrders = orders.filter(o => o.orderStatus === 'Confirmed' || o.orderStatus === 'Preparing' || o.orderStatus === 'Shipped');
+
+    if (!activeSub && !activeOrders.length) {
+      container.innerHTML = `
+        <div class="col-12">
+          <div class="fresh-card p-5 text-center text-muted">
+            <i class="bi bi-truck display-4 d-block mb-3 text-secondary"></i>
+            <h5 class="fw-bold text-dark mb-2">No Upcoming Deliveries</h5>
+            <p class="mb-4 small">You do not have any active subscriptions or pending order deliveries at this time.</p>
+            <div class="d-flex justify-content-center gap-2">
+              <a href="../plans.html" class="btn btn-primary btn-sm px-3 rounded-pill">Choose a Subscription Plan</a>
+              <a href="../shop.html" class="btn btn-outline-primary btn-sm px-3 rounded-pill">Shop Groceries</a>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    const cardsHtml = [];
+    if (activeSub) {
+      const renewalDateObj = new Date(activeSub.renewalDate || activeSub.startDate);
+      const formattedDate = renewalDateObj.toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const address = user.address ? `${user.address}, ${user.city || ''} ${user.postalCode || ''}` : 'Saved delivery address';
+
+      cardsHtml.push(`
+        <div class="col-12">
+          <div class="fresh-card p-4 border-2 border-success-subtle shadow-sm">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <h4 class="fw-bold mb-0">${formattedDate}</h4>
+                  <span class="badge ${activeSub.status === 'Paused' ? 'bg-warning text-dark' : 'bg-primary'} px-3 py-1">${activeSub.status === 'Paused' ? 'Paused' : 'Scheduled'}</span>
+                </div>
+                <p class="text-muted small mb-0">Window: 07:00 AM - 11:00 AM &bull; Dedicated Fresh Farm Partner Logistics</p>
+              </div>
+              <div class="d-flex gap-2">
+                <a href="my-box.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders"></i> Edit Box</a>
+                <button class="btn btn-outline-warning btn-sm" onclick="freshboxApp.showToast('Delivery Rescheduled', 'Your delivery slot has been updated.', 'info');">
+                  <i class="bi bi-calendar-x"></i> Skip Week
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <div>
+                <span class="text-muted small d-block">Plan:</span>
+                <span class="fw-bold text-dark">${activeSub.plan} (${formatCurrency(activeSub.price)}/${activeSub.frequency === 'Weekly' ? 'wk' : '2wk'})</span>
+              </div>
+              <div>
+                <span class="text-muted small d-block">Delivery Destination:</span>
+                <span class="fw-bold text-dark">${address}</span>
+              </div>
+              <div>
+                <span class="text-muted small d-block">Packaging:</span>
+                <span class="fw-bold text-success"><i class="bi bi-snow"></i> Insulated Eco-Tote & Ice Pod</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    activeOrders.forEach(order => {
+      const orderDate = new Date(order.orderDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const address = order.deliveryAddress || (user.address ? `${user.address}, ${user.city || ''}` : 'Saved delivery address');
+
+      cardsHtml.push(`
+        <div class="col-12">
+          <div class="fresh-card p-4 border-2 border-primary-subtle shadow-sm">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <h5 class="fw-bold mb-0">Order #${order.orderId} - ${order.selectedPlan}</h5>
+                  <span class="badge bg-success px-3 py-1">${order.orderStatus || 'Confirmed'}</span>
+                </div>
+                <p class="text-muted small mb-0">Ordered on ${orderDate} &bull; Total: ${formatCurrency(order.totalAmount || order.amount || 0)}</p>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="freshboxApp.openOrderDetails('${order.orderId}')">
+                  <i class="bi bi-eye"></i> View Order
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <div>
+                <span class="text-muted small d-block">Destination:</span>
+                <span class="fw-bold text-dark">${address}</span>
+              </div>
+              <div>
+                <span class="text-muted small d-block">Payment:</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">${order.paymentStatus || 'Paid'} (${order.paymentMethod || 'UPI'})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
     });
 
-    const termsCheck = document.getElementById('termsCheck');
-    if (termsCheck) termsCheck.checked = true;
+    container.innerHTML = cardsHtml.join('');
+  }
 
-    if (notify) {
-      showToast('Demo Details Filled', 'Loaded sample customer and delivery address for testing.', 'info');
+  function renderMyBoxPage() {
+    const isMyBoxPage = window.location.pathname.includes('my-box.html');
+    if (!isMyBoxPage) return;
+
+    const user = getLoggedUser();
+    if (!user) return;
+
+    const tableBody = document.getElementById('myBoxItemsTableBody');
+    const scheduledValEl = document.getElementById('myBoxScheduledValue');
+    if (!tableBody) return;
+
+    const orders = getUserOrders();
+    const activeSub = user.subscription && user.subscription.status !== 'Cancelled' ? user.subscription : null;
+    const latestOrder = orders[0] || null;
+
+    if (!activeSub && !latestOrder) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center py-5 text-muted">
+            <i class="bi bi-box-seam display-5 d-block mb-3 text-secondary"></i>
+            <h5 class="fw-bold text-dark">No Active Subscription Box</h5>
+            <p class="small text-muted mb-3">You do not currently have an active recurring box to customize.</p>
+            <a href="../plans.html" class="btn btn-primary btn-sm rounded-pill px-3">Choose a Subscription Plan</a>
+          </td>
+        </tr>
+      `;
+      if (scheduledValEl) scheduledValEl.textContent = '₹0';
+      return;
     }
+
+    const items = (latestOrder && Array.isArray(latestOrder.items) && latestOrder.items.length)
+      ? latestOrder.items
+      : PRODUCTS.slice(0, 4).map(p => ({ id: p.id, name: p.name, category: p.category, price: p.price, unit: p.unit, image: p.image, quantity: 1 }));
+
+    const totalVal = items.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 1)), 0);
+    if (scheduledValEl) {
+      scheduledValEl.textContent = activeSub ? `₹${activeSub.price} (Subscription Covered)` : `₹${totalVal}`;
+    }
+
+    const fallbackImg = '../assets/images/categories/vegetables.jpg';
+
+    tableBody.innerHTML = items.map((item) => {
+      let imgSrc = item.image || fallbackImg;
+      if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:')) {
+        if (!imgSrc.startsWith('../')) imgSrc = '../' + imgSrc;
+      }
+
+      return `
+        <tr>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <img src="${imgSrc}" alt="${item.name}" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='${fallbackImg}';">
+              <div>
+                <h6 class="fw-bold mb-0">${item.name}</h6>
+                <small class="text-muted">${item.unit || '1 pack'}</small>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge bg-light text-success border border-success-subtle text-capitalize">${item.category || 'Groceries'}</span></td>
+          <td>
+            <div class="quantity-control">
+              <button class="qty-btn" onclick="this.nextElementSibling.textContent = Math.max(1, parseInt(this.nextElementSibling.textContent) - 1);">-</button>
+              <span class="qty-input">${item.quantity || 1}</span>
+              <button class="qty-btn" onclick="this.previousElementSibling.textContent = parseInt(this.previousElementSibling.textContent) + 1;">+</button>
+            </div>
+          </td>
+          <td class="fw-bold text-success">₹${item.price}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal" onclick="window.currentSwapItemName = '${item.name}';">
+              <i class="bi bi-arrow-repeat"></i> Swap
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   function prefillCheckoutDetails() {
     const isCheckoutPage = window.location.pathname.includes('checkout.html');
     if (!isCheckoutPage) return;
 
+    const auth = getAuthUser();
     const user = getLoggedUser();
-    if (user && user.email) {
-      const nameInput = document.getElementById('customerFullName');
-      const emailInput = document.getElementById('customerEmail');
-      const phoneInput = document.getElementById('customerPhone');
-      const addressInput = document.getElementById('deliveryStreetAddress');
-      const cityInput = document.getElementById('deliveryCity');
-      const stateInput = document.getElementById('deliveryState');
-      const postalCodeInput = document.getElementById('deliveryPostalCode');
 
-      if (nameInput) nameInput.value = user.name || '';
-      if (emailInput) emailInput.value = user.email || '';
-      if (phoneInput) {
-        let phone = user.phone || '';
-        if (phone.startsWith('+91')) {
-          phone = phone.replace('+91', '').trim();
-        }
-        phoneInput.value = phone;
-      }
-      if (addressInput) addressInput.value = user.address || '';
-      if (cityInput) cityInput.value = user.city || '';
-      if (stateInput) stateInput.value = user.state || '';
-      if (postalCodeInput) postalCodeInput.value = user.postalCode || '';
+    // If no user is logged in, redirect to login page immediately
+    if (!auth || auth.role !== 'customer' || !user) {
+      sessionStorage.setItem('freshbox_login_redirect', window.location.pathname + window.location.search);
+      sessionStorage.setItem('freshbox_login_notice', 'Please sign in with your registered account to proceed to checkout.');
+      window.location.href = 'login.html';
+      return;
     }
+
+    // Prefill with the actual registered user's account information
+    const nameInput = document.getElementById('customerFullName');
+    const emailInput = document.getElementById('customerEmail');
+    const phoneInput = document.getElementById('customerPhone');
+    const addressInput = document.getElementById('deliveryStreetAddress');
+    const cityInput = document.getElementById('deliveryCity');
+    const stateInput = document.getElementById('deliveryState');
+    const postalCodeInput = document.getElementById('deliveryPostalCode');
+
+    if (nameInput) nameInput.value = user.name || '';
+    if (emailInput) emailInput.value = user.email || '';
+    if (phoneInput) {
+      let phone = user.phone || '';
+      if (phone.startsWith('+91')) {
+        phone = phone.replace('+91', '').trim();
+      }
+      phoneInput.value = phone;
+    }
+    if (addressInput) addressInput.value = user.address || '';
+    if (cityInput) cityInput.value = user.city || '';
+    if (stateInput) stateInput.value = user.state || '';
+    if (postalCodeInput) postalCodeInput.value = user.postalCode || '';
 
     // Attach real-time input validation clearers
     const form = document.getElementById('checkoutForm');
@@ -2652,12 +3094,32 @@
     }
   }
 
-  function processDemoCheckout(e) {
-    if (e && e.preventDefault) e.preventDefault();
+  let isPaymentProcessing = false;
+
+  function processCheckout(e) {
+    if (e) {
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
+
+    if (isPaymentProcessing) return false;
+
+    // 1. Verify that a real user is logged in
+    const auth = getAuthUser();
+    const user = getLoggedUser();
+
+    if (!auth || auth.role !== 'customer' || !user) {
+      sessionStorage.setItem('freshbox_login_redirect', window.location.pathname + window.location.search);
+      sessionStorage.setItem('freshbox_login_notice', 'Please sign in with your registered account to complete checkout.');
+      showToast('Authentication Required', 'Please sign in with your registered account to proceed to payment.', 'warning');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 500);
+      return false;
+    }
+
     const form = document.getElementById('checkoutForm');
     const btn = document.getElementById('placeOrderBtn');
-
-    if (btn && btn.disabled) return;
 
     const nameInput = document.getElementById('customerFullName');
     const emailInput = document.getElementById('customerEmail');
@@ -2675,167 +3137,179 @@
       { el: addressInput, label: 'Street Address' },
       { el: cityInput, label: 'City' },
       { el: stateInput, label: 'State' },
-      { el: postalCodeInput, label: 'PIN Code' }
+      { el: postalCodeInput, label: 'PIN / Postal Code' }
     ];
 
-    // Remove any lingering invalid styles
+    // Remove previous validation styles
     requiredFields.forEach(({ el }) => el && el.classList.remove('is-invalid'));
 
-    // Check if the form is completely blank (guest quick-test click)
-    const isCompletelyEmpty = requiredFields.every(({ el }) => !el || !el.value.trim());
-    if (isCompletelyEmpty) {
-      fillDemoCheckoutDetails(false);
-      showToast('Demo Auto-Fill', 'Loaded demo customer & address to test payment.', 'info');
-    } else {
-      // Validate individual fields
-      const missingFields = requiredFields.filter(({ el }) => !el || !el.value.trim());
-      if (missingFields.length > 0) {
-        missingFields.forEach(({ el }) => el && el.classList.add('is-invalid'));
-        const firstMissing = missingFields[0].el;
-        if (firstMissing) {
-          firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          firstMissing.focus();
-        }
-        showToast('Incomplete Information', `Please provide your ${missingFields[0].label} to complete checkout.`, 'warning');
-        return;
+    // Check for missing fields - do NOT auto-fill fake data
+    const missingFields = requiredFields.filter(({ el }) => !el || !el.value.trim());
+    if (missingFields.length > 0) {
+      missingFields.forEach(({ el }) => el && el.classList.add('is-invalid'));
+      const firstMissing = missingFields[0].el;
+      if (firstMissing) {
+        firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstMissing.focus();
       }
+      showToast('Required Information Missing', `Please enter your ${missingFields[0].label} to continue.`, 'warning');
+      return false;
+    }
+
+    // Email format validation
+    const emailVal = emailInput.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      emailInput.classList.add('is-invalid');
+      emailInput.focus();
+      showToast('Invalid Email', 'Please provide a valid email address.', 'warning');
+      return false;
     }
 
     if (termsInput && !termsInput.checked) {
-      termsInput.checked = true;
+      termsInput.classList.add('is-invalid');
+      showToast('Terms Required', 'Please accept the Terms & Conditions to complete payment.', 'warning');
+      return false;
     }
 
-    // Button visual processing animation
-    const originalBtnContent = btn ? btn.innerHTML : '<i class="bi bi-lock-fill me-2"></i> Pay & Start Subscription';
+    const checkoutData = getCheckoutItemsData();
+    const finalTotal = checkoutData.items.reduce((s, it) => s + (Number(it.price || 0) * Number(it.quantity || 1)), 0);
+    const originalBtnContent = `<i class="bi bi-lock-fill me-2"></i> Pay ₹${finalTotal}`;
+
+    isPaymentProcessing = true;
     if (btn) {
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing Secure Payment...';
     }
 
     setTimeout(() => {
-      const order = buildOrderFromCheckout();
-      order.transactionId = 'TXN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
-      const authUser = getAuthUser();
-      const currentCustomer = {
-        name: order.customerName || authUser?.name || 'Priya Sharma',
-        email: order.customerEmail || authUser?.email || 'priya.sharma@example.com',
-        phone: order.customerPhone || authUser?.phone || '9876543210'
-      };
+      try {
+        const order = buildOrderFromCheckout();
+        order.transactionId = 'TXN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
 
-      // Check if coupon code FAIL is applied
-      const coupon = getAppliedCoupon();
-      if (coupon && coupon.code.toUpperCase() === 'FAIL') {
-        if (authUser && authUser.role === 'customer') {
-          addNotification('Payment failed', `Payment failed for your order subscription checkout.`);
+        const currentCustomer = {
+          name: order.customerName,
+          email: order.customerEmail.toLowerCase(),
+          phone: order.customerPhone
+        };
+
+        // Check if coupon code FAIL is applied
+        const coupon = getAppliedCoupon();
+        if (coupon && coupon.code.toUpperCase() === 'FAIL') {
+          isPaymentProcessing = false;
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnContent;
+          }
+          showToast('Payment Failed', 'Your bank transaction was declined.', 'danger');
+          setTimeout(() => {
+            window.location.href = 'payment-failed.html';
+          }, 400);
+          return;
         }
+
+        // Successful checkout flow
+        localStorage.setItem(CURRENT_CUSTOMER_KEY, JSON.stringify(currentCustomer));
+
+        // Update actual logged-in user with latest address and subscription/order
+        const users = getStoredUsers();
+        let userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase() || u.id === user.id);
+        if (userObj) {
+          userObj.name = order.customerName || userObj.name;
+          userObj.phone = order.customerPhone || userObj.phone;
+          userObj.address = addressInput.value.trim() || userObj.address || '';
+          userObj.city = cityInput.value.trim() || userObj.city || '';
+          userObj.state = stateInput.value.trim() || userObj.state || '';
+          userObj.postalCode = postalCodeInput.value.trim() || userObj.postalCode || '';
+
+          if (order.isSubscription) {
+            userObj.subscription = {
+              plan: order.selectedPlan,
+              price: order.totalAmount,
+              frequency: order.subscriptionFrequency,
+              startDate: order.subscriptionStartDate,
+              renewalDate: order.subscriptionEndDate,
+              status: 'Active'
+            };
+          }
+
+          if (!userObj.notifications) userObj.notifications = [];
+          userObj.notifications.unshift({
+            id: 'notif_pay_' + Date.now(),
+            title: 'Payment Successful',
+            message: `Payment of ₹${order.totalAmount} processed successfully for order #${order.orderId}.`,
+            date: new Date().toISOString(),
+            read: false
+          });
+          userObj.notifications.unshift({
+            id: 'notif_conf_' + Date.now(),
+            title: 'Order Confirmed',
+            message: `Your order #${order.orderId} (${order.selectedPlan}) has been confirmed. Preparing your fresh harvest.`,
+            date: new Date().toISOString(),
+            read: false
+          });
+          if (order.isSubscription) {
+            userObj.notifications.unshift({
+              id: 'notif_sub_' + Date.now(),
+              title: 'Subscription Activated',
+              message: `Your ${order.selectedPlan} subscription is now active!`,
+              date: new Date().toISOString(),
+              read: false
+            });
+          }
+
+          saveStoredUsers(users);
+
+          // Update active session with fresh address & details
+          setAuthUser({
+            role: 'customer',
+            id: userObj.id,
+            name: userObj.name,
+            email: userObj.email,
+            phone: userObj.phone,
+            address: userObj.address,
+            city: userObj.city,
+            state: userObj.state,
+            postalCode: userObj.postalCode,
+            subscription: userObj.subscription
+          });
+        }
+
+        // Save order to history
+        const existingOrders = getStoredOrders();
+        existingOrders.unshift(order);
+        saveStoredOrders(existingOrders);
+
+        if (order.isSubscription) {
+          localStorage.setItem('freshbox_subscription_active', 'true');
+        }
+        sessionStorage.setItem(LATEST_ORDER_KEY, JSON.stringify(order));
+        localStorage.setItem(LATEST_ORDER_KEY, JSON.stringify(order));
+
+        // Clean up cart & buy now state
+        localStorage.removeItem(getCartKey());
+        localStorage.removeItem('freshbox_cart_items_guest');
+        localStorage.removeItem(COUPON_KEY);
+        localStorage.removeItem('freshbox_buy_now_item');
+        sessionStorage.removeItem('freshbox_buy_now_item');
+        localStorage.removeItem('freshbox_checkout_mode');
+        sessionStorage.removeItem('freshbox_checkout_mode');
+
+        isPaymentProcessing = false;
+
+        // Redirect directly to payment-success.html
+        window.location.href = 'payment-success.html';
+      } catch (err) {
+        console.error('Checkout processing error:', err);
+        isPaymentProcessing = false;
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = originalBtnContent;
         }
-        showToast('Payment Failed', 'Your simulated bank transaction was declined.', 'danger');
-        setTimeout(() => {
-          window.location.href = 'payment-failed.html';
-        }, 500);
-        return;
+        showToast('Payment Notice', 'An error occurred during payment processing. Please try again.', 'danger');
       }
+    }, 450);
 
-      // Successful checkout flow
-      localStorage.setItem(CURRENT_CUSTOMER_KEY, JSON.stringify(currentCustomer));
-
-      // Handle user registration / update
-      const users = getStoredUsers();
-      let userObj = users.find(u => u.email.toLowerCase() === currentCustomer.email.toLowerCase());
-      if (!userObj) {
-        userObj = {
-          id: 'user_' + Date.now(),
-          name: currentCustomer.name,
-          email: currentCustomer.email.toLowerCase(),
-          phone: currentCustomer.phone,
-          password: 'password123',
-          address: document.getElementById('deliveryStreetAddress')?.value || '42, Green Avenue, Indiranagar',
-          city: document.getElementById('deliveryCity')?.value || 'Bengaluru',
-          state: document.getElementById('deliveryState')?.value || 'Karnataka',
-          postalCode: document.getElementById('deliveryPostalCode')?.value || '560038',
-          subscription: {
-            plan: order.selectedPlan,
-            price: order.amount,
-            frequency: order.subscriptionFrequency,
-            startDate: order.subscriptionStartDate,
-            renewalDate: order.subscriptionEndDate,
-            status: 'Active'
-          },
-          notifications: []
-        };
-        users.push(userObj);
-      } else {
-        userObj.address = document.getElementById('deliveryStreetAddress')?.value || userObj.address || '';
-        userObj.city = document.getElementById('deliveryCity')?.value || userObj.city || '';
-        userObj.state = document.getElementById('deliveryState')?.value || userObj.state || '';
-        userObj.postalCode = document.getElementById('deliveryPostalCode')?.value || userObj.postalCode || '';
-        userObj.subscription = {
-          plan: order.selectedPlan,
-          price: order.amount,
-          frequency: order.subscriptionFrequency,
-          startDate: order.subscriptionStartDate,
-          renewalDate: order.subscriptionEndDate,
-          status: 'Active'
-        };
-      }
-
-      // Add notifications to user profile
-      const orderId = order.orderId;
-      if (!userObj.notifications) userObj.notifications = [];
-      userObj.notifications.unshift({
-        id: 'notif_checkout_pay_' + Date.now(),
-        title: 'Payment Successful',
-        message: `Payment of ₹${order.amount} processed successfully for order #${orderId}.`,
-        date: new Date().toISOString(),
-        read: false
-      });
-      userObj.notifications.unshift({
-        id: 'notif_checkout_conf_' + Date.now(),
-        title: 'Order Confirmed',
-        message: `Your order #${orderId} has been confirmed. Preparing your fresh harvest.`,
-        date: new Date().toISOString(),
-        read: false
-      });
-      userObj.notifications.unshift({
-        id: 'notif_checkout_sub_' + Date.now(),
-        title: 'Subscription Activated',
-        message: `Your ${order.selectedPlan} subscription is now active!`,
-        date: new Date().toISOString(),
-        read: false
-      });
-
-      saveStoredUsers(users);
-
-      // Save order
-      const existingOrders = getStoredOrders();
-      existingOrders.unshift(order);
-      saveStoredOrders(existingOrders);
-
-      localStorage.setItem('freshbox_subscription_active', 'true');
-      sessionStorage.setItem(LATEST_ORDER_KEY, JSON.stringify(order));
-      localStorage.setItem(LATEST_ORDER_KEY, JSON.stringify(order));
-
-      // Auto login user
-      setAuthUser({
-        role: 'customer',
-        id: userObj.id,
-        name: userObj.name,
-        email: userObj.email,
-        phone: userObj.phone
-      });
-
-      // Clear cart
-      localStorage.removeItem(CART_KEY);
-      localStorage.removeItem(COUPON_KEY);
-
-      showToast('Payment Successful', 'Redirecting to confirmation page...', 'success');
-      setTimeout(() => {
-        window.location.href = 'payment-success.html';
-      }, 500);
-    }, 800);
+    return false;
   }
 
   // --- How It Works Step Navigation Handlers ---
@@ -3080,6 +3554,8 @@
     renderCheckoutSummary();
     prefillCheckoutDetails();
     renderSubscriptionPage();
+    renderDeliveriesPage();
+    renderMyBoxPage();
     renderProfilePage();
     renderBillingPage();
     renderSettingsPage();
@@ -3100,6 +3576,8 @@
     renderDashboardStats();
     renderDashboardOrders();
     renderOrdersTable();
+    renderDeliveriesPage();
+    renderMyBoxPage();
     renderBillingPage();
     renderProfilePage();
     renderSettingsPage();
@@ -3127,14 +3605,26 @@
     addNotification,
     markAllNotificationsRead,
     renderSubscriptionPage,
+    renderDeliveriesPage,
+    renderMyBoxPage,
     renderProfilePage,
     renderBillingPage,
     renderSettingsPage,
+    renderDashboardStats,
+    renderDashboardOrders,
+    renderOrdersTable,
+    openOrderDetails: (orderId) => {
+      const o = getUserOrders().find(i => i.orderId === orderId);
+      if (o) openOrderDetailsModal(o);
+    },
+    openOrderDetailsModal,
+    openInvoiceModal,
     applyCoupon: applyCouponCode,
     removeCoupon: removeCouponCode,
     openQuickView,
-    processCheckout: processDemoCheckout,
-    fillDemoDetails: fillDemoCheckoutDetails,
+    processCheckout: processCheckout,
+    buyNow: buyNow,
+    updateCheckoutItemQty: updateCheckoutItemQty,
     handleCustomizeStep: handleCustomizeStepClick,
     handleFrequencyStep: handleFrequencyStepClick,
     handleEnjoyStep: handleEnjoyStepClick,

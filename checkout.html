@@ -112,7 +112,7 @@
   <!-- Checkout Section -->
   <section class="section-padding">
     <div class="container">
-      <form id="checkoutForm" onsubmit="freshboxApp.processCheckout(event)">
+      <form id="checkoutForm" onsubmit="return freshboxApp.processCheckout(event);">
         <div class="row g-5">
           <!-- Checkout Steps Column -->
           <div class="col-lg-8">
@@ -123,12 +123,9 @@
                   <span class="step-badge-num">1</span>
                   <div>
                     <h5 class="fw-bold mb-0">Customer Information</h5>
-                    <small class="text-muted">We will send subscription updates & delivery tracking here</small>
+                    <small class="text-muted">Registered account & delivery tracking details</small>
                   </div>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="freshboxApp.fillDemoDetails()">
-                  <i class="bi bi-lightning-charge-fill me-1"></i> Auto-Fill Demo Details
-                </button>
               </div>
               <div class="row g-3">
                 <div class="col-md-6">
@@ -164,23 +161,25 @@
               </div>
 
               <!-- Frequency Selector -->
-              <label class="form-label fw-semibold mb-2">Subscription Frequency</label>
-              <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                  <div class="payment-method-card selected" onclick="selectFrequency(this, 'weekly')">
-                    <input class="form-check-input mt-0" type="radio" name="subFreq" id="freqWeekly" checked>
-                    <div>
-                      <h6 class="fw-bold mb-0">Weekly Delivery (Recommended)</h6>
-                      <small class="text-muted">Dispatched every Friday &bull; Save 20%</small>
+              <div id="frequencySelectorContainer" class="mb-4">
+                <label class="form-label fw-semibold mb-2">Subscription Frequency</label>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="payment-method-card selected" onclick="selectFrequency(this, 'weekly')">
+                      <input class="form-check-input mt-0" type="radio" name="subFreq" id="freqWeekly" checked>
+                      <div>
+                        <h6 class="fw-bold mb-0">Weekly Delivery (Recommended)</h6>
+                        <small class="text-muted">Dispatched every Friday &bull; Save 20%</small>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="payment-method-card" onclick="selectFrequency(this, 'biweekly')">
-                    <input class="form-check-input mt-0" type="radio" name="subFreq" id="freqBiweekly">
-                    <div>
-                      <h6 class="fw-bold mb-0">Biweekly Delivery</h6>
-                      <small class="text-muted">Dispatched every 2 weeks &bull; Save 10%</small>
+                  <div class="col-md-6">
+                    <div class="payment-method-card" onclick="selectFrequency(this, 'biweekly')">
+                      <input class="form-check-input mt-0" type="radio" name="subFreq" id="freqBiweekly">
+                      <div>
+                        <h6 class="fw-bold mb-0">Biweekly Delivery</h6>
+                        <small class="text-muted">Dispatched every 2 weeks &bull; Save 10%</small>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -201,7 +200,7 @@
                   <input id="deliveryState" type="text" class="form-control" required>
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label fw-semibold">PIN / Postal Code <span class="text-danger">*</span></label>
+                  <label class="form-label fw-semibold">Postal / PIN Code <span class="text-danger">*</span></label>
                   <input id="deliveryPostalCode" type="text" class="form-control" required>
                 </div>
                 <div class="col-12">
@@ -211,13 +210,13 @@
               </div>
             </div>
 
-            <!-- Step 3: Payment Method -->
+            <!-- Step 3: Payment Options -->
             <div class="checkout-step-card">
               <div class="checkout-step-header">
                 <span class="step-badge-num">3</span>
                 <div>
                   <h5 class="fw-bold mb-0">Payment Method</h5>
-                  <small class="text-muted">100% Secure & Razorpay / Stripe Ready</small>
+                  <small class="text-muted">100% Secure &amp; SSL 256-bit Encrypted</small>
                 </div>
               </div>
 
@@ -229,15 +228,15 @@
                   <i class="bi bi-qr-code text-success fs-4"></i>
                   <div class="flex-grow-1">
                     <h6 class="fw-bold mb-0">UPI Instant Payment (Google Pay, PhonePe, Paytm, BHIM)</h6>
-                    <small class="text-muted">Fast & zero gateway fees</small>
+                    <small class="text-muted">Fast &amp; zero gateway fees</small>
                   </div>
                 </div>
 
                 <div id="upiFields" class="p-3 bg-light rounded-3 border mb-3">
                   <label class="form-label fw-semibold small">Enter your UPI ID (VPA)</label>
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="yourname@okhdfcbank">
-                    <span class="input-group-text bg-success text-white"><i class="bi bi-check2"></i> Verified</span>
+                    <input type="text" class="form-control" id="upiIdInput" placeholder="yourname@okhdfcbank">
+                    <button class="btn btn-outline-success" type="button" onclick="const v = document.getElementById('upiIdInput').value.trim(); if(v){ showToast('UPI Verified', 'Your VPA handle ' + v + ' is verified.', 'success'); } else { showToast('UPI Required', 'Please enter your UPI ID before verifying.', 'warning'); }">Verify VPA</button>
                   </div>
                   <div class="form-text small text-muted mt-1"><i class="bi bi-shield-lock"></i> A payment request will be triggered on your UPI app.</div>
                 </div>
@@ -285,7 +284,7 @@
                   <i class="bi bi-cash-stack text-success fs-4"></i>
                   <div class="flex-grow-1">
                     <h6 class="fw-bold mb-0">Cash on First Delivery (COD)</h6>
-                    <small class="text-muted">Pay at doorstep upon receiving your first grocery box</small>
+                    <small class="text-muted">Pay at doorstep upon receiving your grocery box</small>
                   </div>
                 </div>
               </div>
@@ -294,7 +293,7 @@
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="termsCheck" checked required>
                 <label class="form-check-label small text-muted" for="termsCheck">
-                  I agree to the FreshBox <a href="#" class="text-success">Subscription Terms</a> and authorize recurring weekly billing which can be paused or cancelled anytime with 1-click.
+                  I agree to the FreshBox <a href="#" class="text-success">Terms of Service</a> and authorize this order payment.
                 </label>
               </div>
             </div>
@@ -325,7 +324,7 @@
                 <span class="text-success" id="checkoutTotal">₹0</span>
               </div>
 
-              <button type="submit" id="placeOrderBtn" class="btn btn-primary btn-lg w-100 mb-3" onclick="freshboxApp.processCheckout(event)">
+              <button type="button" id="placeOrderBtn" class="btn btn-primary btn-lg w-100 mb-3" onclick="freshboxApp.processCheckout(event)">
                 <i class="bi bi-lock-fill me-2"></i> Pay & Start Subscription
               </button>
 
@@ -470,20 +469,23 @@
 
     (function initCheckoutSelection() {
       const params = new URLSearchParams(window.location.search);
+      const isBuyNow = params.has('buy_now') || params.has('product') || params.has('id') || localStorage.getItem('freshbox_checkout_mode') === 'buy_now';
       const selectedPlanKey = params.get('plan');
-      const savedPlanName = localStorage.getItem('freshbox_selected_plan');
-      const savedFrequency = localStorage.getItem('freshbox_subscription_freq');
-      const defaultPlan = { name: 'Weekly Delivery', frequency: 'weekly', frequencyLabel: 'Every Week', price: 899 };
-      const planConfig = planMap[selectedPlanKey] || (savedPlanName ? {
-        name: savedPlanName,
-        frequency: savedFrequency || 'weekly',
-        frequencyLabel: savedFrequency === 'biweekly' ? 'Every 2 Weeks' : savedFrequency === 'monthly' ? 'Monthly' : 'Every Week',
-        price: Number(localStorage.getItem('freshbox_selected_plan_price') || defaultPlan.price)
-      } : defaultPlan);
 
-      localStorage.setItem('freshbox_selected_plan', planConfig.name);
-      localStorage.setItem('freshbox_selected_plan_price', String(planConfig.price));
-      localStorage.setItem('freshbox_subscription_freq', planConfig.frequency || 'weekly');
+      if (!isBuyNow && selectedPlanKey && planMap[selectedPlanKey]) {
+        const planConfig = planMap[selectedPlanKey];
+        localStorage.setItem('freshbox_checkout_mode', 'plan');
+        localStorage.setItem('freshbox_selected_plan', planConfig.name);
+        localStorage.setItem('freshbox_selected_plan_price', String(planConfig.price));
+        localStorage.setItem('freshbox_subscription_freq', planConfig.frequency || 'weekly');
+      }
+
+      if (isBuyNow) {
+        const freqContainer = document.getElementById('frequencySelectorContainer');
+        if (freqContainer) {
+          freqContainer.classList.add('d-none');
+        }
+      }
 
       const weeklyEl = document.getElementById('freqWeekly');
       const biweeklyEl = document.getElementById('freqBiweekly');

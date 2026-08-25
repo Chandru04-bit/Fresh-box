@@ -68,7 +68,7 @@
           <div class="dropdown nav-user-dropdown ms-1">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
-              <span class="d-none d-sm-inline">Chandru</span>
+              <span class="nav-user-name d-none d-sm-inline">User</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
@@ -121,125 +121,19 @@
                   <th>Item Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- Row 1 -->
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center gap-3">
-                      <img src="../assets/images/products/fresh-vine-tomatoes.jpg" alt="Tomatoes" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/categories/vegetables.jpg';">
-                      <div>
-                        <h6 class="fw-bold mb-0">Fresh Vine Tomatoes</h6>
-                        <small class="text-muted">1 kg / pack</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge bg-light text-success border border-success-subtle">Vegetables</span></td>
-                  <td>
-                    <div class="quantity-control">
-                      <button class="qty-btn">-</button>
-                      <span class="qty-input">1</span>
-                      <button class="qty-btn">+</button>
-                    </div>
-                  </td>
-                  <td class="fw-bold text-success">₹60</td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
-                      <i class="bi bi-arrow-repeat"></i> Swap
-                    </button>
-                  </td>
-                </tr>
-
-                <!-- Row 2 -->
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center gap-3">
-                      <img src="../assets/images/products/organic-baby-spinach.jpg" alt="Spinach" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/categories/vegetables.jpg';">
-                      <div>
-                        <h6 class="fw-bold mb-0">Organic Baby Spinach</h6>
-                        <small class="text-muted">250 g / pack</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge bg-light text-success border border-success-subtle">Vegetables</span></td>
-                  <td>
-                    <div class="quantity-control">
-                      <button class="qty-btn">-</button>
-                      <span class="qty-input">2</span>
-                      <button class="qty-btn">+</button>
-                    </div>
-                  </td>
-                  <td class="fw-bold text-success">₹90</td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
-                      <i class="bi bi-arrow-repeat"></i> Swap
-                    </button>
-                  </td>
-                </tr>
-
-                <!-- Row 3 -->
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center gap-3">
-                      <img src="../assets/images/products/royal-gala-apples.jpg" alt="Apples" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/categories/fruits.jpg';">
-                      <div>
-                        <h6 class="fw-bold mb-0">Royal Gala Apples</h6>
-                        <small class="text-muted">1 kg (4-5 pcs)</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge bg-light text-success border border-success-subtle">Fruits</span></td>
-                  <td>
-                    <div class="quantity-control">
-                      <button class="qty-btn">-</button>
-                      <span class="qty-input">1</span>
-                      <button class="qty-btn">+</button>
-                    </div>
-                  </td>
-                  <td class="fw-bold text-success">₹120</td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
-                      <i class="bi bi-arrow-repeat"></i> Swap
-                    </button>
-                  </td>
-                </tr>
-
-                <!-- Row 4 -->
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center gap-3">
-                      <img src="../assets/images/products/farm-fresh-a2-milk.jpg" alt="Milk" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/categories/dairy.jpg';">
-                      <div>
-                        <h6 class="fw-bold mb-0">Farm Fresh A2 Milk</h6>
-                        <small class="text-muted">1 L / Glass Bottle</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge bg-light text-success border border-success-subtle">Dairy</span></td>
-                  <td>
-                    <div class="quantity-control">
-                      <button class="qty-btn">-</button>
-                      <span class="qty-input">2</span>
-                      <button class="qty-btn">+</button>
-                    </div>
-                  </td>
-                  <td class="fw-bold text-success">₹150</td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" data-bs-toggle="modal" data-bs-target="#swapItemModal">
-                      <i class="bi bi-arrow-repeat"></i> Swap
-                    </button>
-                  </td>
-                </tr>
+              <tbody id="myBoxItemsTableBody">
+                <!-- Populated dynamically based on user's real subscription or active order -->
               </tbody>
             </table>
           </div>
 
           <!-- Total Footer -->
-          <div class="p-4 border-top bg-light d-flex justify-content-between align-items-center">
+          <div class="p-4 border-top bg-light d-flex justify-content-between align-items-center" id="myBoxFooterContainer">
             <div>
               <span class="text-muted small d-block">Scheduled Box Value:</span>
-              <span class="fs-4 fw-bold text-success">₹899 (Subscription Covered)</span>
+              <span class="fs-4 fw-bold text-success" id="myBoxScheduledValue">&#8377;0</span>
             </div>
-            <button class="btn btn-primary" onclick="document.getElementById('saveBoxChangesBtn').click();">
+            <button class="btn btn-primary" id="saveBoxChangesBottomBtn" onclick="document.getElementById('saveBoxChangesBtn')?.click();">
               <i class="bi bi-save me-1"></i> Save Selections
             </button>
           </div>

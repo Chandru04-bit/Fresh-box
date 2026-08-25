@@ -512,17 +512,16 @@
     window.handleBuyNowClick = function(e) {
       if (e) e.preventDefault();
       ensureSelectedProd();
-      if (selectedProd && window.freshboxApp) {
-        window.freshboxApp.addToCart({
+      if (selectedProd && window.freshboxApp && window.freshboxApp.buyNow) {
+        window.freshboxApp.buyNow({
           id: selectedProd.id,
           name: selectedProd.name,
           category: selectedProd.category,
           price: selectedProd.price,
           unit: selectedProd.unit,
           image: selectedProd.image,
-          qty: currentQty
-        }, false);
-        window.location.href = 'checkout.html';
+          qty: currentQty || 1
+        });
       }
     };
 

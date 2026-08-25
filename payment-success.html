@@ -96,10 +96,10 @@
           <div class="success-icon-wrap">
             <i class="bi bi-check2-circle"></i>
           </div>
-          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6 fw-bold mb-2">Subscription Activated</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6 fw-bold mb-2" id="successBadge">Order Confirmed</span>
           <h1 class="display-5 fw-bold mb-2">Payment Successful!</h1>
-          <p class="lead text-muted mb-4">
-            Thank you for subscribing to <strong>FreshBox</strong>. Your order is confirmed and our farm partners are preparing your harvest.
+          <p class="lead text-muted mb-4" id="successSubtitle">
+            Thank you for ordering with <strong>FreshBox</strong>. Your order is confirmed and our farm partners are preparing your fresh delivery.
           </p>
 
           <!-- Receipt Details Box -->
@@ -117,26 +117,32 @@
 
             <div class="row g-3 mb-3">
               <div class="col-sm-6">
-                <span class="text-muted small d-block">Next Scheduled Dispatch:</span>
-                <strong class="text-dark" id="successDispatch"><i class="bi bi-calendar-event text-success me-1"></i> Confirmed after payment</strong>
+                <span class="text-muted small d-block">Item / Plan:</span>
+                <strong class="text-dark" id="successItemName">Grocery Order</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted small d-block">Scheduled Dispatch:</span>
+                <strong class="text-dark" id="successDispatch"><i class="bi bi-calendar-event text-success me-1"></i> Confirmed</strong>
               </div>
               <div class="col-sm-6">
                 <span class="text-muted small d-block">Delivery Address:</span>
                 <strong class="text-dark" id="successAddress">Saved delivery address</strong>
               </div>
               <div class="col-sm-6">
-                <span class="text-muted small d-block">Frequency:</span>
-                <strong class="text-dark" id="successFrequency">—</strong>
+                <span class="text-muted small d-block">Order Type / Frequency:</span>
+                <strong class="text-dark" id="successFrequency">One-time order</strong>
               </div>
-              <div class="col-sm-6">
-                <span class="text-muted small d-block">Amount Paid:</span>
-                <strong class="text-success fs-5" id="successAmountPaid">&#8377;375</strong>
+              <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                  <span class="text-muted fw-semibold">Amount Paid:</span>
+                  <strong class="text-success fs-4" id="successAmountPaid">₹0</strong>
+                </div>
               </div>
             </div>
 
             <div class="p-3 bg-white rounded-3 border small">
-              <i class="bi bi-info-circle-fill text-primary me-2"></i>
-              You can swap, pause, or add products to your box anytime until Thursday 8:00 PM before dispatch.
+              <i class="bi bi-info-circle-fill text-success me-2"></i>
+              Track your delivery, download your receipt, or view order history anytime in your Customer Dashboard.
             </div>
           </div>
 
@@ -249,15 +255,34 @@
         const rawOrder = localStorage.getItem('freshbox_latest_order') || sessionStorage.getItem('freshbox_latest_order');
         const orderData = rawOrder ? JSON.parse(rawOrder) : null;
         if (orderData) {
-          if (orderData.orderId) document.getElementById('successOrderId').textContent = orderData.orderId;
-          if (orderData.totalAmount || orderData.amount || orderData.total) {
-            const total = orderData.totalAmount || orderData.amount || orderData.total;
+          if (orderData.orderId && document.getElementById('successOrderId')) {
+            document.getElementById('successOrderId').textContent = orderData.orderId;
+          }
+          if (document.getElementById('successAmountPaid')) {
+            const total = orderData.totalAmount !== undefined ? orderData.totalAmount : (orderData.amount !== undefined ? orderData.amount : 0);
             document.getElementById('successAmountPaid').textContent = `₹${total}`;
           }
-          document.getElementById('successPaymentId').textContent = orderData.transactionId || orderData.orderId || '—';
-          document.getElementById('successFrequency').textContent = orderData.subscriptionFrequency || 'One-time order';
-          document.getElementById('successAddress').textContent = orderData.deliveryAddress || 'No delivery address saved';
-          if (orderData.subscriptionStartDate) {
+          if (document.getElementById('successItemName')) {
+            document.getElementById('successItemName').textContent = orderData.selectedPlan || 'Grocery Order';
+          }
+          if (document.getElementById('successPaymentId')) {
+            document.getElementById('successPaymentId').textContent = orderData.transactionId || orderData.orderId || '—';
+          }
+          if (document.getElementById('successFrequency')) {
+            document.getElementById('successFrequency').textContent = orderData.subscriptionFrequency || (orderData.isSubscription ? 'Weekly' : 'One-time order');
+          }
+          if (document.getElementById('successAddress')) {
+            document.getElementById('successAddress').textContent = orderData.deliveryAddress || 'Saved delivery address';
+          }
+          if (document.getElementById('successBadge')) {
+            document.getElementById('successBadge').textContent = orderData.isSubscription ? 'Subscription Activated' : 'Order Confirmed';
+          }
+          if (document.getElementById('successSubtitle')) {
+            document.getElementById('successSubtitle').innerHTML = orderData.isSubscription
+              ? 'Thank you for subscribing to <strong>FreshBox</strong>. Your recurring plan is active and our farm partners are preparing your harvest.'
+              : 'Thank you for ordering with <strong>FreshBox</strong>. Your order is confirmed and our farm partners are preparing your fresh harvest.';
+          }
+          if (orderData.subscriptionStartDate && document.getElementById('successDispatch')) {
             const dispatchDate = new Date(orderData.subscriptionStartDate);
             document.getElementById('successDispatch').innerHTML = `<i class="bi bi-calendar-event text-success me-1"></i> ${dispatchDate.toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric' })}`;
           }

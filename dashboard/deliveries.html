@@ -68,7 +68,7 @@
           <div class="dropdown nav-user-dropdown ms-1">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
-              <span class="d-none d-sm-inline">Chandru</span>
+              <span class="nav-user-name d-none d-sm-inline">User</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
@@ -90,110 +90,9 @@
 
       <div class="dashboard-content">
         <!-- Delivery Schedule Timeline Cards -->
-        <div class="row g-4">
-          <!-- Delivery 1 (Next upcoming) -->
-          <div class="col-12">
-            <div class="fresh-card p-4 border-2 border-success-subtle shadow-sm">
-              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
-                <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <h4 class="fw-bold mb-0">Friday, August 28, 2026</h4>
-                    <span class="badge bg-primary px-3 py-1">Preparing</span>
-                  </div>
-                  <p class="text-muted small mb-0">Window: 07:00 AM - 11:00 AM &bull; Dedicated Driver: Vikram M. (+91 98451-22334)</p>
-                </div>
-                <div class="d-flex gap-2">
-                  <a href="my-box.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-sliders"></i> Edit Box</a>
-                  <button class="btn btn-outline-warning btn-sm" onclick="freshboxApp.showToast('Delivery Skipped', 'August 28 delivery marked as skipped.', 'warning'); this.parentElement.parentElement.parentElement.style.opacity='0.6';">
-                    <i class="bi bi-calendar-x"></i> Skip Delivery
-                  </button>
-                </div>
-              </div>
-
-              <div class="p-3 bg-light rounded-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <div>
-                  <span class="text-muted small d-block">Box Type:</span>
-                  <span class="fw-bold text-dark">Family Essentials Box (14 Items &bull; ~15 kg)</span>
-                </div>
-                <div>
-                  <span class="text-muted small d-block">Delivery Address:</span>
-                  <span class="fw-bold text-dark">HSR Layout, Sector 1, Bangalore</span>
-                </div>
-                <div>
-                  <span class="text-muted small d-block">Packaging:</span>
-                  <span class="fw-bold text-success"><i class="bi bi-snow"></i> Insulated Tote & Ice Pod</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Delivery 2 -->
-          <div class="col-12">
-            <div class="fresh-card p-4">
-              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
-                <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <h5 class="fw-bold mb-0">Friday, September 4, 2026</h5>
-                    <span class="badge bg-secondary-subtle px-3 py-1">Scheduled</span>
-                  </div>
-                  <p class="text-muted small mb-0">Window: 07:00 AM - 11:00 AM &bull; Auto-billing scheduled for Sept 3</p>
-                </div>
-                <div class="d-flex gap-2">
-                  <a href="my-box.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-eye"></i> View Planned Box</a>
-                  <button class="btn btn-outline-warning btn-sm" onclick="freshboxApp.showToast('Delivery Skipped', 'September 4 delivery marked as skipped.', 'warning');">
-                    <i class="bi bi-calendar-x"></i> Skip
-                  </button>
-                </div>
-              </div>
-              <div class="text-muted small">Family Essentials Box &bull; &#8377;899 weekly subscription</div>
-            </div>
-          </div>
-
-          <!-- Delivery 3 -->
-          <div class="col-12">
-            <div class="fresh-card p-4">
-              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
-                <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <h5 class="fw-bold mb-0">Friday, September 11, 2026</h5>
-                    <span class="badge bg-secondary-subtle text-dark px-3 py-1">Scheduled</span>
-                  </div>
-                  <p class="text-muted small mb-0">Window: 07:00 AM – 11:00 AM</p>
-                </div>
-                <div class="d-flex gap-2">
-                  <a href="my-box.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-eye"></i> View Planned Box</a>
-                  <button class="btn btn-outline-warning btn-sm text-dark" onclick="freshboxApp.showToast('Delivery Skipped', 'September 11 delivery marked as skipped.', 'warning');">
-                    <i class="bi bi-calendar-x"></i> Skip
-                  </button>
-                </div>
-              </div>
-              <div class="text-muted small">Family Essentials Box &bull; &#8377;899 weekly subscription</div>
-            </div>
-          </div>
-
-          <!-- Delivery 4 -->
-          <div class="col-12">
-            <div class="fresh-card p-4">
-              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
-                <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <h5 class="fw-bold mb-0">Friday, September 18, 2026</h5>
-                    <span class="badge bg-secondary-subtle text-dark px-3 py-1">Scheduled</span>
-                  </div>
-                  <p class="text-muted small mb-0">Window: 07:00 AM – 11:00 AM</p>
-                </div>
-                <div class="d-flex gap-2">
-                  <a href="my-box.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-eye"></i> View Planned Box</a>
-                  <button class="btn btn-outline-warning btn-sm text-dark" onclick="freshboxApp.showToast('Delivery Skipped', 'September 18 delivery marked as skipped.', 'warning');">
-                    <i class="bi bi-calendar-x"></i> Skip
-                  </button>
-                </div>
-              </div>
-              <div class="text-muted small">Family Essentials Box &bull; &#8377;899 weekly subscription</div>
-            </div>
-          </div>
+        <div class="row g-4" id="upcomingDeliveriesContainer">
+          <!-- Populated dynamically based on user's real subscription / active orders -->
         </div>
-
       </div>
     </div>
   </div>
