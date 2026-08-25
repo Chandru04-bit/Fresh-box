@@ -315,6 +315,21 @@
     <script>
     let currentSelectedFreq = 'weekly';
 
+    const planMap = {
+      veggie: 'Veggie Box',
+      family: 'Family Essentials',
+      organic: 'Organic Box',
+      premium: 'Premium Box'
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const selectedPlanKey = params.get('plan');
+    if (selectedPlanKey && planMap[selectedPlanKey]) {
+      localStorage.setItem('freshbox_selected_plan', planMap[selectedPlanKey]);
+    } else {
+      localStorage.setItem('freshbox_selected_plan', 'FreshBox Subscription');
+    }
+
     function selectFrequency(type, cardEl) {
       if (typeof type === 'object' && type !== null) {
         const temp = type;
@@ -323,6 +338,11 @@
       }
 
       currentSelectedFreq = type || 'weekly';
+      const planConfig = {
+        weekly: { name: 'Weekly Delivery', frequencyLabel: 'Every Week', price: 899 },
+        biweekly: { name: 'Biweekly Delivery', frequencyLabel: 'Every 2 Weeks', price: 949 },
+        monthly: { name: 'Monthly Delivery', frequencyLabel: 'Monthly', price: 3399 }
+      }[currentSelectedFreq] || { name: 'Weekly Delivery', frequencyLabel: 'Every Week', price: 899 };
 
       document.querySelectorAll('.frequency-card').forEach(function(c) {
         c.classList.remove('selected');
@@ -352,10 +372,12 @@
 
       localStorage.setItem('freshbox_frequency', currentSelectedFreq);
       localStorage.setItem('freshbox_subscription_freq', currentSelectedFreq);
+      localStorage.setItem('freshbox_selected_plan', planConfig.name);
+      localStorage.setItem('freshbox_selected_plan_price', String(planConfig.price));
       localStorage.setItem('freshbox_selected_frequency', labelText);
 
       if (typeof freshboxApp !== 'undefined' && freshboxApp.showToast) {
-        freshboxApp.showToast('Frequency Selected', labelText + ' saved. Proceeding to Delivery Address...', 'success');
+        freshboxApp.showToast('Frequency Selected', labelText + ' saved. Proceeding to checkout...', 'success');
       }
 
       setTimeout(function() {

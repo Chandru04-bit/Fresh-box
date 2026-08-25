@@ -107,26 +107,26 @@
             <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3">
               <div>
                 <span class="text-muted small">Order ID:</span>
-                <h6 class="fw-bold mb-0 text-success" id="successOrderId">FB-894210</h6>
+                <h6 class="fw-bold mb-0 text-success" id="successOrderId">—</h6>
               </div>
               <div class="text-end">
                 <span class="text-muted small">Payment Ref:</span>
-                <h6 class="fw-bold mb-0 text-dark" id="successPaymentId">pay_rzp_984210a</h6>
+                <h6 class="fw-bold mb-0 text-dark" id="successPaymentId">—</h6>
               </div>
             </div>
 
             <div class="row g-3 mb-3">
               <div class="col-sm-6">
                 <span class="text-muted small d-block">Next Scheduled Dispatch:</span>
-                <strong class="text-dark"><i class="bi bi-calendar-event text-success me-1"></i> Friday, 8:00 AM - 11:00 AM</strong>
+                <strong class="text-dark" id="successDispatch"><i class="bi bi-calendar-event text-success me-1"></i> Confirmed after payment</strong>
               </div>
               <div class="col-sm-6">
                 <span class="text-muted small d-block">Delivery Address:</span>
-                <strong class="text-dark">Flat 402, Green Valley Orchards, Bengaluru</strong>
+                <strong class="text-dark" id="successAddress">Saved delivery address</strong>
               </div>
               <div class="col-sm-6">
                 <span class="text-muted small d-block">Frequency:</span>
-                <strong class="text-dark">Weekly Box Subscription</strong>
+                <strong class="text-dark" id="successFrequency">—</strong>
               </div>
               <div class="col-sm-6">
                 <span class="text-muted small d-block">Amount Paid:</span>
@@ -246,11 +246,21 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       try {
-        const orderData = JSON.parse(sessionStorage.getItem('freshbox_latest_order'));
+        const rawOrder = localStorage.getItem('freshbox_latest_order') || sessionStorage.getItem('freshbox_latest_order');
+        const orderData = rawOrder ? JSON.parse(rawOrder) : null;
         if (orderData) {
           if (orderData.orderId) document.getElementById('successOrderId').textContent = orderData.orderId;
-          if (orderData.total) document.getElementById('successAmountPaid').textContent = `?${orderData.total}`;
-          document.getElementById('successPaymentId').textContent = 'pay_rzp_' + Math.random().toString(36).substring(2, 9);
+          if (orderData.totalAmount || orderData.amount || orderData.total) {
+            const total = orderData.totalAmount || orderData.amount || orderData.total;
+            document.getElementById('successAmountPaid').textContent = `₹${total}`;
+          }
+          document.getElementById('successPaymentId').textContent = orderData.transactionId || orderData.orderId || '—';
+          document.getElementById('successFrequency').textContent = orderData.subscriptionFrequency || 'One-time order';
+          document.getElementById('successAddress').textContent = orderData.deliveryAddress || 'No delivery address saved';
+          if (orderData.subscriptionStartDate) {
+            const dispatchDate = new Date(orderData.subscriptionStartDate);
+            document.getElementById('successDispatch').innerHTML = `<i class="bi bi-calendar-event text-success me-1"></i> ${dispatchDate.toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric' })}`;
+          }
         }
       } catch(e) {}
     });

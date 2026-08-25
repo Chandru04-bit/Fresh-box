@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -99,7 +99,7 @@
           </button>
           <div>
             <h5 class="fw-bold mb-0">Subscriber Overview</h5>
-            <small class="text-muted">Welcome back, Chandru</small>
+            <small class="text-muted" id="dashboardWelcomeName">Loading your account…</small>
           </div>
         </div>
 
@@ -112,7 +112,7 @@
           <div class="dropdown nav-user-dropdown ms-1">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
-              <span class="d-none d-sm-inline">Chandru</span>
+              <span class="d-none d-sm-inline" id="dashboardUserName">Account</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
@@ -140,8 +140,8 @@
             <div class="stat-card">
               <div class="stat-icon green"><i class="bi bi-patch-check-fill"></i></div>
               <div class="stat-info">
-                <h3>Active</h3>
-                <p>Family Essentials Plan</p>
+                <h3 id="dashboardTotalOrders">0</h3>
+                <p>Total Orders</p>
               </div>
             </div>
           </div>
@@ -149,8 +149,8 @@
             <div class="stat-card">
               <div class="stat-icon orange"><i class="bi bi-calendar2-event-fill"></i></div>
               <div class="stat-info">
-                <h3>This Friday</h3>
-                <p>7:00 AM&ndash;11:00 AM</p>
+                <h3 id="dashboardActiveSubscription">No Active Plan</h3>
+                <p>Active Subscription</p>
               </div>
             </div>
           </div>
@@ -158,8 +158,8 @@
             <div class="stat-card">
               <div class="stat-icon blue"><i class="bi bi-basket3-fill"></i></div>
               <div class="stat-info">
-                <h3>14 Items</h3>
-                <p>Curated in Next Box</p>
+                <h3 id="dashboardLatestOrder">No Orders</h3>
+                <p>Latest Order</p>
               </div>
             </div>
           </div>
@@ -167,8 +167,8 @@
             <div class="stat-card">
               <div class="stat-icon purple"><i class="bi bi-wallet2"></i></div>
               <div class="stat-info">
-                <h3>&#8377;3,596</h3>
-                <p>August Spending</p>
+                <h3 id="dashboardTotalPaid">₹0</h3>
+                <p>Total Amount Paid</p>
               </div>
             </div>
           </div>
@@ -178,31 +178,31 @@
         <div class="row g-4 mb-4">
           <!-- Next Delivery Card -->
           <div class="col-lg-7">
-            <div class="fresh-card h-100">
+            <div class="fresh-card h-100 animate-fade-in">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <span class="badge bg-success px-3 py-2 fs-6">Next Delivery Status</span>
-                <span class="text-muted small"><i class="bi bi-shield-check text-success"></i> Payment Confirmed</span>
+                <span class="text-muted small" id="nextDeliveryStatusCheck"><i class="bi bi-shield-check text-success"></i> Payment Confirmed</span>
               </div>
-              <h4 class="fw-bold mb-1">Family Essentials Box #FB-8842</h4>
-              <p class="text-muted small mb-3">Scheduled for Friday, August 28, 2026 • Morning Slot (07:00 AM – 11:00 AM)</p>
+              <h4 class="fw-bold mb-1" id="nextDeliveryTitle">Family Essentials Box #FB-8842</h4>
+              <p class="text-muted small mb-3" id="nextDeliverySchedule">Scheduled for Friday, August 28, 2026 • Morning Slot (07:00 AM – 11:00 AM)</p>
 
-              <div class="p-3 bg-light rounded-3 mb-4">
+              <div class="p-3 bg-light rounded-3 mb-4" id="nextDeliveryProgressContainer">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                  <span class="fw-bold fs-6">Packing & Harvest Progress:</span>
-                  <span class="badge bg-primary">Preparing on Farm</span>
+                  <span class="fw-bold fs-6 text-dark">Packing & Harvest Progress:</span>
+                  <span class="badge bg-primary" id="nextDeliveryProgressBadge">Preparing on Farm</span>
                 </div>
                 <div class="progress" style="height: 8px;">
-                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 45%;"></div>
+                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="nextDeliveryProgressBar" role="progressbar" style="width: 45%;"></div>
                 </div>
                 <div class="d-flex justify-content-between small text-muted mt-2">
-                  <span>Harvested at Dawn</span>
-                  <span>Quality Inspected</span>
+                  <span>Harvested</span>
+                  <span>Inspected</span>
                   <span>Dispatched</span>
                   <span>Delivered</span>
                 </div>
               </div>
 
-              <div class="d-flex flex-wrap gap-2">
+              <div class="d-flex flex-wrap gap-2" id="nextDeliveryActions">
                 <a href="my-box.html" class="btn btn-outline-primary btn-sm">
                   <i class="bi bi-sliders"></i> Swap or Edit Items
                 </a>
@@ -218,24 +218,24 @@
 
           <!-- Quick Actions & Subscription Summary -->
           <div class="col-lg-5">
-            <div class="fresh-card h-100">
+            <div class="fresh-card h-100 animate-fade-in">
               <h5 class="fw-bold mb-3">Subscription Controls</h5>
               <ul class="list-unstyled d-flex flex-column gap-3 mb-4">
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Current Plan:</span>
-                  <span class="fw-bold text-dark">Family Essentials (&#8377;899/wk)</span>
+                  <span class="fw-bold text-dark" id="controlsPlanName">Family Essentials (&#8377;899/wk)</span>
                 </li>
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Delivery Frequency:</span>
-                  <span class="fw-bold text-success">Weekly (Every Friday)</span>
+                  <span class="fw-bold text-success" id="controlsFrequency">Weekly (Every Friday)</span>
                 </li>
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Default Address:</span>
-                  <span class="fw-bold text-dark text-truncate" style="max-width: 180px;">HSR Layout, Sector 1</span>
+                  <span class="fw-bold text-dark text-truncate" style="max-width: 180px;" id="controlsAddress">HSR Layout, Sector 1</span>
                 </li>
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Auto-Debit Method:</span>
-                  <span class="fw-bold text-dark"><i class="bi bi-credit-card"></i> Visa •••• 4242</span>
+                  <span class="fw-bold text-dark" id="controlsPaymentMethod"><i class="bi bi-credit-card"></i> Visa •••• 4242</span>
                 </li>
               </ul>
 
@@ -251,52 +251,13 @@
           </div>
         </div>
 
-        <!-- Recent Box Orders Table -->
+        <!-- Recent Orders -->
         <div class="fresh-card p-0">
           <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0">Recent Deliveries</h5>
+            <h5 class="fw-bold mb-0">Recent Orders</h5>
             <a href="orders.html" class="small text-success fw-bold">View All Orders &rarr;</a>
           </div>
-          <div class="table-responsive">
-            <table class="table custom-table mb-0">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Delivery Date</th>
-                  <th>Box Plan</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="fw-bold">#FB-8841</td>
-                  <td>Aug 21, 2026</td>
-                  <td>Family Essentials (14 Items)</td>
-                  <td>&#8377;899</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
-                  <td><a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">#FB-8835</td>
-                  <td>Aug 14, 2026</td>
-                  <td>Family Essentials + Extra Milk</td>
-                  <td>&#8377;974</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
-                  <td><a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a></td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">#FB-8829</td>
-                  <td>Aug 07, 2026</td>
-                  <td>Family Essentials (14 Items)</td>
-                  <td>&#8377;899</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
-                  <td><a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="p-4" id="recentOrdersList"></div>
         </div>
 
         <!-- Profile Information & Saved Addresses & Account Settings -->
@@ -313,8 +274,8 @@
                   <i class="bi bi-person-fill"></i>
                 </div>
                 <div>
-                  <h6 class="fw-bold mb-0">Chandru K.</h6>
-                  <span class="text-muted small">chandru@freshbox.com • +91 98450-12345</span>
+                  <h6 class="fw-bold mb-0" id="dashboardProfileName">Loading…</h6>
+                  <span class="text-muted small" id="dashboardProfileMeta">Loading account details…</span>
                 </div>
               </div>
               <div class="p-3 border rounded-3 mb-3">
@@ -322,8 +283,8 @@
                   <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-house-door-fill me-1"></i>Primary Delivery Address</span>
                   <a href="profile.html" class="small text-success fw-semibold">Change</a>
                 </div>
-                <p class="text-dark small mb-1 fw-semibold">Flat 402, Green Meadows Apartment</p>
-                <p class="text-muted small mb-0">14th Main, HSR Layout, Sector 1, Bangalore, Karnataka 560102</p>
+                <p class="text-dark small mb-1 fw-semibold">No delivery address saved.</p>
+                <p class="text-muted small mb-0">Add an address in your profile to use it for future deliveries.</p>
               </div>
               <div class="d-flex justify-content-between align-items-center text-muted small">
                 <span><i class="bi bi-bell-fill text-warning me-1"></i> Delivery Gate Code: <strong>#4402</strong></span>
@@ -405,7 +366,6 @@
   <script src="../assets/js/dashboard.js"></script>
 </body>
 </html>
-
 
 
 

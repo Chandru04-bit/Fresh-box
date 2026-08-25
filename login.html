@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -64,39 +64,19 @@
 
   <!-- Global Header / Navbar -->
   <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
-    <div class="container">
+    <div class="container d-flex justify-content-between align-items-center">
       <a class="navbar-brand" href="index.html">
         <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
         <span>Fresh</span>Box
       </a>
-
-      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-        <i class="bi bi-list fs-2"></i>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarMain">
-        <ul class="navbar-nav mx-auto mb-2 mb-xl-0">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-          <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-        </ul>
-
-        <div class="nav-actions">
-          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search products, plans and recipes">
-            <i class="bi bi-search search-icon"></i>
-            <span class="search-text">Search produce, plans...</span>
-          </div>
-          <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box" aria-label="View Current Box">
-            <i class="bi bi-bag"></i><span class="cart-badge">0</span>
-          </button>
-          <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode"><i class="bi bi-moon-stars-fill"></i></button>
-          <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode"><i class="bi bi-arrow-left-right"></i></button>
-          <div class="nav-auth-slot ms-1">
-            <a href="login.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
-          </div>
-        </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+        <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode">
+          <i class="bi bi-arrow-left-right"></i>
+        </button>
+        <a href="register.html" class="btn btn-outline-primary btn-sm">Create Account</a>
       </div>
     </div>
   </nav>
@@ -300,10 +280,35 @@
         return;
       }
 
+      const emailVal = email.value.trim().toLowerCase();
+      const passwordVal = password.value;
+
+      const users = freshboxApp.getStoredUsers();
+      const user = users.find(u => u.email.toLowerCase() === emailVal);
+
+      if (!user || user.password !== passwordVal) {
+        email.classList.add('is-invalid');
+        password.classList.add('is-invalid');
+        freshboxApp.showToast('Login Failed', 'Invalid email address or password.', 'danger');
+        return;
+      }
+
       submitButton.disabled = true;
       submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Signing in...';
-      freshboxApp.setAuth({ role: 'customer', name: email.value.trim().split('@')[0], email: email.value.trim() });
-      freshboxApp.showToast('Welcome back!', 'Redirecting to FreshBox...', 'success');
+      freshboxApp.setAuth({
+        role: 'customer',
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address || '',
+        city: user.city || '',
+        state: user.state || '',
+        postalCode: user.postalCode || '',
+        subscription: user.subscription || null,
+        notifications: user.notifications || []
+      });
+      freshboxApp.showToast('Welcome back!', 'Redirecting to home page...', 'success');
       setTimeout(() => window.location.href = 'index.html', 500);
     }
 

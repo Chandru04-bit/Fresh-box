@@ -128,22 +128,22 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" value="Chandru S." required>
+                  <input id="customerFullName" type="text" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
-                  <input type="email" class="form-control" value="chandru@freshbox.com" required>
+                  <input id="customerEmail" type="email" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
                   <div class="input-group">
                     <span class="input-group-text bg-light">+91</span>
-                    <input type="tel" class="form-control" value="98765 43210" required>
+                    <input id="customerPhone" type="tel" class="form-control" required>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">Alternative Phone (Optional)</label>
-                  <input type="tel" class="form-control" placeholder="Optional contact number">
+                  <input id="customerAltPhone" type="tel" class="form-control" placeholder="Optional contact number">
                 </div>
               </div>
             </div>
@@ -185,19 +185,19 @@
               <div class="row g-3">
                 <div class="col-12">
                   <label class="form-label fw-semibold">Street Address / Apartment / Suite <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" value="Flat 402, Green Valley Orchards, 100ft Road" required>
+                  <input id="deliveryStreetAddress" type="text" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label fw-semibold">City <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" value="Bengaluru" required>
+                  <input id="deliveryCity" type="text" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label fw-semibold">State <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" value="Karnataka" required>
+                  <input id="deliveryState" type="text" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label fw-semibold">PIN / Postal Code <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" value="560038" required>
+                  <input id="deliveryPostalCode" type="text" class="form-control" required>
                 </div>
                 <div class="col-12">
                   <label class="form-label fw-semibold">Delivery Instructions (Optional)</label>
@@ -231,7 +231,7 @@
                 <div id="upiFields" class="p-3 bg-light rounded-3 border mb-3">
                   <label class="form-label fw-semibold small">Enter your UPI ID (VPA)</label>
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="yourname@okhdfcbank" value="chandru@oksbi">
+                    <input type="text" class="form-control" placeholder="yourname@okhdfcbank">
                     <span class="input-group-text bg-success text-white"><i class="bi bi-check2"></i> Verified</span>
                   </div>
                   <div class="form-text small text-muted mt-1"><i class="bi bi-shield-lock"></i> A payment request will be triggered on your UPI app.</div>
@@ -456,6 +456,52 @@
   <script src="assets/js/main.js"></script>
 
   <script>
+    const planMap = {
+      veggie: { name: 'Veggie Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 499 },
+      family: { name: 'Family Essentials', frequency: 'weekly', frequencyLabel: 'Every Week', price: 899 },
+      organic: { name: 'Organic Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 1199 },
+      premium: { name: 'Premium Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 1599 }
+    };
+
+    (function initCheckoutSelection() {
+      const params = new URLSearchParams(window.location.search);
+      const selectedPlanKey = params.get('plan');
+      const savedPlanName = localStorage.getItem('freshbox_selected_plan');
+      const savedFrequency = localStorage.getItem('freshbox_subscription_freq');
+      const defaultPlan = { name: 'Weekly Delivery', frequency: 'weekly', frequencyLabel: 'Every Week', price: 899 };
+      const planConfig = planMap[selectedPlanKey] || (savedPlanName ? {
+        name: savedPlanName,
+        frequency: savedFrequency || 'weekly',
+        frequencyLabel: savedFrequency === 'biweekly' ? 'Every 2 Weeks' : savedFrequency === 'monthly' ? 'Monthly' : 'Every Week',
+        price: Number(localStorage.getItem('freshbox_selected_plan_price') || defaultPlan.price)
+      } : defaultPlan);
+
+      localStorage.setItem('freshbox_selected_plan', planConfig.name);
+      localStorage.setItem('freshbox_selected_plan_price', String(planConfig.price));
+      localStorage.setItem('freshbox_subscription_freq', planConfig.frequency || 'weekly');
+
+      const weeklyEl = document.getElementById('freqWeekly');
+      const biweeklyEl = document.getElementById('freqBiweekly');
+      const cardEl = document.getElementById('payCard');
+      const upiEl = document.getElementById('payUPI');
+      const netEl = document.getElementById('payNet');
+      const codEl = document.getElementById('payCOD');
+      if (weeklyEl) weeklyEl.checked = true;
+      const cards = document.querySelectorAll('.payment-method-card');
+      cards.forEach(function(card) {
+        const input = card.querySelector('input');
+        if (input && input.id === 'payUPI') {
+          card.classList.add('selected');
+        }
+      });
+      if (upiEl) upiEl.checked = true;
+      if (cardEl) cardEl.checked = false;
+      if (netEl) netEl.checked = false;
+      if (codEl) codEl.checked = false;
+      if (document.getElementById('cardFields')) document.getElementById('cardFields').classList.add('d-none');
+      if (document.getElementById('upiFields')) document.getElementById('upiFields').classList.remove('d-none');
+    })();
+
     function selectFrequency(el, type) {
       document.querySelectorAll('input[name="subFreq"]').forEach(function(r) {
         r.closest('.payment-method-card').classList.remove('selected');

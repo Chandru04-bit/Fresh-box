@@ -96,19 +96,19 @@
               <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6 mb-2" id="subStatusBadge">
                 <i class="bi bi-check-circle-fill me-1"></i> Active Subscription
               </span>
-              <h2 class="fw-bold mb-1">Family Essentials Box</h2>
-              <p class="text-muted small mb-0">Subscribed since January 12, 2026 • Renews automatically</p>
+              <h2 class="fw-bold mb-1" id="subPlanTitle">Family Essentials Box</h2>
+              <p class="text-muted small mb-0" id="subPlanMeta">Subscribed since January 12, 2026 • Renews automatically</p>
             </div>
             <div class="text-md-end">
-              <span class="display-6 fw-bold text-success">&#8377;899</span>
-              <span class="text-muted">/ weekly shipment</span>
+              <span class="display-6 fw-bold text-success" id="subPlanPrice">&#8377;899</span>
+              <span class="text-muted" id="subPlanUnit">/ weekly shipment</span>
             </div>
           </div>
 
           <div class="row g-4 mb-4">
             <div class="col-md-3 col-6">
               <span class="text-muted small d-block">Delivery Frequency</span>
-              <span class="fw-bold text-dark fs-6">Weekly (Every Friday)</span>
+              <span class="fw-bold text-dark fs-6" id="subPlanFrequency">Weekly (Every Friday)</span>
             </div>
             <div class="col-md-3 col-6">
               <span class="text-muted small d-block">Next Delivery Date</span>
@@ -120,12 +120,12 @@
             </div>
             <div class="col-md-3 col-6">
               <span class="text-muted small d-block">Payment Method</span>
-              <span class="fw-bold text-dark fs-6"><i class="bi bi-credit-card me-1"></i> Visa ending 4242</span>
+              <span class="fw-bold text-dark fs-6" id="subPaymentMethod"><i class="bi bi-credit-card me-1"></i> Visa ending 4242</span>
             </div>
           </div>
 
           <!-- Action Buttons Row -->
-          <div class="d-flex flex-wrap gap-2 pt-3 border-top">
+          <div class="d-flex flex-wrap gap-2 pt-3 border-top w-100" id="subscriptionActionsContainer">
             <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#changePlanModal">
               <i class="bi bi-arrow-left-right"></i> Change Plan Size
             </button>
@@ -184,29 +184,29 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold">Switch Subscription Plan</h5>
+          <h5 class="modal-title fw-bold text-dark">Switch Subscription Plan</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="form-check p-3 border rounded-3 mb-2">
-            <input class="form-check-input" type="radio" name="planSelectOption" id="planOpt1">
-            <label class="form-check-label fw-bold d-block" for="planOpt1">Veggie Box (&#8377;499/week)</label>
+            <input class="form-check-input" type="radio" name="planSelectOption" id="planOpt1" value="Veggie Box">
+            <label class="form-check-label fw-bold d-block text-dark" for="planOpt1">Veggie Box (&#8377;499/week)</label>
             <small class="text-muted">8-10 kg Seasonal Vegetables</small>
           </div>
           <div class="form-check p-3 border rounded-3 mb-2 bg-light">
-            <input class="form-check-input" type="radio" name="planSelectOption" id="planOpt2" checked>
-            <label class="form-check-label fw-bold d-block" for="planOpt2">Family Essentials (&#8377;899/week) - Current</label>
+            <input class="form-check-input" type="radio" name="planSelectOption" id="planOpt2" value="Family Essentials" checked>
+            <label class="form-check-label fw-bold d-block text-dark" for="planOpt2">Family Essentials (&#8377;899/week) - Current</label>
             <small class="text-muted">14-16 kg Produce + 2L Farm Milk</small>
           </div>
           <div class="form-check p-3 border rounded-3 mb-2">
-            <input class="form-check-input" type="radio" name="planSelectOption" id="planOpt3">
-            <label class="form-check-label fw-bold d-block" for="planOpt3">100% Organic Box (&#8377;1,199/week)</label>
+            <input class="form-check-input" type="radio" name="planSelectOption" id="planOpt3" value="100% Organic Box">
+            <label class="form-check-label fw-bold d-block text-dark" for="planOpt3">100% Organic Box (&#8377;1,199/week)</label>
             <small class="text-muted">Certified Organic Fruits & Veggies + A2 Milk</small>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('changePlanModal')).hide(); freshboxApp.showToast('Plan Updated', 'Your plan has been updated.', 'success');">Confirm Change</button>
+          <button type="button" class="btn btn-primary" id="confirmChangePlanBtn">Confirm Change</button>
         </div>
       </div>
     </div>
@@ -217,22 +217,22 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold">Change Delivery Frequency</h5>
+          <h5 class="modal-title fw-bold text-dark">Change Delivery Frequency</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="form-check p-3 border rounded-3 mb-2 bg-light">
-            <input class="form-check-input" type="radio" name="freqRadio" id="frWeekly" checked>
-            <label class="form-check-label fw-bold d-block" for="frWeekly">Weekly (Every Friday) - Current</label>
+            <input class="form-check-input" type="radio" name="freqRadio" id="frWeekly" value="Weekly" checked>
+            <label class="form-check-label fw-bold d-block text-dark" for="frWeekly">Weekly (Every Friday) - Current</label>
           </div>
           <div class="form-check p-3 border rounded-3 mb-2">
-            <input class="form-check-input" type="radio" name="freqRadio" id="frBiweekly">
-            <label class="form-check-label fw-bold d-block" for="frBiweekly">Biweekly (Every 2nd Friday)</label>
+            <input class="form-check-input" type="radio" name="freqRadio" id="frBiweekly" value="Biweekly">
+            <label class="form-check-label fw-bold d-block text-dark" for="frBiweekly">Biweekly (Every 2nd Friday)</label>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('changeFreqModal')).hide(); freshboxApp.showToast('Frequency Updated', 'Delivery frequency updated.', 'success');">Save Frequency</button>
+          <button type="button" class="btn btn-primary" id="confirmChangeFreqBtn">Save Frequency</button>
         </div>
       </div>
     </div>
@@ -248,12 +248,12 @@
         </div>
         <div class="modal-body">
           <p>Choose when you would like your weekly subscription deliveries to automatically resume:</p>
-          <select class="form-select mb-3">
-            <option value="1">Pause for 1 Week (Resume Sept 4, 2026)</option>
-            <option value="2">Pause for 2 Weeks (Resume Sept 11, 2026)</option>
-            <option value="4">Pause for 1 Month (Resume Sept 25, 2026)</option>
+          <select class="form-select mb-3" id="pauseDurationSelect">
+            <option value="1">Pause for 1 Week</option>
+            <option value="2">Pause for 2 Weeks</option>
+            <option value="4">Pause for 4 Weeks</option>
           </select>
-          <small class="text-muted"><i class="bi bi-info-circle"></i> You can unpause anytime before your scheduled resume date.</small>
+          <small class="text-muted"><i class="bi bi-info-circle"></i> You can resume your subscription at any time.</small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Keep Active</button>
@@ -273,7 +273,7 @@
         </div>
         <div class="modal-body">
           <p>We're sorry to see you go! Would you like to pause instead so you don't lose your locked-in weekly discount?</p>
-          <label class="form-label small fw-bold">Reason for cancellation (optional):</label>
+          <label class="form-label small fw-bold text-dark">Reason for cancellation (optional):</label>
           <select class="form-select mb-3">
             <option>Traveling / Relocating</option>
             <option>Too much produce</option>
@@ -284,7 +284,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Keep Subscription</button>
-          <button type="button" class="btn btn-danger" onclick="bootstrap.Modal.getInstance(document.getElementById('cancelSubModal')).hide(); freshboxApp.showToast('Subscription Cancelled', 'Your subscription has been cancelled with no penalty.', 'danger'); document.getElementById('subStatusBadge').className='badge bg-danger text-white px-3 py-2 fs-6'; document.getElementById('subStatusBadge').textContent='Cancelled';">Confirm Cancellation</button>
+          <button type="button" class="btn btn-danger" id="confirmCancelSubBtn">Confirm Cancellation</button>
         </div>
       </div>
     </div>

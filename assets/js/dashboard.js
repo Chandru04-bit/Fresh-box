@@ -1,4 +1,4 @@
-﻿/**
+/**
  * FreshBox - Dashboard JavaScript (Customer Portal & Admin Panel)
  * Handles Sidebar toggle, Chart.js Visualizations, Subscription Actions, and Modals
  */
@@ -120,35 +120,34 @@
 
   // --- Customer Portal Action Handlers ---
   function initCustomerActions() {
-    // Pause Subscription action
-    const pauseBtn = document.getElementById('confirmPauseSubBtn');
-    if (pauseBtn) {
-      pauseBtn.addEventListener('click', () => {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('pauseSubModal'));
-        if (modal) modal.hide();
-        const badge = document.getElementById('subStatusBadge');
-        if (badge) {
-          badge.className = 'badge bg-warning text-dark px-3 py-2 fs-6';
-          badge.textContent = 'Paused (Resumes Sept 15)';
-        }
-        if (window.showToast) {
-          window.showToast('Subscription Paused', 'Your subscription is paused until September 15.', 'warning');
-        }
-      });
-    }
-
     // Skip Next Delivery action
     const skipBtn = document.getElementById('confirmSkipDeliveryBtn');
     if (skipBtn) {
       skipBtn.addEventListener('click', () => {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('skipDeliveryModal'));
+        if (!window.freshboxApp) return;
+        const user = freshboxApp.getLoggedUser();
+        if (!user || !user.subscription) return;
+
+        const modalEl = document.getElementById('skipDeliveryModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
-        const nextDeliveryEl = document.getElementById('nextDeliveryDateText');
-        if (nextDeliveryEl) {
-          nextDeliveryEl.innerHTML = '<span class="text-danger">Skipped</span> &rarr; Next: <strong>Sept 11, 2026</strong>';
-        }
-        if (window.showToast) {
-          window.showToast('Delivery Skipped', 'Your delivery for Sept 4 has been skipped at no charge.', 'info');
+
+        const currentRenewal = new Date(user.subscription.renewalDate);
+        currentRenewal.setDate(currentRenewal.getDate() + 7);
+        user.subscription.renewalDate = currentRenewal.toISOString();
+
+        const users = freshboxApp.getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj) {
+          userObj.subscription.renewalDate = user.subscription.renewalDate;
+          freshboxApp.saveStoredUsers(users);
+
+          freshboxApp.addNotification('Delivery Skipped', `Your next delivery has been skipped. The next scheduled box will arrive on Friday, ${currentRenewal.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}.`);
+
+          if (window.showToast) {
+            window.showToast('Delivery Skipped', 'Next delivery rescheduled by 1 week.', 'info');
+          }
+          window.dispatchEvent(new Event('storage'));
         }
       });
     }
@@ -158,8 +157,11 @@
       if (window.showToast) {
         window.showToast('Item Swapped', `Replaced ${oldName} with ${newName} in your upcoming box.`, 'success');
       }
-      const modal = bootstrap.Modal.getInstance(document.getElementById('swapItemModal'));
-      if (modal) modal.hide();
+      const modalEl = document.getElementById('swapItemModal');
+      if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+      }
     };
 
     // Save Box Changes
@@ -170,7 +172,7 @@
         saveBoxBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving Changes...';
         setTimeout(() => {
           saveBoxBtn.disabled = false;
-          saveBoxBtn.innerHTML = '<i class="bi bi-check2-circle me-2"></i>Saved Successfully';
+          saveBoxBtn.innerHTML = '<i class="bi bi-check2-circle me-2"></i>Saved Selections';
           if (window.showToast) {
             window.showToast('Box Updated', 'Your grocery selections for next week have been saved.', 'success');
           }
@@ -208,5 +210,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initSidebarToggle();
     initCustomerActions();
+    initAdminCharts();
+    initAdminActions();
   });
 })();

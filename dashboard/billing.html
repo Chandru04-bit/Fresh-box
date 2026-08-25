@@ -136,15 +136,15 @@
                 </li>
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Rate per Shipment:</span>
-                  <span class="fw-bold text-success fs-5">&#8377;899</span>
+                  <span class="fw-bold text-success fs-5" id="billingRatePerShipment">&#8377;899</span>
                 </li>
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Next Charge Date:</span>
-                  <span class="fw-bold text-dark">Thursday, Aug 27, 2026</span>
+                  <span class="fw-bold text-dark" id="billingNextChargeDate">Thursday, Aug 27, 2026</span>
                 </li>
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Total YTD Spent:</span>
-                  <span class="fw-bold text-dark">&#8377;28,768 (32 Boxes)</span>
+                  <span class="fw-bold text-dark" id="billingTotalYTDSpent">&#8377;28,768 (32 Boxes)</span>
                 </li>
               </ul>
             </div>
@@ -164,47 +164,13 @@
                   <th>Date</th>
                   <th>Description</th>
                   <th>Amount</th>
+                  <th>Method</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td class="fw-bold">INV-2026-0842</td>
-                  <td>Aug 21, 2026</td>
-                  <td>Family Essentials Weekly Box</td>
-                  <td class="fw-bold text-success">&#8377;899</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Paid</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary py-0 px-2" data-bs-toggle="modal" data-bs-target="#invoiceModal">
-                      <i class="bi bi-printer"></i> View & Print
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">INV-2026-0835</td>
-                  <td>Aug 14, 2026</td>
-                  <td>Family Essentials + Extra A2 Milk</td>
-                  <td class="fw-bold text-success">&#8377;974</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Paid</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary py-0 px-2" data-bs-toggle="modal" data-bs-target="#invoiceModal">
-                      <i class="bi bi-printer"></i> View & Print
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">INV-2026-0829</td>
-                  <td>Aug 07, 2026</td>
-                  <td>Family Essentials Weekly Box</td>
-                  <td class="fw-bold text-success">&#8377;899</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Paid</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary py-0 px-2" data-bs-toggle="modal" data-bs-target="#invoiceModal">
-                      <i class="bi bi-printer"></i> View & Print
-                    </button>
-                  </td>
-                </tr>
+              <tbody id="billingInvoicesTableBody">
+                <!-- Dynamic Invoices -->
               </tbody>
             </table>
           </div>
@@ -219,60 +185,11 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold">Tax Invoice #INV-2026-0842</h5>
+          <h5 class="modal-title fw-bold text-dark" id="invoiceModalTitle">Tax Invoice</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body p-4">
-          <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
-            <div>
-              <h4 class="fw-bold text-success mb-1">FreshBox Technologies Pvt Ltd</h4>
-              <small class="text-muted d-block">GSTIN: 29AABCU9603R1ZM</small>
-              <small class="text-muted d-block">HSR Layout Sector 1, Bangalore 560102</small>
-            </div>
-            <div class="text-end">
-              <span class="badge bg-success px-3 py-2">PAID IN FULL</span>
-              <small class="text-muted d-block mt-1">Date: 21 Aug 2026</small>
-            </div>
-          </div>
-
-          <div class="row mb-4">
-            <div class="col-6">
-              <span class="text-muted small d-block">Billed To:</span>
-              <h6 class="fw-bold mb-0">Chandru K.</h6>
-              <small class="text-muted">chandru@freshbox.com • +91 98450-12345</small>
-            </div>
-            <div class="col-6 text-end">
-              <span class="text-muted small d-block">Payment Transaction ID:</span>
-              <code class="fw-bold text-dark">TXN_987412589632</code>
-            </div>
-          </div>
-
-          <table class="table table-bordered small mb-3">
-            <thead class="bg-light">
-              <tr>
-                <th>Item Description</th>
-                <th class="text-center">HSN</th>
-                <th class="text-center">Qty</th>
-                <th class="text-end">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Family Essentials Weekly Subscription Box (Fresh Produce)</td>
-                <td class="text-center">0709</td>
-                <td class="text-center">1</td>
-                <td class="text-end">&#8377;856.19</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="text-end fw-bold">GST (5%):</td>
-                <td class="text-end fw-bold">&#8377;42.81</td>
-              </tr>
-              <tr class="table-success">
-                <td colspan="3" class="text-end fw-bold fs-6">Grand Total:</td>
-                <td class="text-end fw-bold fs-6">&#8377;899.00</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="modal-body p-4" id="invoiceModalBody">
+          <!-- Dynamic invoice template -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>

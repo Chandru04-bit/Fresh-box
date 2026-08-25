@@ -6,6 +6,25 @@
 (function () {
   'use strict';
 
+  // Synchronous route protection check
+  const AUTH_BOOTSTRAP_KEY = 'freshbox_auth_user';
+  const rawAuth = localStorage.getItem(AUTH_BOOTSTRAP_KEY);
+  let isCustomer = false;
+  if (rawAuth) {
+    try {
+      const parsed = JSON.parse(rawAuth);
+      if (parsed && parsed.role === 'customer') {
+        isCustomer = true;
+      }
+    } catch (e) {}
+  }
+  const isDashboardPage = window.location.pathname.includes('/dashboard/');
+  if (isDashboardPage && !isCustomer) {
+    // Determine redirect prefix depending on exact path nesting
+    window.location.href = '../login.html';
+    return;
+  }
+
   // Central social destination configuration. Replace these with FreshBox's
   // verified profile URLs when they are available; every social control on the
   // site is populated from this one object.
@@ -284,31 +303,266 @@
     }
   ];
 
-  // --- Auth State Management ---
+  // --- Auth & User State Management ---
   const AUTH_KEY = 'freshbox_auth_user';
+  const USERS_KEY = 'freshbox_users';
+
+  function getStoredUsers() {
+    try {
+      const raw = localStorage.getItem(USERS_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+
+      const filtered = parsed.filter((user) => {
+        if (!user || typeof user !== 'object') return false;
+        const email = String(user.email || '').trim().toLowerCase();
+        const id = String(user.id || '');
+        return email !== 'chandru@freshbox.com' && id !== 'user_default';
+      });
+
+      if (filtered.length !== parsed.length) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(filtered));
+      }
+
+      return filtered;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveStoredUsers(users) {
+    const cleaned = Array.isArray(users)
+      ? users.filter((user) => {
+          if (!user || typeof user !== 'object') return false;
+          const email = String(user.email || '').trim().toLowerCase();
+          const id = String(user.id || '');
+          return email !== 'chandru@freshbox.com' && id !== 'user_default';
+        })
+      : [];
+    localStorage.setItem(USERS_KEY, JSON.stringify(cleaned));
+  }
 
   function getAuthUser() {
     const saved = localStorage.getItem(AUTH_KEY);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { }
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.role === 'customer') {
+          const users = getStoredUsers();
+          const match = users.find(u => u.email.toLowerCase() === parsed.email.toLowerCase());
+          if (match) {
+            return {
+              role: 'customer',
+              id: match.id,
+              name: match.name,
+              email: match.email,
+              phone: match.phone,
+              address: match.address || '',
+              city: match.city || '',
+              state: match.state || '',
+              postalCode: match.postalCode || '',
+              subscription: match.subscription || null,
+              notifications: match.notifications || []
+            };
+          }
+          return parsed;
+        }
+        return { role: 'guest' };
+      } catch (e) { }
     }
-    // Default demo logged-in user: Chandru
-    return {
-      role: 'customer',
-      name: 'Chandru',
-      email: 'chandru@freshbox.com',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80'
-    };
+    return { role: 'guest' };
   }
 
   function setAuthUser(user) {
     if (!user || user.role === 'guest') {
       localStorage.setItem(AUTH_KEY, JSON.stringify({ role: 'guest' }));
+      localStorage.removeItem(CURRENT_CUSTOMER_KEY);
     } else {
       localStorage.setItem(AUTH_KEY, JSON.stringify(user));
     }
     renderAuthUI();
   }
+
+  function getLoggedUser() {
+    const auth = getAuthUser();
+    if (!auth || auth.role !== 'customer') return null;
+    const users = getStoredUsers();
+    return users.find(u => u.email.toLowerCase() === auth.email.toLowerCase()) || null;
+  }
+
+  // Account data is created only from actual registration and successful checkout.
+  // Do not seed a demo customer into localStorage.
+
+  // --- Notifications Management ---
+  function getNotifications() {
+    const user = getLoggedUser();
+    return user ? (user.notifications || []) : [];
+  }
+
+  function addNotification(title, message) {
+    const auth = getAuthUser();
+    if (!auth || auth.role !== 'customer') return;
+    const users = getStoredUsers();
+    const user = users.find(u => u.email.toLowerCase() === auth.email.toLowerCase());
+    if (user) {
+      if (!user.notifications) user.notifications = [];
+      user.notifications.unshift({
+        id: 'notif_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+        title,
+        message,
+        date: new Date().toISOString(),
+        read: false
+      });
+      saveStoredUsers(users);
+      if (window.renderNotificationsUI) {
+        window.renderNotificationsUI();
+      }
+    }
+  }
+
+  function markAllNotificationsRead(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const auth = getAuthUser();
+    if (!auth || auth.role !== 'customer') return;
+    const users = getStoredUsers();
+    const user = users.find(u => u.email.toLowerCase() === auth.email.toLowerCase());
+    if (user && user.notifications) {
+      user.notifications.forEach(n => n.read = true);
+      saveStoredUsers(users);
+      if (window.renderNotificationsUI) {
+        window.renderNotificationsUI();
+      }
+    }
+  }
+
+  function escapeHTML(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatNotificationTime(dateStr) {
+    try {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function renderNotificationsUI() {
+    const itemsContainer = document.getElementById('notificationItems');
+    const badgeEl = document.getElementById('notificationBadge');
+    if (!itemsContainer) return;
+
+    const notifications = getNotifications();
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    if (badgeEl) {
+      if (unreadCount > 0) {
+        badgeEl.textContent = unreadCount;
+        badgeEl.classList.remove('d-none');
+      } else {
+        badgeEl.classList.add('d-none');
+      }
+    }
+
+    if (notifications.length === 0) {
+      itemsContainer.innerHTML = `
+        <div class="text-center py-4 text-muted">
+          <i class="bi bi-bell-slash display-6 d-block mb-2"></i>
+          <p class="mb-0 small">No notifications yet.</p>
+        </div>
+      `;
+      return;
+    }
+
+    itemsContainer.innerHTML = notifications.map(n => {
+      const timeStr = formatNotificationTime(n.date);
+      const bgClass = n.read ? '' : 'bg-light-subtle fw-semibold';
+      const indicator = n.read ? '' : '<span class="position-absolute top-50 end-0 translate-middle-y me-3 badge rounded-circle bg-success p-1" style="width: 8px; height: 8px;"><span class="visually-hidden">New</span></span>';
+      return `
+        <li class="dropdown-item p-3 border-bottom position-relative ${bgClass}" style="white-space: normal;">
+          <div class="pe-4">
+            <div class="small fw-bold text-dark mb-1">${escapeHTML(n.title)}</div>
+            <p class="mb-1 text-muted small" style="line-height: 1.4; font-size: 0.8rem;">${escapeHTML(n.message)}</p>
+            <span class="text-secondary small" style="font-size: 0.72rem;">${timeStr}</span>
+          </div>
+          ${indicator}
+        </li>
+      `;
+    }).join('');
+  }
+
+  function initNotificationUI() {
+    const isSubfolder = window.location.pathname.includes('/dashboard/');
+    if (!isSubfolder) return;
+
+    const themeToggle = document.querySelector('.theme-toggle-btn');
+    if (!themeToggle) return;
+
+    if (document.getElementById('notificationBadge')) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'dropdown notification-dropdown me-1';
+    wrapper.innerHTML = `
+      <button class="nav-action-btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+        <i class="bi bi-bell"></i>
+        <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.65rem; padding: 0.25em 0.4em;">0</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm p-0" style="width: 320px; max-height: 380px; overflow: hidden;" id="notificationList">
+        <li class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+          <h6 class="fw-bold mb-0 text-dark">Notifications</h6>
+          <button class="btn btn-sm btn-link text-success p-0 text-decoration-none fw-bold" onclick="freshboxApp.markAllNotificationsRead(event)">Mark all as read</button>
+        </li>
+        <div id="notificationItems" style="max-height: 300px; overflow-y: auto;">
+          <!-- Dynamic notification items -->
+        </div>
+      </ul>
+    `;
+
+    themeToggle.parentNode.insertBefore(wrapper, themeToggle);
+    renderNotificationsUI();
+  }
+
+  function updateDashboardHeader() {
+    const user = getLoggedUser();
+    if (!user) return;
+
+    // Update Topbar welcome
+    const welcomeEls = document.querySelectorAll('.dashboard-topbar h5, header.dashboard-topbar h5');
+    welcomeEls.forEach(el => {
+      const welcomeText = el.nextElementSibling;
+      if (welcomeText && welcomeText.classList.contains('text-muted') && welcomeText.textContent.includes('Welcome back')) {
+        welcomeText.textContent = `Welcome back, ${user.name.split(' ')[0]}`;
+      }
+    });
+
+    // Update Dropdown name
+    const dropdownNames = document.querySelectorAll('.nav-user-dropdown button span.d-none, .nav-user-dropdown button span.d-sm-inline');
+    dropdownNames.forEach(el => {
+      if (!el.classList.contains('nav-user-avatar')) {
+        el.textContent = user.name.split(' ')[0];
+      }
+    });
+  }
+
+  window.renderNotificationsUI = renderNotificationsUI;
 
   function renderAuthUI() {
     const user = getAuthUser();
@@ -324,7 +578,7 @@
           </a>
         `;
       } else {
-        const displayName = user.name || 'Chandru';
+        const displayName = user.name || 'User';
         slot.innerHTML = `
           <div class="dropdown nav-user-dropdown">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
@@ -821,56 +1075,42 @@
     const discountRow = document.getElementById('checkoutDiscountRow');
     const deliveryEl = document.getElementById('checkoutDelivery');
     const totalEl = document.getElementById('checkoutTotal');
+    const payBtn = document.getElementById('placeOrderBtn');
 
     if (!listEl) return;
 
-    const cart = getCart();
-    if (cart.length === 0) {
-      listEl.innerHTML = '<p class="text-muted small text-center my-3">No items in your order.</p>';
-      return;
-    }
+    const selectedPlan = getSelectedPlanConfig();
+    const subtotal = Number(selectedPlan.price || 0);
+    const delivery = 0;
+    const finalTotal = subtotal;
 
-    let html = '';
-    cart.forEach(item => {
-      html += `
-        <div class="checkout-item-row">
-          <div class="d-flex align-items-center gap-3 min-width-0 flex-grow-1">
-            <div class="checkout-item-img-wrap">
-              <img src="${item.image}" alt="${item.name}" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;">
-            </div>
-            <div class="min-width-0 flex-grow-1">
-              <span class="fw-semibold text-dark fs-6 d-block text-truncate">${item.name}</span>
-              <small class="text-muted d-block text-truncate">${item.qty} × ₹${item.price} (${item.unit})</small>
-            </div>
+    listEl.innerHTML = `
+      <div class="checkout-item-row">
+        <div class="d-flex align-items-center gap-3 min-width-0 flex-grow-1">
+          <div class="checkout-item-img-wrap">
+            <img src="assets/images/plans/freshbox-subscription.jpg" alt="${selectedPlan.name}" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;">
           </div>
-          <div class="checkout-item-price">
-            <span class="fw-bold text-dark">₹${item.price * item.qty}</span>
+          <div class="min-width-0 flex-grow-1">
+            <span class="fw-semibold text-dark fs-6 d-block text-truncate">${selectedPlan.name}</span>
+            <small class="text-muted d-block text-truncate">1 × ₹${selectedPlan.price} (${selectedPlan.frequencyLabel})</small>
           </div>
         </div>
-      `;
-    });
-    listEl.innerHTML = html;
-
-    const subtotal = getCartSubtotal();
-    const coupon = getAppliedCoupon();
-    let discount = 0;
-    if (coupon) {
-      discount = coupon.type === 'percent' ? Math.round(subtotal * coupon.value) : Math.min(coupon.value, subtotal);
-    }
-    const delivery = subtotal > 500 ? 0 : 50;
-    const finalTotal = Math.max(0, subtotal - discount + delivery);
+        <div class="checkout-item-price">
+          <span class="fw-bold text-dark">₹${selectedPlan.price}</span>
+        </div>
+      </div>
+    `;
 
     if (subtotalEl) subtotalEl.textContent = `₹${subtotal}`;
     if (discountRow) {
-      if (discount > 0) {
-        discountRow.classList.remove('d-none');
-        if (discountEl) discountEl.textContent = `-₹${discount} (${coupon.code})`;
-      } else {
-        discountRow.classList.add('d-none');
-      }
+      discountRow.classList.add('d-none');
+      if (discountEl) discountEl.textContent = '-₹0';
     }
-    if (deliveryEl) deliveryEl.textContent = delivery === 0 ? 'FREE' : `₹${delivery}`;
+    if (deliveryEl) deliveryEl.textContent = 'FREE';
     if (totalEl) totalEl.textContent = `₹${finalTotal}`;
+    if (payBtn) {
+      payBtn.innerHTML = `<i class="bi bi-lock-fill me-2"></i> Pay ₹${finalTotal}`;
+    }
   }
 
   // --- Quick View Modal Helper ---
@@ -1067,27 +1307,1358 @@
     });
   }
 
-  // --- Demo Checkout Processor ---
+  // --- Order Persistence & Dashboard Data ---
+  const ORDERS_KEY = 'freshbox_orders';
+  const LATEST_ORDER_KEY = 'freshbox_latest_order';
+  const CURRENT_CUSTOMER_KEY = 'freshbox_current_customer';
+
+  function formatCurrency(value) {
+    const numericValue = Number(value || 0);
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(numericValue);
+  }
+
+  function getStoredOrders() {
+    try {
+      const raw = localStorage.getItem(ORDERS_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveStoredOrders(orders) {
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+  }
+
+  function getSelectedPlanConfig() {
+    const selectedPlanName = (localStorage.getItem('freshbox_selected_plan') || '').trim();
+    const savedFreq = (localStorage.getItem('freshbox_subscription_freq') || localStorage.getItem('freshbox_frequency') || 'weekly').toLowerCase();
+
+    const planMap = {
+      weekly: {
+        name: 'Weekly Delivery',
+        frequency: 'Weekly',
+        frequencyLabel: 'Every Week',
+        price: 899,
+        itemName: 'Weekly Delivery Subscription',
+        key: 'weekly'
+      },
+      biweekly: {
+        name: 'Biweekly Delivery',
+        frequency: 'Biweekly',
+        frequencyLabel: 'Every 2 Weeks',
+        price: 949,
+        itemName: 'Biweekly Delivery Subscription',
+        key: 'biweekly'
+      },
+      monthly: {
+        name: 'Monthly Delivery',
+        frequency: 'Monthly',
+        frequencyLabel: 'Monthly',
+        price: 3399,
+        itemName: 'Monthly Delivery Subscription',
+        key: 'monthly'
+      }
+    };
+
+    if (/weekly/i.test(selectedPlanName)) return planMap.weekly;
+    if (/biweekly|every 2 weeks/i.test(selectedPlanName)) return planMap.biweekly;
+    if (/monthly/i.test(selectedPlanName)) return planMap.monthly;
+
+    if (planMap[savedFreq]) return planMap[savedFreq];
+
+    return planMap.weekly;
+  }
+
+  function buildOrderFromCheckout() {
+    const form = document.getElementById('checkoutForm');
+    const customerName = form ? (document.getElementById('customerFullName')?.value || '').trim() : '';
+    const customerEmail = form ? (document.getElementById('customerEmail')?.value || '').trim() : '';
+    const customerPhone = form ? (document.getElementById('customerPhone')?.value || '').trim() : '';
+    const altPhone = form ? (document.getElementById('customerAltPhone')?.value || '').trim() : '';
+    const customerAddress = form ? (document.getElementById('deliveryStreetAddress')?.value || '').trim() : '';
+    const city = form ? (document.getElementById('deliveryCity')?.value || '').trim() : '';
+    const state = form ? (document.getElementById('deliveryState')?.value || '').trim() : '';
+    const postalCode = form ? (document.getElementById('deliveryPostalCode')?.value || '').trim() : '';
+    const deliveryAddress = [customerAddress, city, state, postalCode].filter(Boolean).join(', ');
+    const selectedPlanConfig = getSelectedPlanConfig();
+    const selectedPlan = selectedPlanConfig.name;
+    const planPrice = Number(selectedPlanConfig.price || 0);
+    const paymentMethod = document.querySelector('input[name="paymentOption"]:checked')?.id || 'payUPI';
+    const paymentMethodLabel = paymentMethod === 'payCard' ? 'Card' : paymentMethod === 'payNet' ? 'Net Banking' : paymentMethod === 'payCOD' ? 'Cash on Delivery' : 'UPI';
+    const today = new Date();
+    const startDate = new Date(today);
+    const endDate = new Date(today);
+    endDate.setMonth(endDate.getMonth() + 1);
+    const orderTotal = planPrice;
+
+    return {
+      orderId: 'ORD-' + String(Math.floor(100000 + Math.random() * 900000)),
+      customerName,
+      customerEmail,
+      customerPhone,
+      alternativePhone: altPhone,
+      selectedPlan,
+      planPrice,
+      subscriptionFrequency: selectedPlanConfig.frequencyLabel,
+      orderDate: today.toISOString(),
+      paymentDate: today.toISOString(),
+      paymentMethod: paymentMethodLabel,
+      paymentStatus: paymentMethod === 'payCOD' ? 'Pending' : 'Paid',
+      orderStatus: 'Confirmed',
+      deliveryAddress,
+      subscriptionStartDate: startDate.toISOString(),
+      subscriptionEndDate: endDate.toISOString(),
+      amount: orderTotal,
+      items: [{
+        id: 'plan_' + selectedPlanConfig.key,
+        name: selectedPlanConfig.itemName,
+        image: 'assets/images/plans/freshbox-subscription.jpg',
+        price: planPrice,
+        quantity: 1,
+        unit: selectedPlanConfig.frequencyLabel
+      }],
+      subtotal: orderTotal,
+      deliveryFee: 0,
+      discount: 0,
+      totalAmount: orderTotal,
+      currency: 'INR'
+    };
+  }
+
+  function getUserOrders() {
+    const user = getCurrentCustomerProfile();
+    const normalizedEmail = (user.email || '').trim().toLowerCase();
+    const orders = getStoredOrders();
+
+    if (!normalizedEmail) {
+      return [];
+    }
+
+    return orders
+      .filter(order => (order.customerEmail || '').trim().toLowerCase() === normalizedEmail)
+      .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+  }
+
+  function renderDashboardStats() {
+    const user = getLoggedUser();
+    if (!user) return;
+
+    const orders = getUserOrders();
+    const latestOrder = orders[0] || null;
+    const totalPaid = orders
+      .filter(o => o.paymentStatus === 'Paid')
+      .reduce((sum, order) => sum + Number(order.totalAmount || order.amount || 0), 0);
+
+    const setValue = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    // 1. KPI Cards
+    setValue('dashboardTotalOrders', String(orders.length));
+    setValue('dashboardActiveSubscription', user.subscription && user.subscription.status !== 'Cancelled' ? user.subscription.plan : 'No Active Plan');
+    setValue('dashboardLatestOrder', latestOrder ? latestOrder.orderId : 'No Orders');
+    setValue('dashboardTotalPaid', formatCurrency(totalPaid));
+
+    // 2. Welcome headers
+    const welcomeEl = document.getElementById('dashboardWelcomeName');
+    if (welcomeEl) {
+      welcomeEl.textContent = `Welcome back, ${user.name}`;
+    }
+
+    const profileNameEl = document.getElementById('dashboardProfileName');
+    if (profileNameEl) profileNameEl.textContent = user.name;
+
+    const profileMetaEl = document.getElementById('dashboardProfileMeta');
+    if (profileMetaEl) {
+      const phone = user.phone ? ` • ${user.phone}` : '';
+      profileMetaEl.textContent = `${user.email}${phone}`;
+    }
+
+    // 3. Next Delivery Card and Progress Timeline
+    const nextDeliveryTitle = document.getElementById('nextDeliveryTitle');
+    const nextDeliverySchedule = document.getElementById('nextDeliverySchedule');
+    const nextDeliveryProgressContainer = document.getElementById('nextDeliveryProgressContainer');
+    const nextDeliveryProgressBadge = document.getElementById('nextDeliveryProgressBadge');
+    const nextDeliveryProgressBar = document.getElementById('nextDeliveryProgressBar');
+    const nextDeliveryActions = document.getElementById('nextDeliveryActions');
+    const nextDeliveryStatusCheck = document.getElementById('nextDeliveryStatusCheck');
+
+    if (user.subscription && user.subscription.status !== 'Cancelled') {
+      const sub = user.subscription;
+      const renewalDateObj = new Date(sub.renewalDate);
+      const formattedDate = renewalDateObj.toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+      if (nextDeliveryTitle) {
+        nextDeliveryTitle.innerHTML = `${sub.plan} Box ${latestOrder ? '#' + latestOrder.orderId : ''}`;
+      }
+      if (nextDeliverySchedule) {
+        nextDeliverySchedule.textContent = `Scheduled for ${formattedDate} • Morning Slot (07:00 AM – 11:00 AM)`;
+      }
+
+      if (nextDeliveryStatusCheck) {
+        if (sub.status === 'Paused') {
+          nextDeliveryStatusCheck.innerHTML = '<i class="bi bi-pause-circle-fill text-warning"></i> Subscription Paused';
+        } else {
+          nextDeliveryStatusCheck.innerHTML = '<i class="bi bi-shield-check text-success"></i> Payment Confirmed';
+        }
+      }
+
+      if (nextDeliveryProgressContainer) nextDeliveryProgressContainer.classList.remove('d-none');
+      if (nextDeliveryActions) nextDeliveryActions.classList.remove('d-none');
+
+      // Update progress bar
+      if (sub.status === 'Paused') {
+        if (nextDeliveryProgressBadge) {
+          nextDeliveryProgressBadge.textContent = 'Paused';
+          nextDeliveryProgressBadge.className = 'badge bg-warning text-dark';
+        }
+        if (nextDeliveryProgressBar) {
+          nextDeliveryProgressBar.style.width = '0%';
+          nextDeliveryProgressBar.className = 'progress-bar bg-warning';
+        }
+      } else {
+        // Active
+        let progressPercent = 25;
+        let badgeText = 'Confirmed';
+        let badgeClass = 'badge bg-info';
+
+        if (latestOrder) {
+          const status = latestOrder.orderStatus;
+          if (status === 'Delivered') {
+            progressPercent = 100;
+            badgeText = 'Delivered';
+            badgeClass = 'badge bg-success';
+          } else if (status === 'Shipped') {
+            progressPercent = 75;
+            badgeText = 'Dispatched';
+            badgeClass = 'badge bg-success';
+          } else if (status === 'Preparing') {
+            progressPercent = 50;
+            badgeText = 'Preparing on Farm';
+            badgeClass = 'badge bg-primary';
+          } else if (status === 'Cancelled') {
+            progressPercent = 0;
+            badgeText = 'Cancelled';
+            badgeClass = 'badge bg-danger';
+          }
+        }
+
+        if (nextDeliveryProgressBadge) {
+          nextDeliveryProgressBadge.textContent = badgeText;
+          nextDeliveryProgressBadge.className = badgeClass;
+        }
+        if (nextDeliveryProgressBar) {
+          nextDeliveryProgressBar.style.width = `${progressPercent}%`;
+          nextDeliveryProgressBar.className = `progress-bar bg-success progress-bar-striped progress-bar-animated`;
+        }
+      }
+    } else {
+      // Cancelled or None
+      if (nextDeliveryTitle) nextDeliveryTitle.textContent = 'No Active Subscription';
+      if (nextDeliverySchedule) nextDeliverySchedule.textContent = 'Select a weekly subscription plan to start receiving fresh farm-to-table groceries.';
+      if (nextDeliveryStatusCheck) nextDeliveryStatusCheck.innerHTML = '<i class="bi bi-exclamation-circle text-danger"></i> Inactive';
+      if (nextDeliveryProgressContainer) nextDeliveryProgressContainer.classList.add('d-none');
+      if (nextDeliveryActions) {
+        nextDeliveryActions.innerHTML = `
+          <a href="../plans.html" class="btn btn-primary btn-sm">
+            <i class="bi bi-gift-fill"></i> Choose a Subscription Plan
+          </a>
+        `;
+      }
+    }
+
+    // 4. Controls Summary Card
+    const controlsPlanName = document.getElementById('controlsPlanName');
+    const controlsFrequency = document.getElementById('controlsFrequency');
+    const controlsAddress = document.getElementById('controlsAddress');
+    const controlsPaymentMethod = document.getElementById('controlsPaymentMethod');
+
+    if (user.subscription && user.subscription.status !== 'Cancelled') {
+      const sub = user.subscription;
+      if (controlsPlanName) controlsPlanName.textContent = `${sub.plan} (${formatCurrency(sub.price)}/${sub.frequency === 'Weekly' ? 'wk' : sub.frequency === 'Biweekly' ? '2wk' : 'mo'})`;
+      if (controlsFrequency) controlsFrequency.textContent = `${sub.frequency} (Every Friday)`;
+      if (controlsAddress) controlsAddress.textContent = user.address ? `${user.address.substring(0, 20)}...` : 'Not provided';
+      if (controlsPaymentMethod) {
+        if (latestOrder && latestOrder.paymentMethod) {
+          controlsPaymentMethod.innerHTML = `<i class="bi bi-credit-card"></i> ${latestOrder.paymentMethod}`;
+        } else {
+          controlsPaymentMethod.innerHTML = '<i class="bi bi-credit-card"></i> Visa •••• 4242';
+        }
+      }
+    } else {
+      if (controlsPlanName) controlsPlanName.textContent = 'None';
+      if (controlsFrequency) controlsFrequency.textContent = 'None';
+      if (controlsAddress) controlsAddress.textContent = user.address ? `${user.address.substring(0, 20)}...` : 'Not provided';
+      if (controlsPaymentMethod) controlsPaymentMethod.textContent = 'None';
+    }
+
+    // 5. Profile Details Card
+    const addressLine1 = document.querySelector('.p-3.border.rounded-3.mb-3 p.text-dark');
+    const addressLine2 = document.querySelector('.p-3.border.rounded-3.mb-3 p.text-muted');
+    if (addressLine1 && addressLine2) {
+      if (user.address) {
+        addressLine1.textContent = user.name;
+        addressLine2.textContent = `${user.address}, ${user.city || ''}, ${user.state || ''} ${user.postalCode || ''}`;
+      } else {
+        addressLine1.textContent = 'No delivery address saved.';
+        addressLine2.textContent = 'Please edit your profile details to add your primary delivery location.';
+      }
+    }
+
+    const signedInAsEl = document.getElementById('dashboardSignedInAs');
+    if (signedInAsEl) {
+      signedInAsEl.innerHTML = `Signed in as <strong>${user.name}</strong>`;
+    }
+  }
+
+  function renderDashboardOrders() {
+    const container = document.getElementById('recentOrdersList');
+    if (!container) return;
+
+    const orders = getUserOrders().slice(0, 3);
+    if (!orders.length) {
+      container.innerHTML = `
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-bag-x display-5 d-block mb-3 text-secondary"></i>
+          <h6 class="fw-bold text-dark">No orders yet</h6>
+          <p class="mb-3 small">Choose a subscription plan to start enjoying weekly farm-fresh grocery deliveries!</p>
+          <a href="../plans.html" class="btn btn-sm btn-primary px-3 rounded-pill">Choose a Plan</a>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = orders.map(order => {
+      let badgeClass = 'bg-success-subtle text-success border-success-subtle';
+      if (order.orderStatus === 'Cancelled') {
+        badgeClass = 'bg-danger-subtle text-danger border-danger-subtle';
+      } else if (order.orderStatus === 'Preparing') {
+        badgeClass = 'bg-primary-subtle text-primary border-primary-subtle';
+      }
+
+      return `
+        <div class="border rounded-3 p-3 mb-3 bg-light-subtle">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <div class="fw-bold text-dark">${order.orderId}</div>
+              <small class="text-secondary">${new Date(order.orderDate).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</small>
+            </div>
+            <span class="badge ${badgeClass} border px-2 py-1">${order.orderStatus || 'Confirmed'}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold text-dark">${order.selectedPlan}</div>
+              <small class="text-muted">${order.subscriptionFrequency || 'Weekly'}</small>
+            </div>
+            <div class="text-end">
+              <div class="fw-bold text-success">${formatCurrency(order.totalAmount || order.amount || 0)}</div>
+              <button type="button" class="btn btn-sm btn-outline-primary mt-2 py-1 px-2 rounded-2" data-order-id="${order.orderId}"><i class="bi bi-eye"></i> View Details</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.querySelectorAll('[data-order-id]').forEach(button => {
+      button.addEventListener('click', () => {
+        const order = getUserOrders().find(item => item.orderId === button.dataset.orderId);
+        if (order) openOrderDetailsModal(order);
+      });
+    });
+  }
+
+  function openOrderDetailsModal(order) {
+    let modalEl = document.getElementById('viewOrderModal');
+    if (!modalEl) {
+      modalEl = document.createElement('div');
+      modalEl.className = 'modal fade';
+      modalEl.id = 'viewOrderModal';
+      modalEl.tabIndex = -1;
+      modalEl.setAttribute('aria-hidden', 'true');
+      modalEl.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold text-dark">Order Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="viewOrderModalBody"></div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modalEl);
+    }
+
+    const body = document.getElementById('viewOrderModalBody');
+    if (body) {
+      const cancelBtnHtml = (order.orderStatus === 'Confirmed' || order.orderStatus === 'Preparing')
+        ? `<button type="button" class="btn btn-danger btn-sm w-100" id="cancelOrderModalBtn"><i class="bi bi-x-circle me-1"></i> Cancel This Order</button>`
+        : '';
+      const orderItems = Array.isArray(order.items) ? order.items : [];
+      const itemsHtml = orderItems.length ? orderItems.map(item => {
+        const quantity = Number(item.quantity || item.qty || 1);
+        const price = Number(item.price || 0);
+        const image = item.image ? `<img src="${item.image}" alt="${item.name || 'Product'}" class="rounded border" style="width:48px;height:48px;object-fit:cover;">` : '<div class="rounded border bg-light d-flex align-items-center justify-content-center" style="width:48px;height:48px;"><i class="bi bi-bag"></i></div>';
+        return `<div class="d-flex align-items-center gap-2 py-2 border-bottom">${image}<div class="flex-grow-1"><div class="fw-semibold">${item.name || 'Product'}</div><small class="text-muted">${quantity} × ${formatCurrency(price)}</small></div><span class="fw-bold">${formatCurrency(quantity * price)}</span></div>`;
+      }).join('') : `<div class="small text-muted">No individual product lines were saved for this legacy order.</div>`;
+
+      body.innerHTML = `
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Order ID</span>
+            <span class="fw-bold text-dark fs-6">${order.orderId}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Subscription Plan</span>
+            <span class="fw-bold text-dark fs-6">${order.selectedPlan}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Payment Status</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">${order.paymentStatus || 'Paid'}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Order Status</span>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">${order.orderStatus || 'Confirmed'}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Order Date</span>
+            <span class="fw-bold text-dark">${new Date(order.orderDate).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Payment Date</span>
+            <span class="fw-bold text-dark">${order.paymentDate ? new Date(order.paymentDate).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Pending'}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Amount</span>
+            <span class="fw-bold text-success fs-5">${formatCurrency(order.totalAmount || order.amount || 0)}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Payment Method</span>
+            <span class="fw-bold text-dark fs-6">${order.paymentMethod || 'Not recorded'}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Transaction ID</span>
+            <span class="fw-bold text-dark fs-6">${order.transactionId || order.orderId}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Delivery Frequency</span>
+            <span class="fw-bold text-dark">${order.subscriptionFrequency || 'Weekly'}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted small d-block">Subscription Duration</span>
+            <span class="fw-bold text-dark small">Start: ${order.subscriptionStartDate ? new Date(order.subscriptionStartDate).toLocaleDateString('en-IN') : 'N/A'} &bull; End/Renewal: ${order.subscriptionEndDate ? new Date(order.subscriptionEndDate).toLocaleDateString('en-IN') : 'N/A'}</span>
+          </div>
+          <div class="col-sm-12">
+            <span class="text-muted small d-block">Customer Details</span>
+            <span class="fw-bold text-dark">${order.customerName || 'Customer'} &bull; ${order.customerEmail} &bull; ${order.customerPhone}</span>
+          </div>
+          <div class="col-sm-12">
+            <span class="text-muted small d-block">Delivery Address</span>
+            <span class="fw-bold text-dark">${order.deliveryAddress || 'Address not provided'}</span>
+          </div>
+          <div class="col-sm-12">
+            <span class="text-muted small d-block mb-1">Products &amp; quantities</span>
+            <div class="border rounded p-2">${itemsHtml}</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          ${cancelBtnHtml}
+          <button type="button" class="btn btn-secondary btn-sm w-100" data-bs-dismiss="modal">Back to Orders</button>
+        </div>
+      `;
+
+      const cancelBtn = document.getElementById('cancelOrderModalBtn');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+          if (confirm(`Are you sure you want to cancel order #${order.orderId}?`)) {
+            const allOrders = getStoredOrders();
+            const target = allOrders.find(o => o.orderId === order.orderId);
+            if (target) {
+              target.orderStatus = 'Cancelled';
+              target.paymentStatus = 'Refunded';
+              saveStoredOrders(allOrders);
+              
+              addNotification('Order Cancelled', `Your order #${order.orderId} has been successfully cancelled and refunded.`);
+              showToast('Order Cancelled', `Order #${order.orderId} was cancelled.`, 'warning');
+              
+              const modal = bootstrap.Modal.getInstance(modalEl);
+              if (modal) modal.hide();
+
+              renderOrdersTable();
+              renderDashboardStats();
+              renderDashboardOrders();
+            }
+          }
+        });
+      }
+    }
+
+    if (window.bootstrap && bootstrap.Modal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    }
+  }
+
+  let ordersCurrentPage = 1;
+  const ordersItemsPerPage = 5;
+
+  function renderOrdersTable() {
+    const tableBody = document.getElementById('customerOrdersTableBody');
+    if (!tableBody) return;
+
+    const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
+    const statusVal = document.getElementById('orderStatusFilter')?.value || 'all';
+    const startDateVal = document.getElementById('orderStartDate')?.value || '';
+    const endDateVal = document.getElementById('orderEndDate')?.value || '';
+    const sortVal = document.getElementById('orderSortSelect')?.value || 'newest';
+
+    let orders = getUserOrders();
+
+    if (searchVal) {
+      orders = orders.filter(o => 
+        o.orderId.toLowerCase().includes(searchVal) ||
+        (o.selectedPlan && o.selectedPlan.toLowerCase().includes(searchVal)) ||
+        (o.customerName && o.customerName.toLowerCase().includes(searchVal))
+      );
+    }
+
+    if (statusVal !== 'all') {
+      orders = orders.filter(o => (o.orderStatus || '').toLowerCase() === statusVal);
+    }
+
+    if (startDateVal) {
+      const start = new Date(startDateVal + 'T00:00:00');
+      orders = orders.filter(o => new Date(o.orderDate) >= start);
+    }
+    if (endDateVal) {
+      const end = new Date(endDateVal + 'T23:59:59');
+      orders = orders.filter(o => new Date(o.orderDate) <= end);
+    }
+
+    if (sortVal === 'newest') {
+      orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+    } else {
+      orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+    }
+
+    const totalOrders = orders.length;
+    const totalPages = Math.ceil(totalOrders / ordersItemsPerPage) || 1;
+    if (ordersCurrentPage > totalPages) {
+      ordersCurrentPage = totalPages;
+    }
+
+    const startIndex = (ordersCurrentPage - 1) * ordersItemsPerPage;
+    const endIndex = Math.min(startIndex + ordersItemsPerPage, totalOrders);
+    const paginatedOrders = orders.slice(startIndex, endIndex);
+
+    const infoEl = document.getElementById('paginationInfo');
+    if (infoEl) {
+      if (totalOrders === 0) {
+        infoEl.textContent = 'Showing 0 to 0 of 0 entries';
+      } else {
+        infoEl.textContent = `Showing ${startIndex + 1} to ${endIndex} of ${totalOrders} entries`;
+      }
+    }
+
+    if (!paginatedOrders.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center py-5 text-muted">
+            <i class="bi bi-bag-x display-6 d-block mb-2"></i>
+            No orders found for this account.
+          </td>
+        </tr>
+      `;
+      renderPaginationControls(totalPages);
+      return;
+    }
+
+    tableBody.innerHTML = paginatedOrders.map(order => {
+      let badgeClass = 'bg-success-subtle text-success border-success-subtle';
+      if (order.orderStatus === 'Cancelled') {
+        badgeClass = 'bg-danger-subtle text-danger border-danger-subtle';
+      } else if (order.orderStatus === 'Preparing') {
+        badgeClass = 'bg-primary-subtle text-primary border-primary-subtle';
+      }
+
+      return `
+        <tr>
+          <td class="fw-bold text-dark">${order.orderId}</td>
+          <td>${new Date(order.orderDate).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+          <td>${order.selectedPlan}</td>
+          <td class="fw-bold text-success">${formatCurrency(order.totalAmount || order.amount || 0)}</td>
+          <td><span class="badge ${badgeClass} border">${order.orderStatus || 'Confirmed'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary py-0 px-2 rounded-2" data-order-id="${order.orderId}">
+              <i class="bi bi-eye"></i> View Details
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    tableBody.querySelectorAll('[data-order-id]').forEach(button => {
+      button.addEventListener('click', () => {
+        const order = orders.find(item => item.orderId === button.dataset.orderId);
+        if (order) openOrderDetailsModal(order);
+      });
+    });
+
+    renderPaginationControls(totalPages);
+  }
+
+  function renderPaginationControls(totalPages) {
+    const pagContainer = document.getElementById('ordersPagination');
+    if (!pagContainer) return;
+
+    if (totalPages <= 1) {
+      pagContainer.innerHTML = '';
+      return;
+    }
+
+    let html = '';
+    
+    html += `
+      <li class="page-item ${ordersCurrentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${ordersCurrentPage - 1}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+      html += `
+        <li class="page-item ${ordersCurrentPage === i ? 'active' : ''}">
+          <a class="page-link" href="#" data-page="${i}">${i}</a>
+        </li>
+      `;
+    }
+
+    html += `
+      <li class="page-item ${ordersCurrentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${ordersCurrentPage + 1}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    `;
+
+    pagContainer.innerHTML = html;
+
+    pagContainer.querySelectorAll('a[data-page]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = parseInt(link.dataset.page, 10);
+        if (page >= 1 && page <= totalPages) {
+          ordersCurrentPage = page;
+          renderOrdersTable();
+        }
+      });
+    });
+  }
+
+  function initOrderHistoryFilters() {
+    const searchInput = document.getElementById('orderSearchInput');
+    const statusFilter = document.getElementById('orderStatusFilter');
+    const startDateFilter = document.getElementById('orderStartDate');
+    const endDateFilter = document.getElementById('orderEndDate');
+    const sortSelect = document.getElementById('orderSortSelect');
+
+    const triggerRefresh = () => {
+      ordersCurrentPage = 1;
+      renderOrdersTable();
+    };
+
+    searchInput?.addEventListener('input', triggerRefresh);
+    statusFilter?.addEventListener('change', triggerRefresh);
+    startDateFilter?.addEventListener('change', triggerRefresh);
+    endDateFilter?.addEventListener('change', triggerRefresh);
+    sortSelect?.addEventListener('change', triggerRefresh);
+  }
+
+  function renderSubscriptionPage() {
+    const isSubscriptionPage = window.location.pathname.includes('subscription.html');
+    if (!isSubscriptionPage) return;
+
+    const user = getLoggedUser();
+    if (!user) return;
+
+    const sub = user.subscription;
+
+    const statusBadge = document.getElementById('subStatusBadge');
+    const planTitle = document.getElementById('subPlanTitle');
+    const planMeta = document.getElementById('subPlanMeta');
+    const planPrice = document.getElementById('subPlanPrice');
+    const planUnit = document.getElementById('subPlanUnit');
+    const planFrequency = document.getElementById('subPlanFrequency');
+    const nextDeliveryDateText = document.getElementById('nextDeliveryDateText');
+    const paymentMethod = document.getElementById('subPaymentMethod');
+    const actionsContainer = document.getElementById('subscriptionActionsContainer');
+
+    if (sub && sub.status !== 'Cancelled') {
+      const activeText = sub.status === 'Paused' ? 'Paused' : 'Active Subscription';
+      const activeClass = sub.status === 'Paused' ? 'bg-warning-subtle text-warning border border-warning-subtle' : 'bg-success-subtle text-success border border-success-subtle';
+      const activeIcon = sub.status === 'Paused' ? '<i class="bi bi-pause-circle-fill me-1"></i>' : '<i class="bi bi-check-circle-fill me-1"></i>';
+
+      if (statusBadge) {
+        statusBadge.innerHTML = `${activeIcon} ${activeText}`;
+        statusBadge.className = `badge ${activeClass} px-3 py-2 fs-6 mb-2`;
+      }
+
+      if (planTitle) planTitle.textContent = `${sub.plan} Box`;
+      if (planPrice) planPrice.innerHTML = `&#8377;${sub.price}`;
+      if (planUnit) planUnit.textContent = `/ ${sub.frequency === 'Weekly' ? 'weekly' : sub.frequency === 'Biweekly' ? 'biweekly' : 'monthly'} shipment`;
+      if (planFrequency) planFrequency.textContent = `${sub.frequency} (Every Friday)`;
+      
+      const renewalDateObj = new Date(sub.renewalDate);
+      if (nextDeliveryDateText) {
+        nextDeliveryDateText.textContent = renewalDateObj.toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      if (actionsContainer) {
+        actionsContainer.innerHTML = `
+          <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#changePlanModal">
+            <i class="bi bi-arrow-left-right"></i> Change Plan Size
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#changeFreqModal">
+            <i class="bi bi-clock-history"></i> Change Frequency
+          </button>
+          ${sub.status === 'Paused' 
+            ? `<button class="btn btn-success btn-sm" id="resumeSubscriptionBtn"><i class="bi bi-play-circle"></i> Resume Subscription</button>`
+            : `<button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#pauseSubModal"><i class="bi bi-pause-circle"></i> Pause Subscription</button>`
+          }
+          <button class="btn btn-outline-danger btn-sm ms-md-auto" data-bs-toggle="modal" data-bs-target="#cancelSubModal">
+            <i class="bi bi-x-circle"></i> Cancel Subscription
+          </button>
+        `;
+      }
+    } else {
+      if (statusBadge) {
+        statusBadge.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Inactive';
+        statusBadge.className = 'badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-6 mb-2';
+      }
+      if (planTitle) planTitle.textContent = 'No Active Plan';
+      if (planMeta) planMeta.textContent = 'Choose a subscription plan to receive fresh harvest boxes weekly.';
+      if (planPrice) planPrice.innerHTML = '&#8377;0';
+      if (planUnit) planUnit.textContent = '';
+      if (planFrequency) planFrequency.textContent = 'None';
+      if (nextDeliveryDateText) nextDeliveryDateText.textContent = 'Not Scheduled';
+
+      if (actionsContainer) {
+        actionsContainer.innerHTML = `
+          <a href="../plans.html" class="btn btn-primary btn-sm">
+            <i class="bi bi-gift-fill"></i> Choose Subscription Plan
+          </a>
+        `;
+      }
+    }
+
+    const resumeBtn = document.getElementById('resumeSubscriptionBtn');
+    if (resumeBtn) {
+      resumeBtn.addEventListener('click', () => {
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj && userObj.subscription) {
+          userObj.subscription.status = 'Active';
+          saveStoredUsers(users);
+          addNotification('Subscription Resumed', 'Your farm box subscription has been successfully resumed.');
+          showToast('Subscription Resumed', 'Your deliveries will start arriving this Friday.', 'success');
+          renderSubscriptionPage();
+          renderDashboardStats();
+        }
+      });
+    }
+
+    const confirmChangePlanBtn = document.getElementById('confirmChangePlanBtn');
+    if (confirmChangePlanBtn) {
+      confirmChangePlanBtn.onclick = () => {
+        const selectedPlanRadio = document.querySelector('input[name="planSelectOption"]:checked');
+        if (!selectedPlanRadio) return;
+
+        const newPlanName = selectedPlanRadio.value;
+        let newPlanPrice = 899;
+        if (newPlanName === 'Veggie Box') newPlanPrice = 499;
+        if (newPlanName === '100% Organic Box') newPlanPrice = 1199;
+
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj && userObj.subscription) {
+          userObj.subscription.plan = newPlanName;
+          userObj.subscription.price = newPlanPrice;
+          saveStoredUsers(users);
+
+          addNotification('Plan Upgraded', `Your subscription size has been changed to ${newPlanName}.`);
+          showToast('Plan Size Updated', `Successfully changed plan size to ${newPlanName}.`, 'success');
+
+          const modalEl = document.getElementById('changePlanModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+
+          renderSubscriptionPage();
+          renderDashboardStats();
+        }
+      };
+    }
+
+    const confirmChangeFreqBtn = document.getElementById('confirmChangeFreqBtn');
+    if (confirmChangeFreqBtn) {
+      confirmChangeFreqBtn.onclick = () => {
+        const selectedFreqRadio = document.querySelector('input[name="freqRadio"]:checked');
+        if (!selectedFreqRadio) return;
+
+        const newFreq = selectedFreqRadio.value;
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj && userObj.subscription) {
+          userObj.subscription.frequency = newFreq;
+          saveStoredUsers(users);
+
+          addNotification('Frequency Changed', `Delivery frequency updated to ${newFreq}.`);
+          showToast('Frequency Updated', `Your boxes will now be shipped ${newFreq.toLowerCase()}.`, 'success');
+
+          const modalEl = document.getElementById('changeFreqModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+
+          renderSubscriptionPage();
+          renderDashboardStats();
+        }
+      };
+    }
+
+    const confirmPauseBtn = document.getElementById('confirmPauseSubBtn');
+    if (confirmPauseBtn) {
+      confirmPauseBtn.onclick = () => {
+        const pauseWeeksSelect = document.getElementById('pauseDurationSelect');
+        const weeks = pauseWeeksSelect ? parseInt(pauseWeeksSelect.value, 10) : 2;
+
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj && userObj.subscription) {
+          userObj.subscription.status = 'Paused';
+          
+          const currentRenewal = new Date(userObj.subscription.renewalDate);
+          currentRenewal.setDate(currentRenewal.getDate() + (weeks * 7));
+          userObj.subscription.renewalDate = currentRenewal.toISOString();
+
+          saveStoredUsers(users);
+
+          addNotification('Subscription Paused', `Your subscription has been paused for ${weeks} weeks.`);
+          showToast('Subscription Paused', `Deliveries paused. Resume date: ${currentRenewal.toLocaleDateString('en-IN')}`, 'warning');
+
+          const modalEl = document.getElementById('pauseSubModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+
+          renderSubscriptionPage();
+          renderDashboardStats();
+        }
+      };
+    }
+
+    const confirmCancelBtn = document.getElementById('confirmCancelSubBtn');
+    if (confirmCancelBtn) {
+      confirmCancelBtn.onclick = () => {
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj && userObj.subscription) {
+          userObj.subscription.status = 'Cancelled';
+          saveStoredUsers(users);
+
+          addNotification('Subscription Cancelled', 'Your farm box subscription has been cancelled. We are sorry to see you go!');
+          showToast('Subscription Cancelled', 'Your subscription is now inactive.', 'danger');
+
+          const modalEl = document.getElementById('cancelSubModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+
+          renderSubscriptionPage();
+          renderDashboardStats();
+        }
+      };
+    }
+  }
+
+  function renderProfilePage() {
+    const isProfilePage = window.location.pathname.includes('profile.html');
+    if (!isProfilePage) return;
+
+    const user = getLoggedUser();
+    if (!user) return;
+
+    const fullNameInput = document.getElementById('profileFullName');
+    const emailInput = document.getElementById('profileEmail');
+    const phoneInput = document.getElementById('profilePhone');
+
+    if (fullNameInput) fullNameInput.value = user.name || '';
+    if (emailInput) emailInput.value = user.email || '';
+    if (phoneInput) phoneInput.value = user.phone || '';
+
+    const addressInput = document.getElementById('profileAddress');
+    const cityInput = document.getElementById('profileCity');
+    const stateInput = document.getElementById('profileState');
+    const postalCodeInput = document.getElementById('profilePostalCode');
+
+    if (addressInput) addressInput.value = user.address || '';
+    if (cityInput) cityInput.value = user.city || '';
+    if (stateInput) stateInput.value = user.state || '';
+    if (postalCodeInput) postalCodeInput.value = user.postalCode || '';
+
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+      profileForm.onsubmit = (e) => {
+        e.preventDefault();
+        const newName = fullNameInput.value.trim();
+        const newPhone = phoneInput.value.trim();
+
+        if (!newName || !newPhone) {
+          showToast('Failed to Save', 'Name and Phone fields are required.', 'danger');
+          return;
+        }
+
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj) {
+          userObj.name = newName;
+          userObj.phone = newPhone;
+          saveStoredUsers(users);
+
+          const auth = getAuthUser();
+          if (auth) {
+            auth.name = newName;
+            auth.phone = newPhone;
+            setAuthUser(auth);
+          }
+
+          addNotification('Profile Updated', 'Your personal details have been updated successfully.');
+          showToast('Profile Updated', 'Your profile details have been saved.', 'success');
+          updateDashboardHeader();
+        }
+      };
+    }
+
+    const addressForm = document.getElementById('addressForm');
+    if (addressForm) {
+      addressForm.onsubmit = (e) => {
+        e.preventDefault();
+        const newAddress = addressInput.value.trim();
+        const newCity = cityInput.value.trim();
+        const newState = stateInput.value.trim();
+        const newPostalCode = postalCodeInput.value.trim();
+
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj) {
+          userObj.address = newAddress;
+          userObj.city = newCity;
+          userObj.state = newState;
+          userObj.postalCode = newPostalCode;
+          saveStoredUsers(users);
+
+          addNotification('Address Updated', 'Your primary delivery address has been updated successfully.');
+          showToast('Address Saved', 'Your default delivery address has been saved.', 'success');
+          renderProfilePage();
+          renderDashboardStats();
+        }
+      };
+    }
+  }
+
+  function openInvoiceModal(order) {
+    const titleEl = document.getElementById('invoiceModalTitle');
+    const bodyEl = document.getElementById('invoiceModalBody');
+    if (!titleEl || !bodyEl) return;
+
+    titleEl.textContent = `Tax Invoice #${order.orderId.replace('ORD-', 'INV-')}`;
+
+    const totalVal = Number(order.totalAmount || order.amount || 0);
+    const subtotal = (totalVal / 1.05).toFixed(2);
+    const gst = (totalVal - subtotal).toFixed(2);
+    const user = getLoggedUser() || { name: 'Customer', email: 'customer@example.com', phone: 'Not provided' };
+
+    bodyEl.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3 text-dark">
+        <div>
+          <h4 class="fw-bold text-success mb-1">FreshBox Technologies Pvt Ltd</h4>
+          <small class="text-muted d-block">GSTIN: 29AABCU9603R1ZM</small>
+          <small class="text-muted d-block">HSR Layout Sector 1, Bangalore 560102</small>
+        </div>
+        <div class="text-end">
+          <span class="badge ${order.paymentStatus === 'Refunded' ? 'bg-warning text-dark' : 'bg-success text-white'} px-3 py-2">${(order.paymentStatus || 'PAID').toUpperCase()}</span>
+          <small class="text-muted d-block mt-1">Date: ${new Date(order.orderDate).toLocaleDateString('en-IN')}</small>
+        </div>
+      </div>
+
+      <div class="row mb-4 text-dark">
+        <div class="col-6">
+          <span class="text-muted small d-block">Billed To:</span>
+          <h6 class="fw-bold mb-0">${order.customerName || user.name}</h6>
+          <small class="text-muted">${order.customerEmail || user.email} • ${order.customerPhone || user.phone}</small>
+        </div>
+        <div class="col-6 text-end">
+          <span class="text-muted small d-block">Payment Transaction ID:</span>
+          <code class="fw-bold text-dark">${order.transactionId || 'TXN_' + order.orderId.split('-')[1]}</code>
+        </div>
+      </div>
+
+      <table class="table table-bordered small mb-3 text-dark">
+        <thead class="bg-light">
+          <tr>
+            <th>Item Description</th>
+            <th class="text-center">HSN</th>
+            <th class="text-center">Qty</th>
+            <th class="text-end">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${order.selectedPlan} Weekly Subscription Box (Fresh Produce)</td>
+            <td class="text-center">0709</td>
+            <td class="text-center">1</td>
+            <td class="text-end">&#8377;${subtotal}</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-end fw-bold text-dark">GST (5%):</td>
+            <td class="text-end fw-bold text-dark">&#8377;${gst}</td>
+          </tr>
+          <tr class="table-success">
+            <td colspan="3" class="text-end fw-bold fs-6 text-dark">Grand Total:</td>
+            <td class="text-end fw-bold fs-6 text-dark">&#8377;${totalVal.toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    const modalEl = document.getElementById('invoiceModal');
+    if (window.bootstrap && bootstrap.Modal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    }
+  }
+
+  function renderBillingPage() {
+    const isBillingPage = window.location.pathname.includes('billing.html');
+    if (!isBillingPage) return;
+
+    const user = getLoggedUser();
+    if (!user) return;
+
+    const orders = getUserOrders();
+    const totalPaid = orders
+      .filter(o => o.paymentStatus === 'Paid')
+      .reduce((sum, order) => sum + Number(order.totalAmount || order.amount || 0), 0);
+
+    const sub = user.subscription;
+
+    const rateEl = document.getElementById('billingRatePerShipment');
+    const chargeDateEl = document.getElementById('billingNextChargeDate');
+    const spentEl = document.getElementById('billingTotalYTDSpent');
+
+    if (sub && sub.status !== 'Cancelled') {
+      if (rateEl) rateEl.textContent = `₹${sub.price}`;
+      if (chargeDateEl) {
+        chargeDateEl.textContent = new Date(sub.renewalDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+      }
+    } else {
+      if (rateEl) rateEl.textContent = 'None';
+      if (chargeDateEl) chargeDateEl.textContent = 'None';
+    }
+
+    if (spentEl) {
+      const boxesCount = orders.filter(o => o.paymentStatus === 'Paid').length;
+      spentEl.textContent = `₹${totalPaid} (${boxesCount} Box${boxesCount !== 1 ? 'es' : ''})`;
+    }
+
+    const tableBody = document.getElementById('billingInvoicesTableBody');
+    if (!tableBody) return;
+
+    if (!orders.length) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center py-4 text-muted">
+            <i class="bi bi-file-earmark-bar-graph display-6 d-block mb-2"></i>
+            No invoices found for this account.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tableBody.innerHTML = orders.map(order => {
+      const invId = order.orderId.replace('ORD-', 'INV-');
+      const invoiceDate = new Date(order.orderDate).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+      let badgeClass = 'bg-success-subtle text-success border border-success-subtle';
+      if (order.paymentStatus === 'Refunded') {
+        badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+      } else if (order.paymentStatus === 'Failed') {
+        badgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
+      }
+
+      return `
+        <tr>
+          <td class="fw-bold text-dark">${invId}</td>
+          <td>${invoiceDate}</td>
+          <td>${order.selectedPlan} Box Shipment</td>
+          <td class="fw-bold text-success">${formatCurrency(order.totalAmount || order.amount || 0)}</td>
+          <td>${order.paymentMethod || 'Visa Card'}</td>
+          <td><span class="badge ${badgeClass}">${order.paymentStatus || 'Paid'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary py-0 px-2 rounded-2" data-invoice-id="${order.orderId}">
+              <i class="bi bi-printer"></i> View & Print
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    tableBody.querySelectorAll('[data-invoice-id]').forEach(button => {
+      button.addEventListener('click', () => {
+        const order = orders.find(o => o.orderId === button.getAttribute('data-invoice-id'));
+        if (order) openInvoiceModal(order);
+      });
+    });
+  }
+
+  function initLogoutTrigger() {
+    document.querySelectorAll('.sidebar-footer a, a[onclick*="setAuth"]').forEach(link => {
+      if (link.textContent.toLowerCase().includes('logout') || link.innerHTML.toLowerCase().includes('power')) {
+        link.removeAttribute('onclick');
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem(AUTH_KEY);
+          showToast('Logged Out', 'Redirecting to login...', 'info');
+          setTimeout(() => {
+            const isSubfolder = window.location.pathname.includes('/dashboard/');
+            window.location.href = isSubfolder ? '../login.html' : 'login.html';
+          }, 500);
+        });
+      }
+    });
+  }
+
+  function renderSettingsPage() {
+    const isSettingsPage = window.location.pathname.includes('settings.html');
+    if (!isSettingsPage) return;
+
+    const user = getLoggedUser();
+    if (!user) return;
+
+    const form = document.getElementById('settingsForm');
+    if (form) {
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const currentPass = document.getElementById('settingsCurrentPass')?.value;
+        const newPass = document.getElementById('settingsNewPass')?.value;
+
+        if (!currentPass || !newPass) return;
+
+        if (currentPass !== user.password) {
+          showToast('Failed to Update', 'Current password is incorrect.', 'danger');
+          return;
+        }
+
+        const users = getStoredUsers();
+        const userObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+        if (userObj) {
+          userObj.password = newPass;
+          saveStoredUsers(users);
+
+          const auth = getAuthUser();
+          if (auth) {
+            auth.password = newPass;
+            setAuthUser(auth);
+          }
+
+          showToast('Password Changed', 'Your security password has been updated.', 'success');
+          form.reset();
+        }
+      };
+    }
+  }
+
+  function prefillCheckoutDetails() {
+    const isCheckoutPage = window.location.pathname.includes('checkout.html');
+    if (!isCheckoutPage) return;
+
+    const user = getLoggedUser();
+    if (user) {
+      const nameInput = document.getElementById('customerFullName');
+      const emailInput = document.getElementById('customerEmail');
+      const phoneInput = document.getElementById('customerPhone');
+      const addressInput = document.getElementById('deliveryStreetAddress');
+      const cityInput = document.getElementById('deliveryCity');
+      const stateInput = document.getElementById('deliveryState');
+      const postalCodeInput = document.getElementById('deliveryPostalCode');
+
+      if (nameInput) nameInput.value = user.name || '';
+      if (emailInput) emailInput.value = user.email || '';
+      if (phoneInput) {
+        let phone = user.phone || '';
+        if (phone.startsWith('+91')) {
+          phone = phone.replace('+91', '').trim();
+        }
+        phoneInput.value = phone;
+      }
+      if (addressInput) addressInput.value = user.address || '';
+      if (cityInput) cityInput.value = user.city || '';
+      if (stateInput) stateInput.value = user.state || '';
+      if (postalCodeInput) postalCodeInput.value = user.postalCode || '';
+    }
+  }
+
   function processDemoCheckout(e) {
     if (e && e.preventDefault) e.preventDefault();
+    const form = document.getElementById('checkoutForm');
+    if (form && !form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
     const btn = document.getElementById('placeOrderBtn');
     if (btn) {
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing Payment...';
     }
+
     setTimeout(() => {
-      const orderId = 'FB-' + Math.floor(100000 + Math.random() * 900000);
-      const subtotal = getCartSubtotal();
-      sessionStorage.setItem('freshbox_latest_order', JSON.stringify({
-        orderId: orderId,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        items: getCart(),
-        subtotal: subtotal,
-        delivery: subtotal > 500 ? 0 : 50,
-        total: subtotal + (subtotal > 500 ? 0 : 50)
-      }));
-      window.location.href = 'payment-success.html';
-    }, 1200);
+      const order = buildOrderFromCheckout();
+      order.transactionId = 'TXN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+      const authUser = getAuthUser();
+      const currentCustomer = {
+        name: order.customerName || authUser?.name || 'Customer',
+        email: order.customerEmail || authUser?.email || '',
+        phone: order.customerPhone || authUser?.phone || ''
+      };
+
+      if (!order.customerName || !order.customerEmail || !order.customerPhone) {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-lock-fill me-2"></i> Pay & Start Subscription';
+        }
+        form?.reportValidity();
+        return;
+      }
+
+      // Check if coupon code FAIL is applied
+      const coupon = getAppliedCoupon();
+      if (coupon && coupon.code.toUpperCase() === 'FAIL') {
+        // Simulated payment failed flow
+        if (authUser && authUser.role === 'customer') {
+          addNotification('Payment failed', `Payment failed for your order subscription checkout.`);
+        }
+        showToast('Payment Failed', 'Your simulated bank transaction was declined.', 'danger');
+        setTimeout(() => {
+          window.location.href = 'payment-failed.html';
+        }, 500);
+        return;
+      }
+
+      // Successful checkout flow
+      localStorage.setItem(CURRENT_CUSTOMER_KEY, JSON.stringify(currentCustomer));
+
+      // Handle user registration / update
+      const users = getStoredUsers();
+      let userObj = users.find(u => u.email.toLowerCase() === currentCustomer.email.toLowerCase());
+      if (!userObj) {
+        // Automatically create account for guest checkout
+        userObj = {
+          id: 'user_' + Date.now(),
+          name: currentCustomer.name,
+          email: currentCustomer.email.toLowerCase(),
+          phone: currentCustomer.phone,
+          password: 'password123',
+          address: document.getElementById('deliveryStreetAddress')?.value || '',
+          city: document.getElementById('deliveryCity')?.value || '',
+          state: document.getElementById('deliveryState')?.value || '',
+          postalCode: document.getElementById('deliveryPostalCode')?.value || '',
+          subscription: {
+            plan: order.selectedPlan,
+            price: order.amount,
+            frequency: order.subscriptionFrequency,
+            startDate: order.subscriptionStartDate,
+            renewalDate: order.subscriptionEndDate,
+            status: 'Active'
+          },
+          notifications: []
+        };
+        users.push(userObj);
+      } else {
+        // Update user subscription & address
+        userObj.address = document.getElementById('deliveryStreetAddress')?.value || '';
+        userObj.city = document.getElementById('deliveryCity')?.value || '';
+        userObj.state = document.getElementById('deliveryState')?.value || '';
+        userObj.postalCode = document.getElementById('deliveryPostalCode')?.value || '';
+        userObj.subscription = {
+          plan: order.selectedPlan,
+          price: order.amount,
+          frequency: order.subscriptionFrequency,
+          startDate: order.subscriptionStartDate,
+          renewalDate: order.subscriptionEndDate,
+          status: 'Active'
+        };
+      }
+
+      // Add notifications to user profile
+      const orderId = order.orderId;
+      if (!userObj.notifications) userObj.notifications = [];
+      userObj.notifications.unshift({
+        id: 'notif_checkout_pay_' + Date.now(),
+        title: 'Payment Successful',
+        message: `Payment of ₹${order.amount} processed successfully for order #${orderId}.`,
+        date: new Date().toISOString(),
+        read: false
+      });
+      userObj.notifications.unshift({
+        id: 'notif_checkout_conf_' + Date.now(),
+        title: 'Order Confirmed',
+        message: `Your order #${orderId} has been confirmed. Preparing your fresh harvest.`,
+        date: new Date().toISOString(),
+        read: false
+      });
+      userObj.notifications.unshift({
+        id: 'notif_checkout_sub_' + Date.now(),
+        title: 'Subscription Activated',
+        message: `Your ${order.selectedPlan} subscription is now active!`,
+        date: new Date().toISOString(),
+        read: false
+      });
+
+      saveStoredUsers(users);
+
+      // Save order
+      const existingOrders = getStoredOrders();
+      existingOrders.unshift(order);
+      saveStoredOrders(existingOrders);
+
+      localStorage.setItem('freshbox_subscription_active', 'true');
+      sessionStorage.setItem(LATEST_ORDER_KEY, JSON.stringify(order));
+      localStorage.setItem(LATEST_ORDER_KEY, JSON.stringify(order));
+
+      // Auto login user
+      setAuthUser({
+        role: 'customer',
+        id: userObj.id,
+        name: userObj.name,
+        email: userObj.email,
+        phone: userObj.phone
+      });
+
+      // Clear cart
+      localStorage.removeItem(CART_KEY);
+      localStorage.removeItem(COUPON_KEY);
+
+      showToast('Payment Successful', 'Redirecting to confirmation page...', 'success');
+      setTimeout(() => {
+        window.location.href = 'payment-success.html';
+      }, 500);
+    }, 1000);
   }
 
   // --- How It Works Step Navigation Handlers ---
@@ -1305,14 +2876,40 @@
     initScrollAnimations();
     initStatCounters();
     renderAuthUI();
+    initNotificationUI();
+    updateDashboardHeader();
+    initLogoutTrigger();
     updateCartBadges();
     updateWishlistBadges();
     renderCartDrawer();
     renderBoxBuilderSummary();
     renderCartPage();
     renderCheckoutSummary();
+    prefillCheckoutDetails();
+    renderSubscriptionPage();
+    renderProfilePage();
+    renderBillingPage();
+    renderSettingsPage();
+    renderDashboardStats();
+    renderDashboardOrders();
+    renderOrdersTable();
+    initOrderHistoryFilters();
     initLiveSearch();
     updateHowItWorksUI();
+  });
+
+  // Keep open dashboard tabs in sync when checkout, profile, or orders change
+  // in another tab. The checkout tab also updates its own state immediately.
+  window.addEventListener('storage', (event) => {
+    if (![AUTH_KEY, USERS_KEY, ORDERS_KEY, LATEST_ORDER_KEY].includes(event.key)) return;
+    renderAuthUI();
+    updateDashboardHeader();
+    renderDashboardStats();
+    renderDashboardOrders();
+    renderOrdersTable();
+    renderBillingPage();
+    renderProfilePage();
+    renderSettingsPage();
   });
 
   // Global Export
@@ -1330,6 +2927,16 @@
     normalizeProdId,
     getAuth: getAuthUser,
     setAuth: setAuthUser,
+    getStoredUsers,
+    saveStoredUsers,
+    getLoggedUser,
+    getNotifications,
+    addNotification,
+    markAllNotificationsRead,
+    renderSubscriptionPage,
+    renderProfilePage,
+    renderBillingPage,
+    renderSettingsPage,
     applyCoupon: applyCouponCode,
     removeCoupon: removeCouponCode,
     openQuickView,

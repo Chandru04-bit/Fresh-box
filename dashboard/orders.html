@@ -91,23 +91,38 @@
       <div class="dashboard-content">
         <!-- Search & Filter Controls -->
         <div class="fresh-card p-3 mb-4">
-          <div class="row g-3 align-items-center">
-            <div class="col-md-5">
+          <div class="row g-3">
+            <div class="col-lg-3 col-md-6">
+              <label class="form-label small fw-bold text-secondary mb-1">Search</label>
               <div class="input-group">
                 <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                <input type="text" id="orderSearchInput" class="form-control" placeholder="Search by Order ID or Plan name...">
+                <input type="text" id="orderSearchInput" class="form-control form-control-sm" placeholder="ID, plan, or name...">
               </div>
             </div>
-            <div class="col-md-4">
-              <select class="form-select" id="orderStatusFilter">
-                <option value="all">All Delivery Statuses</option>
+            <div class="col-lg-2 col-md-6">
+              <label class="form-label small fw-bold text-secondary mb-1">Status</label>
+              <select class="form-select form-select-sm" id="orderStatusFilter">
+                <option value="all">All Statuses</option>
                 <option value="delivered">Delivered</option>
                 <option value="preparing">Preparing</option>
-                <option value="skipped">Skipped</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
               </select>
             </div>
-            <div class="col-md-3 text-md-end">
-              <span class="text-muted small">Showing 5 completed deliveries</span>
+            <div class="col-lg-2 col-md-6">
+              <label class="form-label small fw-bold text-secondary mb-1">Start Date</label>
+              <input type="date" id="orderStartDate" class="form-control form-control-sm">
+            </div>
+            <div class="col-lg-2 col-md-6">
+              <label class="form-label small fw-bold text-secondary mb-1">End Date</label>
+              <input type="date" id="orderEndDate" class="form-control form-control-sm">
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <label class="form-label small fw-bold text-secondary mb-1">Sort By</label>
+              <select class="form-select form-select-sm" id="orderSortSelect">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
             </div>
           </div>
         </div>
@@ -119,68 +134,23 @@
               <thead>
                 <tr>
                   <th>Order ID</th>
-                  <th>Delivery Date</th>
-                  <th>Box Plan & Items</th>
+                  <th>Order Date</th>
+                  <th>Subscription Plan</th>
                   <th>Amount</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td class="fw-bold">#FB-8842</td>
-                  <td>Aug 28, 2026</td>
-                  <td>Family Essentials (14 Items)</td>
-                  <td class="fw-bold text-success">&#8377;899</td>
-                  <td><span class="badge bg-primary">Preparing</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary py-0 px-2" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
-                      <i class="bi bi-eye"></i> Details
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">#FB-8841</td>
-                  <td>Aug 21, 2026</td>
-                  <td>Family Essentials (14 Items)</td>
-                  <td class="fw-bold text-success">&#8377;899</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
-                  <td>
-                    <a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">#FB-8835</td>
-                  <td>Aug 14, 2026</td>
-                  <td>Family Essentials + Extra Milk</td>
-                  <td class="fw-bold text-success">&#8377;974</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
-                  <td>
-                    <a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">#FB-8829</td>
-                  <td>Aug 07, 2026</td>
-                  <td>Family Essentials (14 Items)</td>
-                  <td class="fw-bold text-success">&#8377;899</td>
-                  <td><span class="badge bg-success-subtle text-success border border-success-subtle">Delivered</span></td>
-                  <td>
-                    <a href="billing.html" class="btn btn-sm btn-light py-0 px-2"><i class="bi bi-receipt"></i> Invoice</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="fw-bold">#FB-8820</td>
-                  <td>Jul 31, 2026</td>
-                  <td>Family Essentials (Skipped)</td>
-                  <td class="text-muted">?0</td>
-                  <td><span class="badge bg-warning-subtle text-dark">Skipped</span></td>
-                  <td>
-                    <span class="text-muted small">No Charge</span>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody id="customerOrdersTableBody"></tbody>
             </table>
+          </div>
+          <div class="card-footer bg-white border-top d-flex justify-content-between align-items-center p-3">
+            <span class="text-muted small" id="paginationInfo">Showing 1 to 5 of 5 entries</span>
+            <nav>
+              <ul class="pagination pagination-sm mb-0" id="ordersPagination">
+                <!-- Dynamic pagination buttons -->
+              </ul>
+            </nav>
           </div>
         </div>
 
