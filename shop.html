@@ -75,7 +75,7 @@
           </a>
           <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box">
             <i class="bi bi-bag"></i>
-            <span class="cart-badge">4</span>
+            <span class="cart-badge">0</span>
           </button>
           <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode">
             <i class="bi bi-moon-stars-fill"></i>
@@ -366,7 +366,7 @@
               </button>
               <div class="product-img-wrap">
                 <span class="badge badge-custom badge-organic product-badge">${p.badge}</span>
-                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-100 h-100 object-fit-cover">
+                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/' + (p.category || 'vegetables') + '.jpg';">
               </div>
               <div class="product-content p-3">
                 <span class="product-category text-uppercase small text-muted font-monospace">${p.categoryName}</span>

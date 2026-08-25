@@ -18,10 +18,26 @@
       }
     } catch (e) {}
   }
-  const isDashboardPage = window.location.pathname.includes('/dashboard/');
-  if (isDashboardPage && !isCustomer) {
-    // Determine redirect prefix depending on exact path nesting
-    window.location.href = '../login.html';
+
+  function getProtectedDashboardRedirect() {
+    const path = window.location.pathname.toLowerCase();
+    const isDashboardHtml = path.endsWith('/dashboard.html') || path.endsWith('/dashboard/index.html');
+    const isNestedDashboard = path.includes('/dashboard/');
+
+    if (!isDashboardHtml && !isNestedDashboard) {
+      return null;
+    }
+
+    return isNestedDashboard ? '../login.html' : 'login.html';
+  }
+
+  const dashboardRedirect = getProtectedDashboardRedirect();
+  if (dashboardRedirect && !isCustomer) {
+    sessionStorage.setItem('freshbox_login_notice', 'Please sign in to access your dashboard.');
+    const loginTarget = dashboardRedirect || 'login.html';
+    if (!window.location.pathname.toLowerCase().endsWith('/login.html')) {
+      window.location.href = loginTarget;
+    }
     return;
   }
 
@@ -391,6 +407,45 @@
     return users.find(u => u.email.toLowerCase() === auth.email.toLowerCase()) || null;
   }
 
+  function getCurrentCustomerProfile() {
+    const auth = getAuthUser();
+    if (auth && auth.role === 'customer') {
+      return {
+        name: auth.name || '',
+        email: auth.email || '',
+        phone: auth.phone || '',
+        address: auth.address || '',
+        city: auth.city || '',
+        state: auth.state || '',
+        postalCode: auth.postalCode || '',
+        subscription: auth.subscription || null
+      };
+    }
+
+    const saved = localStorage.getItem(CURRENT_CUSTOMER_KEY);
+    if (!saved) {
+      return { name: '', email: '', phone: '', address: '', city: '', state: '', postalCode: '', subscription: null };
+    }
+
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object') {
+        return {
+          name: parsed.name || '',
+          email: parsed.email || '',
+          phone: parsed.phone || '',
+          address: parsed.address || '',
+          city: parsed.city || '',
+          state: parsed.state || '',
+          postalCode: parsed.postalCode || '',
+          subscription: parsed.subscription || null
+        };
+      }
+    } catch (e) {}
+
+    return { name: '', email: '', phone: '', address: '', city: '', state: '', postalCode: '', subscription: null };
+  }
+
   // Account data is created only from actual registration and successful checkout.
   // Do not seed a demo customer into localStorage.
 
@@ -621,39 +676,56 @@
   }
 
   // --- Cart & Box Management ---
-  const CART_KEY = 'freshbox_cart_items';
   const COUPON_KEY = 'freshbox_applied_coupon';
 
-  const defaultItems = [
-    { id: 'prod-1', name: 'Fresh Vine Tomatoes', category: 'vegetables', price: 60, unit: '1 kg', qty: 1, image: 'assets/images/products/fresh-vine-tomatoes.jpg' },
-    { id: 'prod-2', name: 'Organic Baby Spinach', category: 'vegetables', price: 45, unit: '250 g', qty: 2, image: 'assets/images/products/organic-baby-spinach.jpg' },
-    { id: 'prod-3', name: 'Royal Gala Apples', category: 'fruits', price: 120, unit: '1 kg', qty: 1, image: 'assets/images/products/royal-gala-apples.jpg' },
-    { id: 'prod-5', name: 'Farm Fresh A2 Organic Milk', category: 'dairy', price: 75, unit: '1 L', qty: 2, image: 'assets/images/products/farm-fresh-a2-milk.jpg' }
-  ];
+  function getCartKey() {
+    const auth = getAuthUser();
+    if (auth && auth.role === 'customer') {
+      return `freshbox_cart_items_${auth.id || auth.email.replace(/[@.]/g, '_')}`;
+    }
+    return 'freshbox_cart_items_guest';
+  }
+
+  function getWishlistKey() {
+    const auth = getAuthUser();
+    if (auth && auth.role === 'customer') {
+      return `freshbox_wishlist_items_${auth.id || auth.email.replace(/[@.]/g, '_')}`;
+    }
+    return 'freshbox_wishlist_items_guest';
+  }
 
   function getCart() {
-    const saved = localStorage.getItem(CART_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          // Sanitize: Purge any corrupted, missing, or 'undefined' items
-          const valid = parsed.filter(item => 
-            item && 
-            item.id && 
-            String(item.id) !== 'undefined' && 
-            item.name && 
-            String(item.name) !== 'undefined' && 
-            !isNaN(item.price)
-          );
-          if (valid.length !== parsed.length) {
-            localStorage.setItem(CART_KEY, JSON.stringify(valid));
-          }
-          return valid;
-        }
-      } catch (e) { }
+    const key = getCartKey();
+    const saved = localStorage.getItem(key);
+    if (!saved) {
+      localStorage.setItem(key, JSON.stringify([]));
+      return [];
     }
-    return defaultItems;
+
+    try {
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed)) {
+        localStorage.setItem(key, JSON.stringify([]));
+        return [];
+      }
+
+      const valid = parsed.filter(item => 
+        item && 
+        item.id && 
+        String(item.id) !== 'undefined' && 
+        item.name && 
+        String(item.name) !== 'undefined' && 
+        !isNaN(item.price)
+      );
+
+      if (valid.length !== parsed.length) {
+        localStorage.setItem(key, JSON.stringify(valid));
+      }
+      return valid;
+    } catch (e) {
+      localStorage.setItem(key, JSON.stringify([]));
+      return [];
+    }
   }
 
   function saveCart(cart) {
@@ -666,7 +738,7 @@
       String(item.name) !== 'undefined' && 
       !isNaN(item.price)
     );
-    localStorage.setItem(CART_KEY, JSON.stringify(cleanCart));
+    localStorage.setItem(getCartKey(), JSON.stringify(cleanCart));
     updateCartBadges();
     renderCartDrawer();
     renderBoxBuilderSummary();
@@ -800,9 +872,9 @@
 
   function updateCartBadges() {
     const cart = getCart();
-    const count = cart.reduce((sum, i) => sum + i.qty, 0);
+    const count = cart.reduce((sum, i) => sum + (Number(i.qty) || 0), 0);
     document.querySelectorAll('.cart-badge:not(.wishlist-badge)').forEach(badge => {
-      badge.textContent = count;
+      badge.textContent = String(count);
     });
   }
 
@@ -852,7 +924,7 @@
     cart.forEach(item => {
       html += `
         <div class="d-flex align-items-center gap-3 p-3 border-bottom">
-          <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 50px; height: 50px; object-fit: cover;">
+          <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
           <div class="flex-grow-1 overflow-hidden">
             <h6 class="mb-0 fw-bold fs-6 text-dark text-truncate">${item.name}</h6>
             <span class="text-muted small">${item.unit} • ₹${item.price}</span>
@@ -939,7 +1011,7 @@
       html += `
         <div class="box-item-row d-flex align-items-center justify-content-between py-2.5 border-bottom gap-2">
           <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1">
-            <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 48px; height: 48px; object-fit: cover;">
+            <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 48px; height: 48px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             <div class="overflow-hidden flex-grow-1">
               <span class="fw-bold text-dark text-truncate d-block mb-1" style="font-size: 0.88rem; line-height: 1.25;" title="${item.name}">${item.name}</span>
               <div class="d-flex align-items-center gap-2">
@@ -998,7 +1070,7 @@
         <tr>
           <td class="align-middle">
             <div class="d-flex align-items-center gap-3">
-              <img src="${item.image}" alt="${item.name}" class="rounded-3 shadow-xs" style="width: 60px; height: 60px; object-fit: cover;">
+              <img src="${item.image}" alt="${item.name}" class="rounded-3 shadow-xs" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
               <div>
                 <a href="product-details.html?id=${item.id}" class="fw-bold text-dark text-decoration-none d-block">${item.name}</a>
                 <span class="text-muted small">${item.unit}</span>
@@ -1088,7 +1160,7 @@
       <div class="checkout-item-row">
         <div class="d-flex align-items-center gap-3 min-width-0 flex-grow-1">
           <div class="checkout-item-img-wrap">
-            <img src="assets/images/plans/freshbox-subscription.jpg" alt="${selectedPlan.name}" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;">
+            <img src="assets/images/plans/premium-harvest.jpg" alt="${selectedPlan.name}" class="rounded-2" style="width: 44px; height: 44px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/family-essentials.jpg';">
           </div>
           <div class="min-width-0 flex-grow-1">
             <span class="fw-semibold text-dark fs-6 d-block text-truncate">${selectedPlan.name}</span>
@@ -1339,14 +1411,38 @@
   function getSelectedPlanConfig() {
     const selectedPlanName = (localStorage.getItem('freshbox_selected_plan') || '').trim();
     const savedFreq = (localStorage.getItem('freshbox_subscription_freq') || localStorage.getItem('freshbox_frequency') || 'weekly').toLowerCase();
+    const savedPrice = Number(localStorage.getItem('freshbox_selected_plan_price') || 0);
+
+    const namedPlans = {
+      veggie: { name: 'Veggie Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 499, itemName: 'Veggie Box Subscription', key: 'veggie' },
+      family: { name: 'Family Essentials', frequency: 'weekly', frequencyLabel: 'Every Week', price: 899, itemName: 'Family Essentials Box Subscription', key: 'family' },
+      organic: { name: 'Organic Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 1199, itemName: '100% Organic Box Subscription', key: 'organic' },
+      premium: { name: 'Premium Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 1599, itemName: 'Premium Harvest Box Subscription', key: 'premium' }
+    };
+
+    if (/veggie/i.test(selectedPlanName)) return namedPlans.veggie;
+    if (/family/i.test(selectedPlanName)) return namedPlans.family;
+    if (/organic/i.test(selectedPlanName)) return namedPlans.organic;
+    if (/premium/i.test(selectedPlanName)) return namedPlans.premium;
+
+    if (savedPrice > 0) {
+      return {
+        name: selectedPlanName || 'Family Essentials',
+        frequency: savedFreq,
+        frequencyLabel: savedFreq === 'biweekly' ? 'Every 2 Weeks' : savedFreq === 'monthly' ? 'Monthly' : 'Every Week',
+        price: savedPrice,
+        itemName: `${selectedPlanName || 'Family Essentials'} Subscription`,
+        key: 'custom'
+      };
+    }
 
     const planMap = {
       weekly: {
-        name: 'Weekly Delivery',
+        name: 'Family Essentials',
         frequency: 'Weekly',
         frequencyLabel: 'Every Week',
         price: 899,
-        itemName: 'Weekly Delivery Subscription',
+        itemName: 'Family Essentials Subscription',
         key: 'weekly'
       },
       biweekly: {
@@ -1366,10 +1462,6 @@
         key: 'monthly'
       }
     };
-
-    if (/weekly/i.test(selectedPlanName)) return planMap.weekly;
-    if (/biweekly|every 2 weeks/i.test(selectedPlanName)) return planMap.biweekly;
-    if (/monthly/i.test(selectedPlanName)) return planMap.monthly;
 
     if (planMap[savedFreq]) return planMap[savedFreq];
 
@@ -1419,7 +1511,7 @@
       items: [{
         id: 'plan_' + selectedPlanConfig.key,
         name: selectedPlanConfig.itemName,
-        image: 'assets/images/plans/freshbox-subscription.jpg',
+        image: 'assets/images/plans/premium-harvest.jpg',
         price: planPrice,
         quantity: 1,
         unit: selectedPlanConfig.frequencyLabel
@@ -1702,11 +1794,20 @@
       const cancelBtnHtml = (order.orderStatus === 'Confirmed' || order.orderStatus === 'Preparing')
         ? `<button type="button" class="btn btn-danger btn-sm w-100" id="cancelOrderModalBtn"><i class="bi bi-x-circle me-1"></i> Cancel This Order</button>`
         : '';
-      const orderItems = Array.isArray(order.items) ? order.items : [];
+      const isDashboard = window.location.pathname.includes('/dashboard/') || !!document.querySelector('.dashboard-wrapper');
+      const fallbackImg = isDashboard ? '../assets/images/categories/vegetables.jpg' : 'assets/images/categories/vegetables.jpg';
       const itemsHtml = orderItems.length ? orderItems.map(item => {
         const quantity = Number(item.quantity || item.qty || 1);
         const price = Number(item.price || 0);
-        const image = item.image ? `<img src="${item.image}" alt="${item.name || 'Product'}" class="rounded border" style="width:48px;height:48px;object-fit:cover;">` : '<div class="rounded border bg-light d-flex align-items-center justify-content-center" style="width:48px;height:48px;"><i class="bi bi-bag"></i></div>';
+        let imgSrc = item.image || '';
+        if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:')) {
+          if (isDashboard && !imgSrc.startsWith('../')) {
+            imgSrc = '../' + imgSrc;
+          } else if (!isDashboard && imgSrc.startsWith('../')) {
+            imgSrc = imgSrc.replace(/^\.\.\//, '');
+          }
+        }
+        const image = imgSrc ? `<img src="${imgSrc}" alt="${item.name || 'Product'}" class="rounded border" style="width:48px;height:48px;object-fit:cover;" onerror="this.onerror=null; this.src='${fallbackImg}';">` : '<div class="rounded border bg-light d-flex align-items-center justify-content-center" style="width:48px;height:48px;"><i class="bi bi-bag"></i></div>';
         return `<div class="d-flex align-items-center gap-2 py-2 border-bottom">${image}<div class="flex-grow-1"><div class="fw-semibold">${item.name || 'Product'}</div><small class="text-muted">${quantity} × ${formatCurrency(price)}</small></div><span class="fw-bold">${formatCurrency(quantity * price)}</span></div>`;
       }).join('') : `<div class="small text-muted">No individual product lines were saved for this legacy order.</div>`;
 
@@ -2483,12 +2584,42 @@
     }
   }
 
+  function fillDemoCheckoutDetails(notify = true) {
+    const isCheckoutPage = window.location.pathname.includes('checkout.html');
+    if (!isCheckoutPage) return;
+
+    const fields = {
+      customerFullName: 'Priya Sharma',
+      customerEmail: 'priya.sharma@example.com',
+      customerPhone: '9876543210',
+      deliveryStreetAddress: '42, Green Avenue, Indiranagar',
+      deliveryCity: 'Bengaluru',
+      deliveryState: 'Karnataka',
+      deliveryPostalCode: '560038'
+    };
+
+    Object.keys(fields).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = fields[id];
+        el.classList.remove('is-invalid');
+      }
+    });
+
+    const termsCheck = document.getElementById('termsCheck');
+    if (termsCheck) termsCheck.checked = true;
+
+    if (notify) {
+      showToast('Demo Details Filled', 'Loaded sample customer and delivery address for testing.', 'info');
+    }
+  }
+
   function prefillCheckoutDetails() {
     const isCheckoutPage = window.location.pathname.includes('checkout.html');
     if (!isCheckoutPage) return;
 
     const user = getLoggedUser();
-    if (user) {
+    if (user && user.email) {
       const nameInput = document.getElementById('customerFullName');
       const emailInput = document.getElementById('customerEmail');
       const phoneInput = document.getElementById('customerPhone');
@@ -2511,20 +2642,74 @@
       if (stateInput) stateInput.value = user.state || '';
       if (postalCodeInput) postalCodeInput.value = user.postalCode || '';
     }
+
+    // Attach real-time input validation clearers
+    const form = document.getElementById('checkoutForm');
+    if (form) {
+      form.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => input.classList.remove('is-invalid'));
+      });
+    }
   }
 
   function processDemoCheckout(e) {
     if (e && e.preventDefault) e.preventDefault();
     const form = document.getElementById('checkoutForm');
-    if (form && !form.checkValidity()) {
-      form.reportValidity();
-      return;
+    const btn = document.getElementById('placeOrderBtn');
+
+    if (btn && btn.disabled) return;
+
+    const nameInput = document.getElementById('customerFullName');
+    const emailInput = document.getElementById('customerEmail');
+    const phoneInput = document.getElementById('customerPhone');
+    const addressInput = document.getElementById('deliveryStreetAddress');
+    const cityInput = document.getElementById('deliveryCity');
+    const stateInput = document.getElementById('deliveryState');
+    const postalCodeInput = document.getElementById('deliveryPostalCode');
+    const termsInput = document.getElementById('termsCheck');
+
+    const requiredFields = [
+      { el: nameInput, label: 'Full Name' },
+      { el: emailInput, label: 'Email Address' },
+      { el: phoneInput, label: 'Phone Number' },
+      { el: addressInput, label: 'Street Address' },
+      { el: cityInput, label: 'City' },
+      { el: stateInput, label: 'State' },
+      { el: postalCodeInput, label: 'PIN Code' }
+    ];
+
+    // Remove any lingering invalid styles
+    requiredFields.forEach(({ el }) => el && el.classList.remove('is-invalid'));
+
+    // Check if the form is completely blank (guest quick-test click)
+    const isCompletelyEmpty = requiredFields.every(({ el }) => !el || !el.value.trim());
+    if (isCompletelyEmpty) {
+      fillDemoCheckoutDetails(false);
+      showToast('Demo Auto-Fill', 'Loaded demo customer & address to test payment.', 'info');
+    } else {
+      // Validate individual fields
+      const missingFields = requiredFields.filter(({ el }) => !el || !el.value.trim());
+      if (missingFields.length > 0) {
+        missingFields.forEach(({ el }) => el && el.classList.add('is-invalid'));
+        const firstMissing = missingFields[0].el;
+        if (firstMissing) {
+          firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstMissing.focus();
+        }
+        showToast('Incomplete Information', `Please provide your ${missingFields[0].label} to complete checkout.`, 'warning');
+        return;
+      }
     }
 
-    const btn = document.getElementById('placeOrderBtn');
+    if (termsInput && !termsInput.checked) {
+      termsInput.checked = true;
+    }
+
+    // Button visual processing animation
+    const originalBtnContent = btn ? btn.innerHTML : '<i class="bi bi-lock-fill me-2"></i> Pay & Start Subscription';
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing Payment...';
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing Secure Payment...';
     }
 
     setTimeout(() => {
@@ -2532,26 +2717,20 @@
       order.transactionId = 'TXN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
       const authUser = getAuthUser();
       const currentCustomer = {
-        name: order.customerName || authUser?.name || 'Customer',
-        email: order.customerEmail || authUser?.email || '',
-        phone: order.customerPhone || authUser?.phone || ''
+        name: order.customerName || authUser?.name || 'Priya Sharma',
+        email: order.customerEmail || authUser?.email || 'priya.sharma@example.com',
+        phone: order.customerPhone || authUser?.phone || '9876543210'
       };
-
-      if (!order.customerName || !order.customerEmail || !order.customerPhone) {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '<i class="bi bi-lock-fill me-2"></i> Pay & Start Subscription';
-        }
-        form?.reportValidity();
-        return;
-      }
 
       // Check if coupon code FAIL is applied
       const coupon = getAppliedCoupon();
       if (coupon && coupon.code.toUpperCase() === 'FAIL') {
-        // Simulated payment failed flow
         if (authUser && authUser.role === 'customer') {
           addNotification('Payment failed', `Payment failed for your order subscription checkout.`);
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnContent;
         }
         showToast('Payment Failed', 'Your simulated bank transaction was declined.', 'danger');
         setTimeout(() => {
@@ -2567,17 +2746,16 @@
       const users = getStoredUsers();
       let userObj = users.find(u => u.email.toLowerCase() === currentCustomer.email.toLowerCase());
       if (!userObj) {
-        // Automatically create account for guest checkout
         userObj = {
           id: 'user_' + Date.now(),
           name: currentCustomer.name,
           email: currentCustomer.email.toLowerCase(),
           phone: currentCustomer.phone,
           password: 'password123',
-          address: document.getElementById('deliveryStreetAddress')?.value || '',
-          city: document.getElementById('deliveryCity')?.value || '',
-          state: document.getElementById('deliveryState')?.value || '',
-          postalCode: document.getElementById('deliveryPostalCode')?.value || '',
+          address: document.getElementById('deliveryStreetAddress')?.value || '42, Green Avenue, Indiranagar',
+          city: document.getElementById('deliveryCity')?.value || 'Bengaluru',
+          state: document.getElementById('deliveryState')?.value || 'Karnataka',
+          postalCode: document.getElementById('deliveryPostalCode')?.value || '560038',
           subscription: {
             plan: order.selectedPlan,
             price: order.amount,
@@ -2590,11 +2768,10 @@
         };
         users.push(userObj);
       } else {
-        // Update user subscription & address
-        userObj.address = document.getElementById('deliveryStreetAddress')?.value || '';
-        userObj.city = document.getElementById('deliveryCity')?.value || '';
-        userObj.state = document.getElementById('deliveryState')?.value || '';
-        userObj.postalCode = document.getElementById('deliveryPostalCode')?.value || '';
+        userObj.address = document.getElementById('deliveryStreetAddress')?.value || userObj.address || '';
+        userObj.city = document.getElementById('deliveryCity')?.value || userObj.city || '';
+        userObj.state = document.getElementById('deliveryState')?.value || userObj.state || '';
+        userObj.postalCode = document.getElementById('deliveryPostalCode')?.value || userObj.postalCode || '';
         userObj.subscription = {
           plan: order.selectedPlan,
           price: order.amount,
@@ -2658,7 +2835,7 @@
       setTimeout(() => {
         window.location.href = 'payment-success.html';
       }, 500);
-    }, 1000);
+    }, 800);
   }
 
   // --- How It Works Step Navigation Handlers ---
@@ -2716,8 +2893,6 @@
   }
 
   // --- Wishlist Management ---
-  const WISHLIST_KEY = 'freshbox_wishlist_items';
-
   function normalizeProdId(id) {
     if (!id) return 'prod-1';
     const cleanId = String(id).trim();
@@ -2728,16 +2903,24 @@
   }
 
   function getWishlist() {
-    const saved = localStorage.getItem(WISHLIST_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          return parsed.map(id => normalizeProdId(id));
-        }
-      } catch (e) { }
+    const key = getWishlistKey();
+    const saved = localStorage.getItem(key);
+    if (!saved) {
+      localStorage.setItem(key, JSON.stringify([]));
+      return [];
     }
-    return ['prod-1', 'prod-3']; // Default wishlist items
+
+    try {
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed)) {
+        localStorage.setItem(key, JSON.stringify([]));
+        return [];
+      }
+      return parsed.map(id => normalizeProdId(id));
+    } catch (e) {
+      localStorage.setItem(key, JSON.stringify([]));
+      return [];
+    }
   }
 
   function toggleWishlist(prodId) {
@@ -2754,7 +2937,7 @@
       isAdded = true;
     }
 
-    localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
+    localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
     updateWishlistBadges();
     
     document.querySelectorAll('[data-wishlist-id]').forEach(btn => {
@@ -2789,7 +2972,7 @@
   function updateWishlistBadges() {
     const count = getWishlist().length;
     document.querySelectorAll('.wishlist-badge').forEach(badge => {
-      badge.textContent = count;
+      badge.textContent = String(count);
     });
   }
 
@@ -2870,6 +3053,16 @@
 
   // --- Initialize on DOMContentLoaded ---
   document.addEventListener('DOMContentLoaded', () => {
+    const isDashboardRoute = window.location.pathname.toLowerCase().endsWith('/dashboard.html') || window.location.pathname.toLowerCase().includes('/dashboard/');
+    const currentUser = getAuthUser();
+    if (isDashboardRoute && (!currentUser || currentUser.role !== 'customer')) {
+      const redirectPath = window.location.pathname.toLowerCase().includes('/dashboard/') ? '../login.html' : 'login.html';
+      if (window.location.href.toLowerCase().indexOf('/login.html') === -1) {
+        window.location.href = redirectPath;
+      }
+      return;
+    }
+
     initSocialLinks();
     initStickyNavbar();
     initCartDrawerTriggers();
@@ -2941,6 +3134,7 @@
     removeCoupon: removeCouponCode,
     openQuickView,
     processCheckout: processDemoCheckout,
+    fillDemoDetails: fillDemoCheckoutDetails,
     handleCustomizeStep: handleCustomizeStepClick,
     handleFrequencyStep: handleFrequencyStepClick,
     handleEnjoyStep: handleEnjoyStepClick,

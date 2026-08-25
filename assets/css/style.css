@@ -2145,6 +2145,9 @@ button[onclick*="addToCart"] {
 .dashboard-wrapper {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   background: var(--body-bg);
 }
 .dashboard-sidebar {
@@ -2213,6 +2216,8 @@ button[onclick*="addToCart"] {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 .dashboard-topbar {
   background: var(--card-bg);
@@ -2228,53 +2233,115 @@ button[onclick*="addToCart"] {
 .dashboard-content {
   padding: 28px;
   flex-grow: 1;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 991.98px) {
+  .dashboard-content {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-content {
+    padding: 16px 12px;
+  }
 }
 
 /* Stat KPI Cards */
+.dashboard-stat-grid {
+  align-items: stretch;
+}
+
 .stat-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 20px 22px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+  width: 100%;
   height: 100%;
+  min-height: 96px;
+  box-sizing: border-box;
+  overflow: hidden;
   transition: all var(--transition-normal);
 }
+
 .stat-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-sm);
 }
+
 .stat-icon {
-  width: 58px;
-  height: 58px;
+  width: 52px;
+  height: 52px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
-  flex: 0 0 58px;
+  font-size: 1.5rem;
+  flex: 0 0 52px;
+  flex-shrink: 0;
 }
+
 .stat-icon.green { background: var(--primary-subtle); color: var(--primary); }
 .stat-icon.orange { background: var(--accent-orange-subtle); color: var(--accent-orange); }
 .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
 .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+
+.stat-info {
+  flex: 1 1 0%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .stat-info h3 {
-  font-size: 1.75rem;
+  font-size: 1.45rem;
   font-weight: 800;
   margin-bottom: 2px;
-  line-height: 1.2;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
-.stat-info {
-  flex: 1 1 auto;
-  min-width: 0;
-}
+
 .stat-info p {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@media (min-width: 992px) and (max-width: 1280px) {
+  .stat-card {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    flex: 0 0 44px;
+  }
+  .stat-info h3 {
+    font-size: 1.2rem;
+  }
+  .stat-info p {
+    font-size: 0.78rem;
+  }
 }
 
 /* Timeline Components */

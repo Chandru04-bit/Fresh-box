@@ -650,6 +650,30 @@ body.dark-mode .stat-info p {
   color: #94a3b8 !important;
 }
 
+[data-bs-theme="dark"] .stat-icon.green,
+body.dark-mode .stat-icon.green {
+  background: rgba(46, 125, 50, 0.2);
+  color: #4ade80;
+}
+
+[data-bs-theme="dark"] .stat-icon.orange,
+body.dark-mode .stat-icon.orange {
+  background: rgba(230, 81, 0, 0.2);
+  color: #fb923c;
+}
+
+[data-bs-theme="dark"] .stat-icon.blue,
+body.dark-mode .stat-icon.blue {
+  background: rgba(2, 132, 199, 0.2);
+  color: #38bdf8;
+}
+
+[data-bs-theme="dark"] .stat-icon.purple,
+body.dark-mode .stat-icon.purple {
+  background: rgba(147, 51, 234, 0.2);
+  color: #c084fc;
+}
+
 /* Testimonial & Review Cards */
 [data-bs-theme="dark"] .testimonial-card,
 body.dark-mode .testimonial-card {

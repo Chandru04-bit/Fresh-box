@@ -164,3 +164,22 @@ body.rtl-mode .fresh-toast-container {
   right: auto;
   left: 24px;
 }
+
+/* Stat Cards RTL */
+[dir="rtl"] .stat-card,
+body.rtl-mode .stat-card {
+  text-align: right;
+}
+
+[dir="rtl"] .stat-info,
+body.rtl-mode .stat-info {
+  text-align: right;
+}
+
+[dir="rtl"] .stat-info h3,
+[dir="rtl"] .stat-info p,
+body.rtl-mode .stat-info h3,
+body.rtl-mode .stat-info p {
+  text-align: right;
+}
+

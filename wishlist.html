@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -85,7 +85,7 @@
           <!-- Cart Button with Offcanvas Drawer -->
           <button class="nav-action-btn position-relative" type="button" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" title="View Current Box">
             <i class="bi bi-bag"></i>
-            <span class="cart-badge">4</span>
+            <span class="cart-badge">0</span>
           </button>
 
           <!-- Dark / Light Mode Toggle -->
@@ -258,7 +258,7 @@
               </button>
               <div class="product-img-wrap cursor-pointer" onclick="window.location.href='product-details.html?id=${p.id}'">
                 <span class="badge badge-custom badge-organic product-badge">${p.badge || '100% Organic'}</span>
-                <img src="${p.image}" alt="${p.name}" class="w-100 h-100 object-fit-cover">
+                <img src="${p.image}" alt="${p.name}" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/' + (p.category || 'vegetables') + '.jpg';">
               </div>
               <div class="product-content p-3">
                 <span class="product-category text-uppercase small text-muted font-monospace">${catName}</span>

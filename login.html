@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -308,8 +308,9 @@
         subscription: user.subscription || null,
         notifications: user.notifications || []
       });
-      freshboxApp.showToast('Welcome back!', 'Redirecting to home page...', 'success');
-      setTimeout(() => window.location.href = 'index.html', 500);
+      sessionStorage.removeItem('freshbox_login_notice');
+      freshboxApp.showToast('Welcome back!', 'Redirecting to your dashboard...', 'success');
+      setTimeout(() => window.location.href = 'dashboard/index.html', 500);
     }
 
     function clearLoginForm() {
@@ -331,6 +332,11 @@
       const password = document.getElementById('loginPassword');
       localStorage.removeItem('freshbox_remember_email');
       sessionStorage.removeItem('freshbox_remember_email');
+      const loginNotice = sessionStorage.getItem('freshbox_login_notice');
+      if (loginNotice) {
+        freshboxApp.showToast('Access Restricted', loginNotice, 'warning');
+        sessionStorage.removeItem('freshbox_login_notice');
+      }
       clearLoginForm();
       [email, password].forEach(field => field.addEventListener('input', () => field.classList.remove('is-invalid')));
       document.getElementById('togglePasswordBtn').addEventListener('click', togglePasswordVisibility);
