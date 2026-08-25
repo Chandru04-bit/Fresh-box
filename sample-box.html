@@ -120,11 +120,13 @@
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Organic</span>
-              <img src="assets/images/products/fresh-vine-tomatoes.jpg" alt="Tomatoes" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+              <img src="assets/images/products/fresh-vine-tomatoes.jpg" alt="Vine Ripe Tomatoes" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Vegetables</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Vine Ripe Tomatoes</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-1" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Vine Ripe Tomatoes</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.9</span>
@@ -136,7 +138,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 20%</span>
                 <span class="text-muted small">/ 1 kg</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'prod-1', name: 'Vine Ripe Tomatoes', category: 'vegetables', price: 60, unit: '1 kg', image: 'assets/images/products/fresh-vine-tomatoes.jpg' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-1')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -145,17 +147,19 @@
 
         <!-- 2. Potatoes -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-4'">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-4" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-4')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-potatoes'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-potatoes" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-potatoes')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Fresh Farm</span>
-              <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&auto=format&fit=crop&q=80" alt="Potatoes" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+              <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&auto=format&fit=crop&q=80" alt="Pahari Baby Potatoes" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Vegetables</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Pahari Baby Potatoes</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-potatoes" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Pahari Baby Potatoes</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.8</span>
@@ -167,7 +171,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 21%</span>
                 <span class="text-muted small">/ 1.5 kg</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'prod-4', name: 'Pahari Baby Potatoes', category: 'vegetables', price: 55, unit: '1.5 kg', image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&auto=format&fit=crop&q=80' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-potatoes')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -176,17 +180,19 @@
 
         <!-- 3. Carrots -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-10'">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-10" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-10')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-carrots'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-carrots" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-carrots')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Organic</span>
-              <img src="assets/images/products/farm-fresh-carrots.jpg" alt="Carrots" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+              <img src="assets/images/products/farm-fresh-carrots.jpg" alt="Ooty Sweet Carrots" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Vegetables</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Ooty Sweet Carrots</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-carrots" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Ooty Sweet Carrots</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.9</span>
@@ -198,7 +204,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 18%</span>
                 <span class="text-muted small">/ 750 g</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'prod-10', name: 'Ooty Sweet Carrots', category: 'vegetables', price: 45, unit: '750 g', image: 'assets/images/products/farm-fresh-carrots.jpg' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-carrots')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -207,17 +213,19 @@
 
         <!-- 4. Bananas -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-11" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-11')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-bananas'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-bananas" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-bananas')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Naturally Ripened</span>
-              <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&auto=format&fit=crop&q=80" alt="Bananas" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/fruits.jpg';">
+              <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&auto=format&fit=crop&q=80" alt="Yelakki Bananas" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Fruits</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Yelakki Bananas</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-bananas" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Yelakki Bananas</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.8</span>
@@ -229,7 +237,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 17%</span>
                 <span class="text-muted small">/ 1 kg</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'prod-11', name: 'Yelakki Bananas', category: 'fruits', price: 70, unit: '1 kg', image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&auto=format&fit=crop&q=80' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-bananas')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -238,17 +246,19 @@
 
         <!-- 5. Apples -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-3'">
             <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-3" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-3')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Crunchy</span>
-              <img src="assets/images/products/royal-gala-apples.jpg" alt="Apples" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/fruits.jpg';">
+              <img src="assets/images/products/royal-gala-apples.jpg" alt="Kinnaur Royal Apples" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Fruits</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Kinnaur Royal Apples</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-3" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Kinnaur Royal Apples</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.9</span>
@@ -260,7 +270,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 16%</span>
                 <span class="text-muted small">/ 1 kg</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'prod-3', name: 'Kinnaur Royal Apples', category: 'fruits', price: 130, unit: '1 kg', image: 'assets/images/products/royal-gala-apples.jpg' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-3')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -270,16 +280,18 @@
         <!-- 6. Spinach -->
         <div class="col">
           <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-2'">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="sb-6" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('sb-6')" title="Save to Wishlist">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-2" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-2')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Hydroponic</span>
-              <img src="assets/images/products/organic-baby-spinach.jpg" alt="Spinach" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+              <img src="assets/images/products/organic-baby-spinach.jpg" alt="Tender Baby Spinach" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Vegetables</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Tender Baby Spinach</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-2" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Tender Baby Spinach</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.8</span>
@@ -291,7 +303,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 18%</span>
                 <span class="text-muted small">/ 250 g</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'sb-6', name: 'Tender Baby Spinach', category: 'vegetables', price: 45, unit: '250 g', image: 'assets/images/products/organic-baby-spinach.jpg' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-2')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -300,17 +312,19 @@
 
         <!-- 7. Onions -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="sb-7" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('sb-7')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-onions'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-onions" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-onions')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-fresh product-badge">Dry Cured</span>
-              <img src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&auto=format&fit=crop&q=80" alt="Onions" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+              <img src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&auto=format&fit=crop&q=80" alt="Nasik Red Onions" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Vegetables</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Nasik Red Onions</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-onions" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Nasik Red Onions</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.7</span>
@@ -322,7 +336,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 23%</span>
                 <span class="text-muted small">/ 1.5 kg</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'sb-7', name: 'Nasik Red Onions', category: 'vegetables', price: 50, unit: '1.5 kg', image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&auto=format&fit=crop&q=80' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-onions')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -331,17 +345,19 @@
 
         <!-- 8. Milk -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="sb-8" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('sb-8')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-5'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-5" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-5')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Glass Bottle</span>
-              <img src="assets/images/products/farm-fresh-a2-milk.jpg" alt="Milk" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/dairy.jpg';">
+              <img src="assets/images/products/farm-fresh-a2-milk.jpg" alt="Farm Fresh A2 Milk" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Dairy</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Farm Fresh A2 Milk</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-5" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Farm Fresh A2 Milk</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.9</span>
@@ -353,7 +369,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 21%</span>
                 <span class="text-muted small">/ 1 L</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'sb-8', name: 'Farm Fresh A2 Milk', category: 'dairy', price: 75, unit: '1 L', image: 'assets/images/products/farm-fresh-a2-milk.jpg' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-5')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -362,17 +378,19 @@
 
         <!-- 9. Rice -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="sb-9" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('sb-9')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-rice'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-rice" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-rice')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-organic product-badge">Aromatic</span>
-              <img src="assets/images/products/organic-brown-rice.jpg" alt="Rice" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/pantry.jpg';">
+              <img src="assets/images/products/organic-brown-rice.jpg" alt="Organic Basmati Rice" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Pantry</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Organic Basmati Rice</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-rice" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Organic Basmati Rice</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.8</span>
@@ -384,7 +402,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 21%</span>
                 <span class="text-muted small">/ 1 kg</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'sb-9', name: 'Organic Basmati Rice', category: 'pantry', price: 110, unit: '1 kg', image: 'assets/images/products/organic-brown-rice.jpg' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-rice')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>
@@ -393,17 +411,19 @@
 
         <!-- 10. Bread -->
         <div class="col">
-          <div class="product-card h-100 cursor-pointer position-relative shadow-sm">
-            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="sb-10" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('sb-10')" title="Save to Wishlist">
+          <div class="product-card h-100 cursor-pointer position-relative shadow-sm" onclick="window.location.href='product-details.html?id=prod-7'">
+            <button class="wishlist-btn position-absolute top-0 end-0 m-3" data-wishlist-id="prod-7" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('prod-7')" title="Save to Wishlist">
               <i class="bi bi-heart"></i>
             </button>
             <div class="product-img-wrap">
               <span class="badge badge-custom badge-fresh product-badge">Stone Baked</span>
-              <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&auto=format&fit=crop&q=80" alt="Bread" loading="lazy" onerror="this.onerror=null; this.src='assets/images/categories/bakery.jpg';">
+              <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&auto=format&fit=crop&q=80" alt="Artisan Sourdough Loaf" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
             </div>
             <div class="product-content p-3">
               <span class="product-category text-uppercase small text-muted font-monospace">Bakery</span>
-              <h5 class="product-title fw-bold text-dark mt-1 mb-1">Artisan Sourdough Loaf</h5>
+              <h5 class="product-title fw-bold text-dark mt-1 mb-1">
+                <a href="product-details.html?id=prod-7" class="text-dark text-decoration-none" onclick="event.stopPropagation();">Artisan Sourdough Loaf</a>
+              </h5>
               <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
                 <i class="bi bi-star-fill"></i>
                 <span class="fw-bold text-dark ms-1">4.7</span>
@@ -415,7 +435,7 @@
                 <span class="badge bg-danger-subtle text-danger small">Save 21%</span>
                 <span class="text-muted small">/ 450 g</span>
               </div>
-              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: 'sb-10', name: 'Artisan Sourdough Loaf', category: 'bakery', price: 95, unit: '450 g', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&auto=format&fit=crop&q=80' })">
+              <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('prod-7')">
                 <i class="bi bi-plus-lg me-1"></i> Add to Box
               </button>
             </div>

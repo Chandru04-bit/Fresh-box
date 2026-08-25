@@ -59,11 +59,15 @@
     });
   }
 
+  // Neutral, clean SVG fallback placeholder for images that fail to load
+  const DEFAULT_FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f8fafc'/%3E%3Cg fill='%2394a3b8' text-anchor='middle' font-family='sans-serif'%3E%3Crect x='150' y='90' width='100' height='75' rx='6' fill='none' stroke='%23cbd5e1' stroke-width='3'/%3E%3Ccircle cx='175' cy='112' r='8' fill='%23cbd5e1'/%3E%3Cpath d='M154 152l22-20 16 14 18-18 36 24' fill='none' stroke='%23cbd5e1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ctext x='200' y='198' font-size='13' font-weight='600' fill='%2364748b'%3EImage Unavailable%3C/text%3E%3C/g%3E%3C/svg%3E";
+
   // --- Comprehensive Grocery Product Database ---
   const PRODUCTS = [
     {
       id: 'prod-1',
-      name: 'Fresh Vine Tomatoes',
+      slug: 'vine-ripe-tomatoes',
+      name: 'Vine Ripe Tomatoes',
       category: 'vegetables',
       categoryName: 'Vegetables',
       price: 60,
@@ -78,7 +82,76 @@
       nutrition: { calories: '18 kcal', carbs: '3.9g', protein: '0.9g', fiber: '1.2g', vitaminC: '28%' }
     },
     {
+      id: 'prod-potatoes',
+      slug: 'pahari-baby-potatoes',
+      name: 'Pahari Baby Potatoes',
+      category: 'vegetables',
+      categoryName: 'Vegetables',
+      price: 55,
+      originalPrice: 70,
+      unit: '1.5 kg',
+      rating: 4.8,
+      reviewsCount: 29,
+      badge: 'Fresh Farm',
+      inStock: true,
+      image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
+      description: 'Naturally harvested mountain baby potatoes from high altitude farms, perfect for roasting, boiling, and curries.',
+      nutrition: { calories: '77 kcal', carbs: '17g', protein: '2.0g', fiber: '2.2g', potassium: '12%' }
+    },
+    {
+      id: 'prod-carrots',
+      slug: 'ooty-sweet-carrots',
+      name: 'Ooty Sweet Carrots',
+      category: 'vegetables',
+      categoryName: 'Vegetables',
+      price: 45,
+      originalPrice: 55,
+      unit: '750 g',
+      rating: 4.9,
+      reviewsCount: 34,
+      badge: 'Organic',
+      inStock: true,
+      image: 'assets/images/products/farm-fresh-carrots.jpg',
+      description: 'Crisp, naturally sweet hill-grown carrots harvested daily from Nilgiri organic partner farms.',
+      nutrition: { calories: '41 kcal', carbs: '9.6g', protein: '0.9g', fiber: '2.8g', vitaminA: '110%' }
+    },
+    {
+      id: 'prod-bananas',
+      slug: 'yelakki-bananas',
+      name: 'Yelakki Bananas',
+      category: 'fruits',
+      categoryName: 'Fruits',
+      price: 70,
+      originalPrice: 85,
+      unit: '1 kg',
+      rating: 4.8,
+      reviewsCount: 51,
+      badge: 'Naturally Ripened',
+      inStock: true,
+      image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&auto=format&fit=crop&q=80',
+      description: 'Fragrant and creamy small Yelakki bananas, naturally tree-ripened with zero artificial ripening agents.',
+      nutrition: { calories: '89 kcal', carbs: '23g', protein: '1.1g', fiber: '2.6g', potassium: '10%' }
+    },
+    {
+      id: 'prod-3',
+      slug: 'kinnaur-royal-apples',
+      name: 'Kinnaur Royal Apples',
+      category: 'fruits',
+      categoryName: 'Fruits',
+      price: 130,
+      originalPrice: 155,
+      unit: '1 kg',
+      rating: 4.9,
+      reviewsCount: 56,
+      badge: 'Crunchy',
+      inStock: true,
+      image: 'assets/images/products/royal-gala-apples.jpg',
+      description: 'Sweet, fragrant, and crisp Royal Apples sourced directly from Himachal orchard cooperatives.',
+      nutrition: { calories: '52 kcal', carbs: '14g', protein: '0.3g', fiber: '2.4g', vitaminC: '14%' }
+    },
+    {
       id: 'prod-2',
+      slug: 'organic-baby-spinach',
       name: 'Organic Baby Spinach',
       category: 'vegetables',
       categoryName: 'Vegetables',
@@ -94,23 +167,76 @@
       nutrition: { calories: '23 kcal', carbs: '3.6g', protein: '2.9g', fiber: '2.2g', iron: '15%' }
     },
     {
-      id: 'prod-3',
-      name: 'Royal Gala Apples',
-      category: 'fruits',
-      categoryName: 'Fruits',
-      price: 120,
+      id: 'prod-onions',
+      slug: 'nasik-red-onions',
+      name: 'Nasik Red Onions',
+      category: 'vegetables',
+      categoryName: 'Vegetables',
+      price: 50,
+      originalPrice: 65,
+      unit: '1.5 kg',
+      rating: 4.7,
+      reviewsCount: 31,
+      badge: 'Dry Cured',
+      inStock: true,
+      image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80',
+      description: 'Rich flavor, cured red onions grown in the volcanic mineral soil of Nashik, ideal for everyday kitchen dishes.',
+      nutrition: { calories: '40 kcal', carbs: '9.3g', protein: '1.1g', fiber: '1.7g', vitaminC: '12%' }
+    },
+    {
+      id: 'prod-5',
+      slug: 'farm-fresh-a2-milk',
+      name: 'Farm Fresh A2 Organic Milk',
+      category: 'dairy',
+      categoryName: 'Dairy',
+      price: 75,
+      originalPrice: 95,
+      unit: '1 L',
+      rating: 4.9,
+      reviewsCount: 88,
+      badge: 'Glass Bottle',
+      inStock: true,
+      image: 'assets/images/products/farm-fresh-a2-milk.jpg',
+      description: 'Pure, unprocessed A2 milk from grass-fed indigenous cows, delivered in sterilized returnable glass bottles.',
+      nutrition: { calories: '62 kcal', fat: '3.6g', protein: '3.2g', calcium: '28%' }
+    },
+    {
+      id: 'prod-rice',
+      slug: 'organic-basmati-rice',
+      name: 'Organic Basmati Rice',
+      category: 'pantry',
+      categoryName: 'Pantry',
+      price: 110,
       originalPrice: 140,
       unit: '1 kg',
-      rating: 4.9,
-      reviewsCount: 56,
-      badge: 'Seasonal',
+      rating: 4.8,
+      reviewsCount: 22,
+      badge: 'Aromatic',
       inStock: true,
-      image: 'assets/images/products/royal-gala-apples.jpg',
-      description: 'Sweet, fragrant, and crunchy Royal Gala apples sourced directly from Himachal orchard cooperatives.',
-      nutrition: { calories: '52 kcal', carbs: '14g', protein: '0.3g', fiber: '2.4g', vitaminC: '14%' }
+      image: 'assets/images/products/organic-brown-rice.jpg',
+      description: 'Naturally aged whole organic long-grain rice with delicate aroma and unpolished nutritious bran intact.',
+      nutrition: { calories: '130 kcal', carbs: '28g', protein: '2.7g', fiber: '1.8g', iron: '4%' }
+    },
+    {
+      id: 'prod-7',
+      slug: 'artisan-sourdough-loaf',
+      name: 'Artisan Sourdough Loaf',
+      category: 'bakery',
+      categoryName: 'Bakery',
+      price: 95,
+      originalPrice: 120,
+      unit: '450 g',
+      rating: 4.7,
+      reviewsCount: 47,
+      badge: 'Stone Baked',
+      inStock: true,
+      image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
+      description: 'Naturally fermented for 24 hours using wild sourdough culture and stone-ground organic whole wheat flour.',
+      nutrition: { calories: '160 kcal', carbs: '32g', protein: '6g', fiber: '4g' }
     },
     {
       id: 'prod-4',
+      slug: 'fresh-nagpur-oranges',
       name: 'Fresh Nagpur Oranges',
       category: 'fruits',
       categoryName: 'Fruits',
@@ -126,23 +252,8 @@
       nutrition: { calories: '47 kcal', carbs: '12g', protein: '0.9g', fiber: '2.4g', vitaminC: '64%' }
     },
     {
-      id: 'prod-5',
-      name: 'Farm Fresh A2 Organic Milk',
-      category: 'dairy',
-      categoryName: 'Dairy',
-      price: 75,
-      originalPrice: 85,
-      unit: '1 L',
-      rating: 5.0,
-      reviewsCount: 88,
-      badge: 'A2 Certified',
-      inStock: true,
-      image: 'assets/images/products/farm-fresh-a2-milk.jpg',
-      description: 'Pure, unprocessed A2 milk from grass-fed indigenous cows, delivered in sterilized returnable glass bottles.',
-      nutrition: { calories: '62 kcal', fat: '3.6g', protein: '3.2g', calcium: '28%' }
-    },
-    {
       id: 'prod-6',
+      slug: 'artisan-greek-yogurt',
       name: 'Artisan Greek Yogurt',
       category: 'dairy',
       categoryName: 'Dairy',
@@ -158,23 +269,8 @@
       nutrition: { calories: '97 kcal', carbs: '3.9g', protein: '9.0g', calcium: '22%' }
     },
     {
-      id: 'prod-7',
-      name: 'Whole Grain Sourdough Loaf',
-      category: 'bakery',
-      categoryName: 'Bakery',
-      price: 95,
-      originalPrice: 120,
-      unit: '500 g',
-      rating: 4.9,
-      reviewsCount: 47,
-      badge: 'Artisan',
-      inStock: true,
-      image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-      description: 'Naturally fermented for 24 hours using wild sourdough culture and stone-ground organic whole wheat flour.',
-      nutrition: { calories: '160 kcal', carbs: '32g', protein: '6g', fiber: '4g' }
-    },
-    {
       id: 'prod-8',
+      slug: 'french-butter-croissants',
       name: 'French Butter Croissants (2-pack)',
       category: 'bakery',
       categoryName: 'Bakery',
@@ -191,6 +287,7 @@
     },
     {
       id: 'prod-9',
+      slug: 'cold-pressed-virgin-olive-oil',
       name: 'Cold Pressed Virgin Olive Oil',
       category: 'pantry',
       categoryName: 'Pantry',
@@ -207,6 +304,7 @@
     },
     {
       id: 'prod-10',
+      slug: 'organic-royal-quinoa',
       name: 'Organic Royal Quinoa',
       category: 'pantry',
       categoryName: 'Pantry',
@@ -223,6 +321,7 @@
     },
     {
       id: 'prod-11',
+      slug: 'wild-forest-raw-honey',
       name: 'Wild Forest Raw Honey',
       category: 'organic',
       categoryName: 'Organic',
@@ -239,6 +338,7 @@
     },
     {
       id: 'prod-12',
+      slug: 'organic-hass-avocados',
       name: 'Organic Hass Avocados (2-pack)',
       category: 'organic',
       categoryName: 'Organic',
@@ -255,6 +355,7 @@
     },
     {
       id: 'prod-13',
+      slug: 'roasted-almond-berry-granola',
       name: 'Roasted Almond & Berry Granola',
       category: 'snacks',
       categoryName: 'Snacks',
@@ -271,6 +372,7 @@
     },
     {
       id: 'prod-14',
+      slug: 'organic-mixed-california-nuts',
       name: 'Organic Mixed California Nuts',
       category: 'snacks',
       categoryName: 'Snacks',
@@ -287,6 +389,7 @@
     },
     {
       id: 'prod-15',
+      slug: 'cold-pressed-green-detox-juice',
       name: 'Cold-Pressed Green Detox Juice',
       category: 'beverages',
       categoryName: 'Beverages',
@@ -303,6 +406,7 @@
     },
     {
       id: 'prod-16',
+      slug: 'fresh-tender-coconut-water',
       name: 'Fresh Tender Coconut Water',
       category: 'beverages',
       categoryName: 'Beverages',
@@ -316,8 +420,171 @@
       image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
       description: 'Naturally sweet pure coconut water bio-extracted and bottled immediately to preserve native electrolytes.',
       nutrition: { calories: '45 kcal', potassium: '470mg', electrolytes: '100%' }
+    },
+    {
+      id: 'prod-pomegranate',
+      slug: 'organic-ruby-pomegranate',
+      name: 'Organic Ruby Pomegranate',
+      category: 'fruits',
+      categoryName: 'Fruits',
+      price: 140,
+      originalPrice: 165,
+      unit: '1 kg',
+      rating: 4.9,
+      reviewsCount: 45,
+      badge: 'Antioxidant Rich',
+      inStock: true,
+      image: 'assets/images/products/organic-pomegranate.jpg',
+      description: 'Ruby-red juicy organic pomegranate arils packed with powerful polyphenols and antioxidants.',
+      nutrition: { calories: '83 kcal', carbs: '19g', protein: '1.7g', fiber: '4g', vitaminC: '17%' }
     }
   ];
+
+  /**
+   * Central Product Resolution Engine
+   * Resolves any product by ID, slug, legacy sample box code, or partial/exact name.
+   */
+  function getProductById(query) {
+    if (!query) return PRODUCTS[0];
+    if (typeof query === 'object') {
+      if (query.id) {
+        const byObjId = PRODUCTS.find(p => p.id === query.id || p.slug === query.id);
+        if (byObjId) return byObjId;
+      }
+      if (query.name) {
+        const byObjName = PRODUCTS.find(p => p.name.toLowerCase() === query.name.toLowerCase());
+        if (byObjName) return byObjName;
+      }
+      return query;
+    }
+
+    const raw = String(query).trim();
+    const clean = raw.toLowerCase();
+
+    // 1. Direct ID match
+    let found = PRODUCTS.find(p => p.id.toLowerCase() === clean);
+    if (found) return found;
+
+    // 2. Slug match
+    found = PRODUCTS.find(p => p.slug && p.slug.toLowerCase() === clean);
+    if (found) return found;
+
+    // 3. Known Aliases Map
+    const ALIAS_MAP = {
+      'sb-1': 'prod-1',
+      'sb-2': 'prod-potatoes',
+      'sb-3': 'prod-carrots',
+      'sb-4': 'prod-bananas',
+      'sb-5': 'prod-3',
+      'sb-6': 'prod-2',
+      'sb-7': 'prod-onions',
+      'sb-8': 'prod-5',
+      'sb-9': 'prod-rice',
+      'sb-10': 'prod-7',
+      'sample-1': 'prod-1',
+      'sample-2': 'prod-potatoes',
+      'sample-3': 'prod-carrots',
+      'sample-4': 'prod-bananas',
+      'sample-5': 'prod-3',
+      'sample-6': 'prod-2',
+      'sample-7': 'prod-onions',
+      'sample-8': 'prod-5',
+      'sample-9': 'prod-rice',
+      'sample-10': 'prod-7',
+      'item-1': 'prod-1',
+      'item-2': 'prod-2',
+      'item-3': 'prod-3',
+      'item-4': 'prod-4',
+      'item-5': 'prod-5',
+      'tomatoes': 'prod-1',
+      'fresh-vine-tomatoes': 'prod-1',
+      'vine-ripe-tomatoes': 'prod-1',
+      'vine-tomatoes': 'prod-1',
+      'spinach': 'prod-2',
+      'organic-baby-spinach': 'prod-2',
+      'tender-baby-spinach': 'prod-2',
+      'baby-spinach': 'prod-2',
+      'apples': 'prod-3',
+      'royal-gala-apples': 'prod-3',
+      'kinnaur-royal-apples': 'prod-3',
+      'kinnow-royal-apples': 'prod-3',
+      'oranges': 'prod-4',
+      'fresh-nagpur-oranges': 'prod-4',
+      'milk': 'prod-5',
+      'farm-fresh-a2-milk': 'prod-5',
+      'farm-fresh-a2-organic-milk': 'prod-5',
+      'organic-milk': 'prod-5',
+      'a2-milk': 'prod-5',
+      'yogurt': 'prod-6',
+      'artisan-greek-yogurt': 'prod-6',
+      'greek-yogurt': 'prod-6',
+      'bread': 'prod-7',
+      'stone-baked-bread': 'prod-7',
+      'artisan-sourdough-loaf': 'prod-7',
+      'whole-grain-sourdough-loaf': 'prod-7',
+      'sourdough': 'prod-7',
+      'croissants': 'prod-8',
+      'french-butter-croissants': 'prod-8',
+      'olive-oil': 'prod-9',
+      'cold-pressed-virgin-olive-oil': 'prod-9',
+      'quinoa': 'prod-10',
+      'organic-royal-quinoa': 'prod-10',
+      'honey': 'prod-11',
+      'wild-forest-raw-honey': 'prod-11',
+      'avocados': 'prod-12',
+      'organic-hass-avocados': 'prod-12',
+      'granola': 'prod-13',
+      'roasted-almond-berry-granola': 'prod-13',
+      'nuts': 'prod-14',
+      'organic-mixed-california-nuts': 'prod-14',
+      'juice': 'prod-15',
+      'cold-pressed-green-detox-juice': 'prod-15',
+      'coconut-water': 'prod-16',
+      'fresh-tender-coconut-water': 'prod-16',
+      'potatoes': 'prod-potatoes',
+      'pahari-baby-potatoes': 'prod-potatoes',
+      'baby-potatoes': 'prod-potatoes',
+      'carrots': 'prod-carrots',
+      'ooty-sweet-carrots': 'prod-carrots',
+      'farm-fresh-carrots': 'prod-carrots',
+      'sweet-carrots': 'prod-carrots',
+      'bananas': 'prod-bananas',
+      'yelakki-bananas': 'prod-bananas',
+      'onions': 'prod-onions',
+      'nasik-red-onions': 'prod-onions',
+      'red-onions': 'prod-onions',
+      'rice': 'prod-rice',
+      'brown-rice': 'prod-rice',
+      'organic-brown-rice': 'prod-rice',
+      'organic-basmati-rice': 'prod-rice',
+      'basmati-rice': 'prod-rice',
+      'pomegranate': 'prod-pomegranate',
+      'organic-ruby-pomegranate': 'prod-pomegranate'
+    };
+
+    if (ALIAS_MAP[clean]) {
+      const targetId = ALIAS_MAP[clean];
+      found = PRODUCTS.find(p => p.id === targetId || p.slug === targetId);
+      if (found) return found;
+    }
+
+    // 4. Exact Name Match
+    found = PRODUCTS.find(p => p.name.toLowerCase() === clean);
+    if (found) return found;
+
+    // 5. Partial Name Match
+    found = PRODUCTS.find(p => p.name.toLowerCase().includes(clean) || clean.includes(p.name.toLowerCase()));
+    if (found) return found;
+
+    // 6. If numeric like 'prod-1', '1', etc.
+    const numOnly = clean.replace(/\D/g, '');
+    if (numOnly) {
+      found = PRODUCTS.find(p => p.id === 'prod-' + numOnly);
+      if (found) return found;
+    }
+
+    return PRODUCTS[0];
+  }
 
   // --- Auth & User State Management ---
   const AUTH_KEY = 'freshbox_auth_user';
@@ -747,25 +1014,48 @@
   }
 
   function addToCart(itemOrId, notify = true) {
-    let item = itemOrId;
-    // Handle String ID invocations (e.g. freshboxApp.addToCart('prod-1'))
+    let item = null;
+    let qtyToAdd = 1;
+
     if (typeof itemOrId === 'string') {
-      const found = PRODUCTS.find(p => String(p.id) === String(itemOrId));
+      const found = getProductById(itemOrId);
       if (found) {
-        item = found;
+        item = {
+          id: found.id,
+          name: found.name,
+          category: found.category,
+          price: Number(found.price),
+          unit: found.unit,
+          image: found.image,
+          qty: 1
+        };
       } else {
         console.warn('Product not found for ID:', itemOrId);
         return;
       }
+    } else if (itemOrId && typeof itemOrId === 'object') {
+      const prodLookup = itemOrId.id ? getProductById(itemOrId.id) : (itemOrId.name ? getProductById(itemOrId.name) : null);
+      const canonicalProd = prodLookup || {};
+      qtyToAdd = Math.max(1, parseInt(itemOrId.qty || itemOrId.quantity || 1, 10));
+      item = {
+        id: canonicalProd.id || itemOrId.id || 'prod-item',
+        name: canonicalProd.name || itemOrId.name,
+        category: canonicalProd.category || itemOrId.category || 'vegetables',
+        price: Number(itemOrId.price !== undefined ? itemOrId.price : (canonicalProd.price || 0)),
+        unit: itemOrId.unit || canonicalProd.unit || '1 pack',
+        image: canonicalProd.image || itemOrId.image || DEFAULT_FALLBACK_IMAGE,
+        qty: qtyToAdd
+      };
     }
+
     if (!item || !item.id || String(item.id) === 'undefined') return;
 
     const cart = getCart();
     const existing = cart.find(i => String(i.id) === String(item.id));
     if (existing) {
-      existing.qty += (item.qty || 1);
+      existing.qty += qtyToAdd;
     } else {
-      cart.push({ ...item, qty: item.qty || 1 });
+      cart.push({ ...item, qty: qtyToAdd });
     }
     saveCart(cart);
     if (notify) {
@@ -924,7 +1214,7 @@
     cart.forEach(item => {
       html += `
         <div class="d-flex align-items-center gap-3 p-3 border-bottom">
-          <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+          <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
           <div class="flex-grow-1 overflow-hidden">
             <h6 class="mb-0 fw-bold fs-6 text-dark text-truncate">${item.name}</h6>
             <span class="text-muted small">${item.unit} • ₹${item.price}</span>
@@ -991,8 +1281,6 @@
       return;
     }
 
-
-
     if (summaryItemCount) summaryItemCount.textContent = `${count} Items`;
     if (summarySubtotal) summarySubtotal.textContent = `₹${subtotal}`;
     if (summaryTotal) summaryTotal.textContent = `₹${total}`;
@@ -1011,7 +1299,7 @@
       html += `
         <div class="box-item-row d-flex align-items-center justify-content-between py-2.5 border-bottom gap-2">
           <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1">
-            <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 48px; height: 48px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+            <img src="${item.image}" alt="${item.name}" class="rounded-3 flex-shrink-0" style="width: 48px; height: 48px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
             <div class="overflow-hidden flex-grow-1">
               <span class="fw-bold text-dark text-truncate d-block mb-1" style="font-size: 0.88rem; line-height: 1.25;" title="${item.name}">${item.name}</span>
               <div class="d-flex align-items-center gap-2">
@@ -1070,7 +1358,7 @@
         <tr>
           <td class="align-middle">
             <div class="d-flex align-items-center gap-3">
-              <img src="${item.image}" alt="${item.name}" class="rounded-3 shadow-xs" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+              <img src="${item.image}" alt="${item.name}" class="rounded-3 shadow-xs" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
               <div>
                 <a href="product-details.html?id=${item.id}" class="fw-bold text-dark text-decoration-none d-block">${item.name}</a>
                 <span class="text-muted small">${item.unit}</span>
@@ -1148,7 +1436,7 @@
 
     // 1. Explicit Buy Now via Query Parameter (e.g. checkout.html?buy_now=prod-8&qty=1)
     if (buyNowParam) {
-      const prod = PRODUCTS.find(p => p.id === buyNowParam || p.id === buyNowParam.replace('item-', 'prod-').replace('sample-', 'prod-'));
+      const prod = getProductById(buyNowParam);
       if (prod) {
         return {
           mode: 'buy_now',
@@ -1174,19 +1462,20 @@
       try {
         const item = JSON.parse(buyNowRaw);
         if (item && item.name && item.price !== undefined) {
+          const canonicalProd = item.id ? getProductById(item.id) : getProductById(item.name);
           const qty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
           return {
             mode: 'buy_now',
-            title: item.name,
+            title: item.name || (canonicalProd ? canonicalProd.name : 'Produce Item'),
             frequencyLabel: 'One-time Order',
             items: [{
-              id: item.id || 'prod-custom',
-              name: item.name,
-              price: Number(item.price),
+              id: item.id || (canonicalProd ? canonicalProd.id : 'prod-custom'),
+              name: item.name || (canonicalProd ? canonicalProd.name : 'Produce Item'),
+              price: Number(item.price !== undefined ? item.price : (canonicalProd ? canonicalProd.price : 0)),
               quantity: qty,
-              unit: item.unit || '1 pack',
-              image: item.image || 'assets/images/products/fresh-vine-tomatoes.jpg',
-              category: item.category || 'groceries'
+              unit: item.unit || (canonicalProd ? canonicalProd.unit : '1 pack'),
+              image: (canonicalProd && canonicalProd.image) || item.image || DEFAULT_FALLBACK_IMAGE,
+              category: item.category || (canonicalProd ? canonicalProd.category : 'groceries')
             }]
           };
         }
@@ -1225,15 +1514,18 @@
         mode: 'cart',
         title: 'Grocery Box Order',
         frequencyLabel: 'One-time Order',
-        items: cart.map(it => ({
-          id: it.id,
-          name: it.name,
-          price: Number(it.price || 0),
-          quantity: Math.max(1, parseInt(it.qty || it.quantity || 1, 10)),
-          unit: it.unit || '1 pack',
-          image: it.image || 'assets/images/products/fresh-vine-tomatoes.jpg',
-          category: it.category || 'groceries'
-        }))
+        items: cart.map(it => {
+          const canonical = getProductById(it.id || it.name);
+          return {
+            id: it.id,
+            name: it.name,
+            price: Number(it.price || 0),
+            quantity: Math.max(1, parseInt(it.qty || it.quantity || 1, 10)),
+            unit: it.unit || (canonical ? canonical.unit : '1 pack'),
+            image: it.image || (canonical ? canonical.image : DEFAULT_FALLBACK_IMAGE),
+            category: it.category || (canonical ? canonical.category : 'groceries')
+          };
+        })
       };
     }
 
@@ -1258,7 +1550,7 @@
   function buyNow(productOrId, qty = 1) {
     let item = null;
     if (typeof productOrId === 'string') {
-      const prod = PRODUCTS.find(p => p.id === productOrId || p.id === productOrId.replace('item-', 'prod-').replace('sample-', 'prod-'));
+      const prod = getProductById(productOrId);
       if (prod) {
         item = {
           id: prod.id,
@@ -1271,13 +1563,14 @@
         };
       }
     } else if (productOrId && typeof productOrId === 'object') {
+      const canonical = productOrId.id ? getProductById(productOrId.id) : (productOrId.name ? getProductById(productOrId.name) : null);
       item = {
-        id: productOrId.id || 'prod-custom',
-        name: productOrId.name,
-        category: productOrId.category || 'groceries',
-        price: Number(productOrId.price),
-        unit: productOrId.unit || '1 pack',
-        image: productOrId.image || 'assets/images/products/fresh-vine-tomatoes.jpg',
+        id: (canonical && canonical.id) || productOrId.id || 'prod-custom',
+        name: (canonical && canonical.name) || productOrId.name,
+        category: (canonical && canonical.category) || productOrId.category || 'groceries',
+        price: Number(productOrId.price !== undefined ? productOrId.price : (canonical ? canonical.price : 0)),
+        unit: productOrId.unit || (canonical ? canonical.unit : '1 pack'),
+        image: (canonical && canonical.image) || productOrId.image || DEFAULT_FALLBACK_IMAGE,
         qty: Math.max(1, parseInt(qty || productOrId.qty || 1, 10))
       };
     }
@@ -1355,21 +1648,11 @@
       return;
     }
 
-    const isDashboard = window.location.pathname.includes('/dashboard/') || !!document.querySelector('.dashboard-wrapper');
-    const defaultFallbackImg = isDashboard ? '../assets/images/categories/vegetables.jpg' : 'assets/images/categories/vegetables.jpg';
-
     listEl.innerHTML = items.map(item => {
       const price = Number(item.price || 0);
       const qty = Number(item.quantity || 1);
       const lineTotal = price * qty;
-      let imgSrc = item.image || defaultFallbackImg;
-      if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:')) {
-        if (isDashboard && !imgSrc.startsWith('../')) {
-          imgSrc = '../' + imgSrc;
-        } else if (!isDashboard && imgSrc.startsWith('../')) {
-          imgSrc = imgSrc.replace(/^\.\.\//, '');
-        }
-      }
+      const imgSrc = item.image || DEFAULT_FALLBACK_IMAGE;
 
       const showQtyControls = checkoutData.mode !== 'plan';
       const qtyControlsHtml = showQtyControls ? `
@@ -1389,7 +1672,7 @@
         <div class="checkout-item-row d-flex align-items-center justify-content-between py-2 border-bottom">
           <div class="d-flex align-items-center gap-3 min-width-0 flex-grow-1">
             <div class="checkout-item-img-wrap flex-shrink-0">
-              <img src="${imgSrc}" alt="${item.name}" class="rounded-2" style="width: 48px; height: 48px; object-fit: cover;" onerror="this.onerror=null; this.src='${defaultFallbackImg}';">
+              <img src="${imgSrc}" alt="${item.name}" class="rounded-2" style="width: 48px; height: 48px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
             </div>
             <div class="min-width-0 flex-grow-1">
               <span class="fw-semibold text-dark fs-6 d-block text-truncate" title="${item.name}">${item.name}</span>
@@ -1428,7 +1711,7 @@
 
   // --- Quick View Modal Helper ---
   function openQuickView(prodId) {
-    const prod = PRODUCTS.find(p => p.id === prodId);
+    const prod = getProductById(prodId);
     if (!prod) return;
 
     let modalEl = document.getElementById('quickViewModal');
@@ -1451,7 +1734,7 @@
       <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
       <div class="row g-4 align-items-center">
         <div class="col-md-6">
-          <img src="${prod.image}" alt="${prod.name}" class="img-fluid rounded-4 shadow-sm w-100" style="height: 320px; object-fit: cover;">
+          <img src="${prod.image}" alt="${prod.name}" class="img-fluid rounded-4 shadow-sm w-100" style="height: 320px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
         </div>
         <div class="col-md-6">
           <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 mb-2">${prod.categoryName}</span>
@@ -1563,21 +1846,22 @@
     const searchResults = document.getElementById('globalSearchResults');
     if (!searchInput || !searchResults) return;
 
-    const sampleSearchData = [
+    const baseSearchData = [
       { title: 'Veggie Subscription Box', category: 'Plans', url: 'plans.html' },
       { title: 'Family Essentials Box', category: 'Plans', url: 'plans.html' },
       { title: '100% Organic Box', category: 'Plans', url: 'plans.html' },
-      { title: 'Fresh Vine Tomatoes', category: 'Vegetables', url: 'product-details.html?id=prod-1' },
-      { title: 'Organic Baby Spinach', category: 'Vegetables', url: 'product-details.html?id=prod-2' },
-      { title: 'Royal Gala Apples', category: 'Fruits', url: 'product-details.html?id=prod-3' },
-      { title: 'Farm Fresh A2 Organic Milk', category: 'Dairy', url: 'product-details.html?id=prod-5' },
-      { title: 'Whole Grain Sourdough Loaf', category: 'Bakery', url: 'product-details.html?id=prod-7' },
-      { title: 'Cold Pressed Virgin Olive Oil', category: 'Pantry', url: 'product-details.html?id=prod-9' },
-      { title: 'Wild Forest Raw Honey', category: 'Organic', url: 'product-details.html?id=prod-11' },
-      { title: 'Cold-Pressed Green Detox Juice', category: 'Beverages', url: 'product-details.html?id=prod-15' },
       { title: 'How Grocery Subscriptions Work', category: 'Guide', url: 'how-it-works.html' },
       { title: '10 Secrets to Keeping Farm Greens Crisp', category: 'Blog', url: 'blog-details.html' }
     ];
+
+    const productSearchData = PRODUCTS.map(p => ({
+      title: p.name,
+      category: p.categoryName || 'Produce',
+      url: `product-details.html?id=${p.id}`,
+      image: p.image
+    }));
+
+    const searchData = [...productSearchData, ...baseSearchData];
 
     searchInput.addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase().trim();
@@ -1585,20 +1869,24 @@
         searchResults.innerHTML = '<p class="text-muted text-center py-4">Type to search produce, plans, or recipes...</p>';
         return;
       }
-      const matched = sampleSearchData.filter(item => item.title.toLowerCase().includes(q) || item.category.toLowerCase().includes(q));
+      const matched = searchData.filter(item => item.title.toLowerCase().includes(q) || item.category.toLowerCase().includes(q));
       if (matched.length === 0) {
         searchResults.innerHTML = `<p class="text-muted text-center py-4">No results found for "<strong>${q}</strong>".</p>`;
         return;
       }
       let html = '<div class="list-group list-group-flush">';
       matched.forEach(item => {
+        const imgHtml = item.image ? `<img src="${item.image}" alt="${item.title}" class="rounded-2 me-3 flex-shrink-0" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">` : '';
         html += `
-          <a href="${item.url}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
-            <div>
-              <h6 class="mb-0 fw-bold">${item.title}</h6>
-              <span class="badge bg-light text-success border border-success-subtle mt-1">${item.category}</span>
+          <a href="${item.url}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2.5">
+            <div class="d-flex align-items-center min-width-0">
+              ${imgHtml}
+              <div class="min-width-0">
+                <h6 class="mb-0 fw-bold text-dark text-truncate">${item.title}</h6>
+                <span class="badge bg-light text-success border border-success-subtle mt-1">${item.category}</span>
+              </div>
             </div>
-            <i class="bi bi-chevron-right text-muted"></i>
+            <i class="bi bi-chevron-right text-muted ms-2 flex-shrink-0"></i>
           </a>
         `;
       });
@@ -3009,7 +3297,7 @@
       scheduledValEl.textContent = activeSub ? `₹${activeSub.price} (Subscription Covered)` : `₹${totalVal}`;
     }
 
-    const fallbackImg = '../assets/images/categories/vegetables.jpg';
+    const fallbackImg = DEFAULT_FALLBACK_IMAGE;
 
     tableBody.innerHTML = items.map((item) => {
       let imgSrc = item.image || fallbackImg;
@@ -3369,11 +3657,8 @@
   // --- Wishlist Management ---
   function normalizeProdId(id) {
     if (!id) return 'prod-1';
-    const cleanId = String(id).trim();
-    if (cleanId.startsWith('prod-')) return cleanId;
-    const num = cleanId.replace(/\D/g, '');
-    if (num) return 'prod-' + num;
-    return cleanId;
+    const prod = getProductById(id);
+    return prod ? prod.id : String(id).trim();
   }
 
   function getWishlist() {
@@ -3398,7 +3683,8 @@
   }
 
   function toggleWishlist(prodId) {
-    const normId = normalizeProdId(prodId);
+    const prod = getProductById(prodId);
+    const normId = prod ? prod.id : normalizeProdId(prodId);
     let wishlist = getWishlist();
     const index = wishlist.indexOf(normId);
     let isAdded = false;
@@ -3427,7 +3713,6 @@
       }
     });
 
-    const prod = PRODUCTS.find(p => p.id === normId) || PRODUCTS[0];
     const prodName = prod ? prod.name : 'Item';
 
     if (isAdded) {
@@ -3585,9 +3870,12 @@
 
   // Global Export
   window.PRODUCTS = PRODUCTS;
+  window.DEFAULT_FALLBACK_IMAGE = DEFAULT_FALLBACK_IMAGE;
   window.SOCIAL_LINKS = SOCIAL_LINKS;
   window.freshboxApp = {
     products: PRODUCTS,
+    getProductById,
+    fallbackImage: DEFAULT_FALLBACK_IMAGE,
     getCart,
     addToCart,
     removeItem: removeFromCart,

@@ -216,13 +216,12 @@
       const container = document.getElementById('wishlistGrid');
       if (!container) return;
 
-      const rawWishlist = freshboxApp.getWishlist() || [];
-      const wishlistIds = rawWishlist.map(id => freshboxApp.normalizeProdId(id));
+      const rawWishlist = (window.freshboxApp && window.freshboxApp.getWishlist()) || [];
       
-      // Filter products while maintaining unique entries
+      // Filter products while maintaining unique canonical entries
       const products = [];
-      wishlistIds.forEach(id => {
-        const found = freshboxApp.products.find(p => p.id === id);
+      rawWishlist.forEach(id => {
+        const found = window.freshboxApp && window.freshboxApp.getProductById ? window.freshboxApp.getProductById(id) : null;
         if (found && !products.some(p => p.id === found.id)) {
           products.push(found);
         }
@@ -244,6 +243,7 @@
         return;
       }
 
+      const fallback = (window.freshboxApp && window.freshboxApp.fallbackImage) || window.DEFAULT_FALLBACK_IMAGE || '';
       let html = '';
       products.forEach(p => {
         const origPrice = p.originalPrice || Math.round(p.price * 1.25);
@@ -252,15 +252,15 @@
         
         html += `
           <div class="col animate-on-scroll fade-up visible" id="wishlist-item-${p.id}">
-            <div class="product-card h-100 position-relative shadow-sm hover-lift">
-              <button class="wishlist-btn active position-absolute top-0 end-0 m-3" data-wishlist-id="${p.id}" onclick="handleRemoveWishlist('${p.id}')" title="Remove from Wishlist">
-                <i class="bi bi-heart-fill"></i>
+            <div class="product-card h-100 position-relative shadow-sm hover-lift bg-white rounded-4 overflow-hidden border border-light-subtle d-flex flex-column">
+              <button class="wishlist-btn active position-absolute top-0 end-0 m-3 z-2 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" data-wishlist-id="${p.id}" onclick="handleRemoveWishlist('${p.id}')" title="Remove from Wishlist">
+                <i class="bi bi-heart-fill text-danger"></i>
               </button>
-              <div class="product-img-wrap cursor-pointer" onclick="window.location.href='product-details.html?id=${p.id}'">
-                <span class="badge badge-custom badge-organic product-badge">${p.badge || '100% Organic'}</span>
-                <img src="${p.image}" alt="${p.name}" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/' + (p.category || 'vegetables') + '.jpg';">
+              <div class="product-img-wrap cursor-pointer position-relative overflow-hidden bg-light" style="height: 200px;" onclick="window.location.href='product-details.html?id=${p.id}'">
+                <span class="badge bg-success position-absolute top-0 start-0 m-3 z-1">${p.badge || '100% Organic'}</span>
+                <img src="${p.image}" alt="${p.name}" class="w-100 h-100 object-fit-cover transition-transform" onerror="this.onerror=null; this.src='${fallback}';">
               </div>
-              <div class="product-content p-3">
+              <div class="product-content p-3 d-flex flex-column flex-grow-1">
                 <span class="product-category text-uppercase small text-muted font-monospace">${catName}</span>
                 <h5 class="product-title fw-bold text-dark mt-1 mb-2">
                   <a href="product-details.html?id=${p.id}" class="text-dark text-decoration-none">${p.name}</a>
@@ -270,13 +270,13 @@
                   <span class="fw-bold text-dark ms-1">${p.rating || '4.9'}</span>
                   <span class="text-muted">(${p.reviewsCount || '42'})</span>
                 </div>
-                <div class="d-flex align-items-baseline gap-2 mb-3">
+                <div class="d-flex align-items-baseline gap-2 mb-3 mt-auto">
                   <span class="fs-4 fw-bold text-success">₹${p.price}</span>
                   <span class="text-muted text-decoration-line-through small">₹${origPrice}</span>
                   <span class="badge bg-danger-subtle text-danger small">Save ${discountPercent}%</span>
                   <span class="text-muted small">/ ${p.unit}</span>
                 </div>
-                <button class="btn btn-primary w-100 add-to-cart-btn" onclick="freshboxApp.addToCart({ id: '${p.id}', name: '${p.name.replace("'", "\\'")}', category: '${p.category}', price: ${p.price}, unit: '${p.unit}', image: '${p.image}' })">
+                <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="freshboxApp.addToCart('${p.id}')">
                   <i class="bi bi-plus-lg me-1"></i> Add to Box
                 </button>
               </div>
@@ -293,7 +293,8 @@
     }
 
     function handleRemoveWishlist(prodId) {
-      const normId = freshboxApp.normalizeProdId(prodId);
+      const prod = window.freshboxApp && window.freshboxApp.getProductById ? window.freshboxApp.getProductById(prodId) : null;
+      const normId = prod ? prod.id : prodId;
       const card = document.getElementById('wishlist-item-' + normId);
       if (card) {
         card.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';

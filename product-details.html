@@ -25,12 +25,12 @@
   <script>
     (function() {
       var urlParams = new URLSearchParams(window.location.search);
-      var prodId = urlParams.get('id') || 'prod-1';
-      var mappedId = prodId.replace('item-', 'prod-').replace('sample-', 'prod-').replace('sb-', 'prod-');
-      var products = window.PRODUCTS || (window.freshboxApp && window.freshboxApp.products) || [];
-      window.selectedProd = products.find(function(p) { return p.id === prodId || p.id === mappedId; }) ||
-                            products.find(function(p) { return p.name.toLowerCase().includes(prodId.toLowerCase()); }) ||
-                            products[0];
+      var prodQuery = urlParams.get('id') || urlParams.get('slug') || urlParams.get('product') || 'prod-1';
+      if (window.freshboxApp && window.freshboxApp.getProductById) {
+        window.selectedProd = window.freshboxApp.getProductById(prodQuery);
+      } else if (window.PRODUCTS) {
+        window.selectedProd = window.PRODUCTS.find(function(p) { return p.id === prodQuery || p.slug === prodQuery; }) || window.PRODUCTS[0];
+      }
     })();
   </script>
 </head>
@@ -125,11 +125,11 @@
   <section class="section-padding">
     <div class="container">
       <div class="row g-5 align-items-start mb-5">
-                <!-- Main Product Image Column -->
+        <!-- Main Product Image Column -->
         <div class="col-lg-6">
           <div class="position-relative rounded-4 overflow-hidden shadow-sm bg-light" style="height: 440px;">
             <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 z-2" id="pdBadge">Organic</span>
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' style='background:%23f8f9fa;'%3E%3C/svg%3E" alt="Product Image" id="pdMainImg" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' style='background:%23f8f9fa;'%3E%3C/svg%3E" alt="Product Image" id="pdMainImg" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
           </div>
         </div>
 
@@ -348,8 +348,26 @@
     </div>
   </section>
 
+  <!-- Related Produce Section -->
+  <section class="section-padding bg-light border-top" id="relatedProductsSection">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="text-success fw-bold small text-uppercase font-monospace d-block mb-1"><i class="bi bi-basket2 me-1"></i> Hand-Picked For You</span>
+          <h3 class="fw-bold mb-0 text-dark">Related Farm Produce</h3>
+        </div>
+        <a href="shop.html" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+          Explore All Groceries <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="pdRelatedGrid">
+        <!-- Dynamically populated via JS -->
+      </div>
+    </div>
+  </section>
+
   <!-- Global Footer -->
-    <!-- Global Footer -->
   <footer class="footer bg-white border-top py-5 text-dark">
     <div class="container">
       <div class="row g-4 mb-5">
@@ -467,7 +485,7 @@
   <script src="assets/js/rtl.js"></script>
   <script src="assets/js/main.js"></script>
 
-    <script>
+  <script>
     let currentQty = 1;
     let selectedProd = null;
 
@@ -482,28 +500,29 @@
     }
 
     function ensureSelectedProd() {
-      if (!selectedProd && window.freshboxApp && window.freshboxApp.products) {
+      if (!selectedProd) {
         const urlParams = new URLSearchParams(window.location.search);
-        const prodId = urlParams.get('id') || 'prod-1';
-        const mappedId = prodId.replace('item-', 'prod-').replace('sample-', 'prod-').replace('sb-', 'prod-');
-        
-        selectedProd = window.freshboxApp.products.find(function(p) { return p.id === prodId || p.id === mappedId; }) ||
-                       window.freshboxApp.products.find(function(p) { return p.name.toLowerCase().includes(prodId.toLowerCase()); }) ||
-                       window.freshboxApp.products[0];
+        const prodQuery = urlParams.get('id') || urlParams.get('slug') || urlParams.get('product') || 'prod-1';
+        if (window.freshboxApp && window.freshboxApp.getProductById) {
+          selectedProd = window.freshboxApp.getProductById(prodQuery);
+        } else if (window.PRODUCTS) {
+          selectedProd = window.PRODUCTS.find(p => p.id === prodQuery || p.slug === prodQuery) || window.PRODUCTS[0];
+        }
       }
+      return selectedProd;
     }
 
     window.handleAddToCartClick = function(e) {
       if (e) e.preventDefault();
-      ensureSelectedProd();
-      if (selectedProd && window.freshboxApp) {
+      const prod = ensureSelectedProd();
+      if (prod && window.freshboxApp) {
         window.freshboxApp.addToCart({
-          id: selectedProd.id,
-          name: selectedProd.name,
-          category: selectedProd.category,
-          price: selectedProd.price,
-          unit: selectedProd.unit,
-          image: selectedProd.image,
+          id: prod.id,
+          name: prod.name,
+          category: prod.category,
+          price: prod.price,
+          unit: prod.unit,
+          image: prod.image,
           qty: currentQty
         });
       }
@@ -511,57 +530,116 @@
 
     window.handleBuyNowClick = function(e) {
       if (e) e.preventDefault();
-      ensureSelectedProd();
-      if (selectedProd && window.freshboxApp && window.freshboxApp.buyNow) {
+      const prod = ensureSelectedProd();
+      if (prod && window.freshboxApp && window.freshboxApp.buyNow) {
         window.freshboxApp.buyNow({
-          id: selectedProd.id,
-          name: selectedProd.name,
-          category: selectedProd.category,
-          price: selectedProd.price,
-          unit: selectedProd.unit,
-          image: selectedProd.image,
+          id: prod.id,
+          name: prod.name,
+          category: prod.category,
+          price: prod.price,
+          unit: prod.unit,
+          image: prod.image,
           qty: currentQty || 1
         });
       }
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
-      ensureSelectedProd();
+    function renderRelatedProduceSection(current) {
+      const grid = document.getElementById('pdRelatedGrid');
+      if (!grid || !window.freshboxApp || !window.freshboxApp.products) return;
+      const allProducts = window.freshboxApp.products;
+      let related = allProducts.filter(item => item.id !== current.id && (item.category === current.category || item.categoryName === current.categoryName));
+      if (related.length < 4) {
+        const others = allProducts.filter(item => item.id !== current.id && !related.some(r => r.id === item.id));
+        related = related.concat(others);
+      }
+      const topRelated = related.slice(0, 4);
+      const fallback = window.DEFAULT_FALLBACK_IMAGE || '';
+      
+      let html = '';
+      topRelated.forEach(rel => {
+        const isWished = window.freshboxApp.isWishlisted(rel.id);
+        const orig = rel.originalPrice || Math.round(rel.price * 1.25);
+        const discount = Math.round(((orig - rel.price) / orig) * 100);
+        html += `
+          <div class="col">
+            <div class="product-card h-100 cursor-pointer position-relative shadow-sm bg-white rounded-4 overflow-hidden border border-light-subtle d-flex flex-column" onclick="window.location.href='product-details.html?id=${rel.id}'">
+              <button class="wishlist-btn ${isWished ? 'active' : ''} position-absolute top-0 end-0 m-3 z-2 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" data-wishlist-id="${rel.id}" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('${rel.id}')" title="Save to Wishlist">
+                <i class="bi ${isWished ? 'bi-heart-fill text-danger' : 'bi-heart'}"></i>
+              </button>
+              <div class="product-img-wrap position-relative overflow-hidden bg-light" style="height: 200px;">
+                <span class="badge bg-success position-absolute top-0 start-0 m-3 z-1">${rel.badge || 'Fresh'}</span>
+                <img src="${rel.image}" alt="${rel.name}" loading="lazy" class="w-100 h-100 object-fit-cover transition-transform" onerror="this.onerror=null; this.src='${fallback}';">
+              </div>
+              <div class="p-3 d-flex flex-column flex-grow-1">
+                <span class="text-muted small text-uppercase font-monospace mb-1">${rel.categoryName || 'Produce'}</span>
+                <h6 class="fw-bold text-dark mb-1">
+                  <a href="product-details.html?id=${rel.id}" class="text-dark text-decoration-none" onclick="event.stopPropagation();">${rel.name}</a>
+                </h6>
+                <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
+                  <i class="bi bi-star-fill"></i>
+                  <span class="fw-bold text-dark ms-1">${rel.rating || '4.8'}</span>
+                  <span class="text-muted">(${rel.reviewsCount || '30'})</span>
+                </div>
+                <div class="d-flex align-items-baseline gap-2 mb-3 mt-auto">
+                  <span class="fs-5 fw-bold text-success">₹${rel.price}</span>
+                  <span class="text-muted text-decoration-line-through small">₹${orig}</span>
+                  <span class="badge bg-danger-subtle text-danger small">Save ${discount}%</span>
+                  <span class="text-muted small">/ ${rel.unit}</span>
+                </div>
+                <button class="btn btn-outline-primary w-100 rounded-pill btn-sm mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: '${rel.id}', name: '${rel.name.replace(/'/g, "\\'")}', category: '${rel.category}', price: ${rel.price}, unit: '${rel.unit}', image: '${rel.image}' })">
+                  <i class="bi bi-basket2 me-1"></i> Add to Box
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      grid.innerHTML = html;
+    }
 
-      if (selectedProd) {
-        document.title = selectedProd.name + ' - FreshBox Grocery';
-        if (document.getElementById('pdName')) document.getElementById('pdName').textContent = selectedProd.name;
-        if (document.getElementById('pdTitleBreadcrumb')) document.getElementById('pdTitleBreadcrumb').textContent = selectedProd.name;
+    document.addEventListener('DOMContentLoaded', function() {
+      const prod = ensureSelectedProd();
+
+      if (prod) {
+        document.title = prod.name + ' - FreshBox Grocery';
+        if (document.getElementById('pdName')) document.getElementById('pdName').textContent = prod.name;
+        if (document.getElementById('pdTitleBreadcrumb')) document.getElementById('pdTitleBreadcrumb').textContent = prod.name;
         
-        const catName = selectedProd.categoryName || 'Groceries';
+        const catName = prod.categoryName || 'Groceries';
         if (document.getElementById('pdCatBreadcrumb')) {
           document.getElementById('pdCatBreadcrumb').textContent = catName;
-          document.getElementById('pdCatBreadcrumb').href = 'shop.html?category=' + selectedProd.category;
+          document.getElementById('pdCatBreadcrumb').href = 'shop.html?category=' + prod.category;
         }
         if (document.getElementById('pdCategory')) document.getElementById('pdCategory').textContent = catName;
         
-        if (document.getElementById('pdPrice')) document.getElementById('pdPrice').textContent = '₹' + selectedProd.price;
+        if (document.getElementById('pdPrice')) document.getElementById('pdPrice').textContent = '₹' + prod.price;
         
-        const origPrice = selectedProd.originalPrice || Math.round(selectedProd.price * 1.25);
+        const origPrice = prod.originalPrice || Math.round(prod.price * 1.25);
         if (document.getElementById('pdOriginalPrice')) document.getElementById('pdOriginalPrice').textContent = '₹' + origPrice;
         
-        const discountPercent = Math.round(((origPrice - selectedProd.price) / origPrice) * 100);
+        const discountPercent = Math.round(((origPrice - prod.price) / origPrice) * 100);
         if (document.getElementById('pdDiscountBadge')) document.getElementById('pdDiscountBadge').textContent = 'Save ' + discountPercent + '%';
         
-        if (document.getElementById('pdUnit')) document.getElementById('pdUnit').textContent = '/ ' + selectedProd.unit;
-        if (document.getElementById('pdRating')) document.getElementById('pdRating').textContent = selectedProd.rating || '4.9';
-        if (document.getElementById('pdReviewsCount')) document.getElementById('pdReviewsCount').textContent = selectedProd.reviewsCount || '42';
-        if (document.getElementById('pdDescription')) document.getElementById('pdDescription').textContent = selectedProd.description;
-        if (document.getElementById('pdMainImg')) document.getElementById('pdMainImg').src = selectedProd.image;
-        if (document.getElementById('pdBadge')) document.getElementById('pdBadge').textContent = selectedProd.badge || '100% Organic';
+        if (document.getElementById('pdUnit')) document.getElementById('pdUnit').textContent = '/ ' + prod.unit;
+        if (document.getElementById('pdRating')) document.getElementById('pdRating').textContent = prod.rating || '4.9';
+        if (document.getElementById('pdReviewsCount')) document.getElementById('pdReviewsCount').textContent = prod.reviewsCount || '42';
+        if (document.getElementById('pdDescription')) document.getElementById('pdDescription').textContent = prod.description;
+        if (document.getElementById('pdMainImg')) {
+          document.getElementById('pdMainImg').src = prod.image;
+          document.getElementById('pdMainImg').alt = prod.name;
+        }
+        if (document.getElementById('pdBadge')) document.getElementById('pdBadge').textContent = prod.badge || '100% Organic';
         if (document.getElementById('pdSubBoxName')) document.getElementById('pdSubBoxName').textContent = catName + ' Subscription Box';
 
-        if (selectedProd.nutrition) {
-          if (document.getElementById('nutriCal')) document.getElementById('nutriCal').textContent = selectedProd.nutrition.calories || '25 kcal';
-          if (document.getElementById('nutriCarbs')) document.getElementById('nutriCarbs').textContent = selectedProd.nutrition.carbs || '4.2 g';
-          if (document.getElementById('nutriProtein')) document.getElementById('nutriProtein').textContent = selectedProd.nutrition.protein || '1.1 g';
-          if (document.getElementById('nutriFiber')) document.getElementById('nutriFiber').textContent = selectedProd.nutrition.fiber || '1.5 g';
+        if (prod.nutrition) {
+          if (document.getElementById('nutriCal')) document.getElementById('nutriCal').textContent = prod.nutrition.calories || '25 kcal';
+          if (document.getElementById('nutriCarbs')) document.getElementById('nutriCarbs').textContent = prod.nutrition.carbs || '4.2 g';
+          if (document.getElementById('nutriProtein')) document.getElementById('nutriProtein').textContent = prod.nutrition.protein || '1.1 g';
+          if (document.getElementById('nutriFiber')) document.getElementById('nutriFiber').textContent = prod.nutrition.fiber || '1.5 g';
         }
+
+        renderRelatedProduceSection(prod);
       }
 
       const btnMinus = document.getElementById('pdMinus');

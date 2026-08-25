@@ -354,6 +354,7 @@
       }
 
       let html = '';
+      const fallback = (window.freshboxApp && window.freshboxApp.fallbackImage) || window.DEFAULT_FALLBACK_IMAGE || '';
       list.forEach(p => {
         const isWished = window.freshboxApp ? window.freshboxApp.isWishlisted(p.id) : false;
         const origPrice = p.originalPrice || Math.round(p.price * 1.25);
@@ -366,7 +367,7 @@
               </button>
               <div class="product-img-wrap">
                 <span class="badge badge-custom badge-organic product-badge">${p.badge}</span>
-                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/' + (p.category || 'vegetables') + '.jpg';">
+                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='${fallback}';">
               </div>
               <div class="product-content p-3">
                 <span class="product-category text-uppercase small text-muted font-monospace">${p.categoryName}</span>
@@ -384,7 +385,7 @@
                   <span class="badge bg-danger-subtle text-danger small">Save ${discountPercent}%</span>
                   <span class="text-muted small">/ ${p.unit}</span>
                 </div>
-                <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: '${p.id}', name: '${p.name.replace("'", "\\'")}', category: '${p.category}', price: ${p.price}, unit: '${p.unit}', image: '${p.image}' })">
+                <button class="btn btn-primary w-100 add-to-cart-btn mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart('${p.id}')">
                   <i class="bi bi-plus-lg me-1"></i> Add to Box
                 </button>
               </div>
