@@ -1524,7 +1524,8 @@ img {
 .product-footer .btn,
 .product-footer .add-to-cart-btn,
 .product-card-footer .btn,
-button[onclick*="addToCart"] {
+.product-card button[onclick*="addToCart"]:not(#pdAddBtn),
+.product-footer button[onclick*="addToCart"]:not(#pdAddBtn) {
   min-width: 86px;
   height: 38px;
   padding: 6px 14px;

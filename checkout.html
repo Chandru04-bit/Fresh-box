@@ -6,6 +6,12 @@
   <meta name="description" content="Secure checkout for FreshBox grocery subscriptions. Enter delivery address, pick delivery schedule, and select UPI, Card, or Net Banking payment.">
   <title>Secure Checkout - Delivery & Payment | FreshBox</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -461,29 +467,40 @@
 
   <script>
     const planMap = {
-      veggie: { name: 'Veggie Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 499 },
-      family: { name: 'Family Essentials', frequency: 'weekly', frequencyLabel: 'Every Week', price: 899 },
-      organic: { name: 'Organic Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 1199 },
-      premium: { name: 'Premium Box', frequency: 'weekly', frequencyLabel: 'Every Week', price: 1599 }
+      veggie: { name: 'Veggie Subscription', frequency: 'weekly', frequencyLabel: 'Weekly', price: 499 },
+      family: { name: 'Family Essentials Subscription', frequency: 'weekly', frequencyLabel: 'Weekly', price: 899 },
+      organic: { name: 'Organic Subscription', frequency: 'weekly', frequencyLabel: 'Weekly', price: 1199 },
+      premium: { name: 'Premium Subscription', frequency: 'weekly', frequencyLabel: 'Weekly', price: 1599 }
     };
 
     (function initCheckoutSelection() {
       const params = new URLSearchParams(window.location.search);
-      const isBuyNow = params.has('buy_now') || params.has('product') || params.has('id') || localStorage.getItem('freshbox_checkout_mode') === 'buy_now';
-      const selectedPlanKey = params.get('plan');
-
-      if (!isBuyNow && selectedPlanKey && planMap[selectedPlanKey]) {
-        const planConfig = planMap[selectedPlanKey];
+      const isPlan = params.has('plan');
+      const isBuyNow = params.has('buy_now') || params.has('product') || params.has('id');
+      const storedMode = localStorage.getItem('freshbox_checkout_mode');
+      
+      let currentMode = 'cart';
+      if (isPlan) {
+        currentMode = 'plan';
+        const planKey = (params.get('plan') || 'organic').toLowerCase().trim();
+        const planConfig = planMap[planKey] || planMap.organic;
         localStorage.setItem('freshbox_checkout_mode', 'plan');
         localStorage.setItem('freshbox_selected_plan', planConfig.name);
         localStorage.setItem('freshbox_selected_plan_price', String(planConfig.price));
         localStorage.setItem('freshbox_subscription_freq', planConfig.frequency || 'weekly');
+      } else if (isBuyNow) {
+        currentMode = 'buy_now';
+        localStorage.setItem('freshbox_checkout_mode', 'buy_now');
+      } else if (storedMode === 'plan' || storedMode === 'buy_now') {
+        currentMode = storedMode;
       }
 
-      if (isBuyNow) {
-        const freqContainer = document.getElementById('frequencySelectorContainer');
-        if (freqContainer) {
+      const freqContainer = document.getElementById('frequencySelectorContainer');
+      if (freqContainer) {
+        if (currentMode !== 'plan') {
           freqContainer.classList.add('d-none');
+        } else {
+          freqContainer.classList.remove('d-none');
         }
       }
 

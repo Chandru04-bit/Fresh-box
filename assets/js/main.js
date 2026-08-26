@@ -867,6 +867,11 @@
     if (!user) return;
 
     // Update Topbar welcome
+    const welcomeNameEl = document.getElementById('dashboardWelcomeName');
+    if (welcomeNameEl) {
+      welcomeNameEl.textContent = `Welcome back, ${user.name}`;
+    }
+
     const welcomeEls = document.querySelectorAll('.dashboard-topbar h5, header.dashboard-topbar h5');
     welcomeEls.forEach(el => {
       const welcomeText = el.nextElementSibling;
@@ -875,13 +880,21 @@
       }
     });
 
-    // Update Dropdown name
-    const dropdownNames = document.querySelectorAll('.nav-user-dropdown button span.d-none, .nav-user-dropdown button span.d-sm-inline');
-    dropdownNames.forEach(el => {
+    // Update Dropdown name across all dashboard and public pages
+    document.querySelectorAll('#dashboardUserName, .nav-user-dropdown button span.nav-user-name, .nav-user-dropdown button span.d-sm-inline').forEach(el => {
       if (!el.classList.contains('nav-user-avatar')) {
-        el.textContent = user.name.split(' ')[0];
+        el.textContent = user.name.split(' ')[0] || user.name || 'Account';
       }
     });
+
+    const profileNameEl = document.getElementById('dashboardProfileName');
+    if (profileNameEl) profileNameEl.textContent = user.name;
+
+    const profileMetaEl = document.getElementById('dashboardProfileMeta');
+    if (profileMetaEl) {
+      const phone = user.phone ? ` • ${user.phone}` : '';
+      profileMetaEl.textContent = `${user.email}${phone}`;
+    }
   }
 
   window.renderNotificationsUI = renderNotificationsUI;
@@ -1053,13 +1066,13 @@
     const cart = getCart();
     const existing = cart.find(i => String(i.id) === String(item.id));
     if (existing) {
-      existing.qty += qtyToAdd;
+      existing.qty = (parseInt(existing.qty, 10) || 0) + qtyToAdd;
     } else {
       cart.push({ ...item, qty: qtyToAdd });
     }
     saveCart(cart);
     if (notify) {
-      showToast('Added to Box', `${item.name} added to your grocery box!`, 'success');
+      showToast('Added to Grocery Box', `${item.name} (${qtyToAdd > 1 ? qtyToAdd + 'x' : '1 unit'}) added to your grocery box!`, 'success');
     }
   }
 
@@ -1432,12 +1445,62 @@
     const params = new URLSearchParams(window.location.search);
     const planParam = params.get('plan');
     const buyNowParam = params.get('buy_now') || params.get('product') || params.get('id');
-    const qtyParam = Math.max(1, parseInt(params.get('qty') || '1', 10));
+    const qtyParam = params.has('qty') ? Math.max(1, parseInt(params.get('qty') || '1', 10)) : null;
 
-    // 1. Explicit Buy Now via Query Parameter (e.g. checkout.html?buy_now=prod-8&qty=1)
+    // 1. Explicit Subscription Plan in URL (e.g. checkout.html?plan=organic)
+    if (planParam) {
+      const namedPlans = {
+        veggie: { name: 'Veggie Subscription', price: 499, frequencyLabel: 'Weekly', key: 'veggie', image: 'assets/images/veggie-box.jpg' },
+        family: { name: 'Family Essentials Subscription', price: 899, frequencyLabel: 'Weekly', key: 'family', image: 'assets/images/family-essentials.jpg' },
+        organic: { name: 'Organic Subscription', price: 1199, frequencyLabel: 'Weekly', key: 'organic', image: 'assets/images/organic-box.jpg' },
+        premium: { name: 'Premium Subscription', price: 1599, frequencyLabel: 'Weekly', key: 'premium', image: 'assets/images/plans/premium-harvest.jpg' }
+      };
+      const planKey = planParam.toLowerCase().trim();
+      const plan = namedPlans[planKey] || namedPlans.organic;
+
+      localStorage.setItem('freshbox_checkout_mode', 'plan');
+      localStorage.setItem('freshbox_selected_plan', plan.name);
+      localStorage.setItem('freshbox_selected_plan_price', String(plan.price));
+      localStorage.setItem('freshbox_subscription_freq', 'weekly');
+      sessionStorage.setItem('freshbox_checkout_mode', 'plan');
+
+      return {
+        mode: 'plan',
+        title: plan.name,
+        frequencyLabel: plan.frequencyLabel,
+        items: [{
+          id: 'plan_' + plan.key,
+          name: plan.name,
+          price: plan.price,
+          quantity: 1,
+          unit: plan.frequencyLabel,
+          image: plan.image,
+          category: 'subscription'
+        }]
+      };
+    }
+
+    // 2. Explicit Buy Now via Query Parameter (e.g. checkout.html?buy_now=prod-1&qty=2)
     if (buyNowParam) {
       const prod = getProductById(buyNowParam);
       if (prod) {
+        let effectiveQty = qtyParam;
+        if (!effectiveQty) {
+          const buyNowRaw = localStorage.getItem('freshbox_buy_now_item') || sessionStorage.getItem('freshbox_buy_now_item');
+          if (buyNowRaw) {
+            try {
+              const parsed = JSON.parse(buyNowRaw);
+              if (parsed && (String(parsed.id) === String(prod.id) || parsed.name === prod.name)) {
+                effectiveQty = Math.max(1, parseInt(parsed.qty || parsed.quantity || 1, 10));
+              }
+            } catch (e) {}
+          }
+        }
+        if (!effectiveQty) effectiveQty = 1;
+
+        localStorage.setItem('freshbox_checkout_mode', 'buy_now');
+        sessionStorage.setItem('freshbox_checkout_mode', 'buy_now');
+
         return {
           mode: 'buy_now',
           title: prod.name,
@@ -1446,7 +1509,7 @@
             id: prod.id,
             name: prod.name,
             price: Number(prod.price),
-            quantity: qtyParam,
+            quantity: effectiveQty,
             unit: prod.unit || '1 pack',
             image: prod.image,
             category: prod.category || 'groceries'
@@ -1455,61 +1518,11 @@
       }
     }
 
-    // 2. Buy Now item stored in localStorage / sessionStorage
     const checkoutMode = localStorage.getItem('freshbox_checkout_mode') || sessionStorage.getItem('freshbox_checkout_mode');
-    const buyNowRaw = localStorage.getItem('freshbox_buy_now_item') || sessionStorage.getItem('freshbox_buy_now_item');
-    if (buyNowRaw && (!planParam || checkoutMode === 'buy_now')) {
-      try {
-        const item = JSON.parse(buyNowRaw);
-        if (item && item.name && item.price !== undefined) {
-          const canonicalProd = item.id ? getProductById(item.id) : getProductById(item.name);
-          const qty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
-          return {
-            mode: 'buy_now',
-            title: item.name || (canonicalProd ? canonicalProd.name : 'Produce Item'),
-            frequencyLabel: 'One-time Order',
-            items: [{
-              id: item.id || (canonicalProd ? canonicalProd.id : 'prod-custom'),
-              name: item.name || (canonicalProd ? canonicalProd.name : 'Produce Item'),
-              price: Number(item.price !== undefined ? item.price : (canonicalProd ? canonicalProd.price : 0)),
-              quantity: qty,
-              unit: item.unit || (canonicalProd ? canonicalProd.unit : '1 pack'),
-              image: (canonicalProd && canonicalProd.image) || item.image || DEFAULT_FALLBACK_IMAGE,
-              category: item.category || (canonicalProd ? canonicalProd.category : 'groceries')
-            }]
-          };
-        }
-      } catch (e) {}
-    }
-
-    // 3. Explicit Subscription Plan in URL (e.g. checkout.html?plan=veggie)
-    if (planParam) {
-      const namedPlans = {
-        veggie: { name: 'Veggie Box', price: 499, frequencyLabel: 'Every Week', key: 'veggie' },
-        family: { name: 'Family Essentials', price: 899, frequencyLabel: 'Every Week', key: 'family' },
-        organic: { name: 'Organic Box', price: 1199, frequencyLabel: 'Every Week', key: 'organic' },
-        premium: { name: 'Premium Box', price: 1599, frequencyLabel: 'Every Week', key: 'premium' }
-      };
-      const plan = namedPlans[planParam.toLowerCase()] || namedPlans.family;
-      return {
-        mode: 'plan',
-        title: plan.name,
-        frequencyLabel: plan.frequencyLabel,
-        items: [{
-          id: 'plan_' + plan.key,
-          name: plan.name + ' Subscription',
-          price: plan.price,
-          quantity: 1,
-          unit: plan.frequencyLabel,
-          image: 'assets/images/plans/premium-harvest.jpg',
-          category: 'subscription'
-        }]
-      };
-    }
-
-    // 4. Cart items (if cart is not empty and mode is not plan)
     const cart = getCart();
-    if (cart && cart.length > 0 && checkoutMode !== 'plan') {
+
+    // 3. Cart items (when arriving from Cart / cart drawer or when cart has items and mode is not explicitly plan)
+    if (cart && cart.length > 0 && checkoutMode !== 'plan' && checkoutMode !== 'buy_now') {
       return {
         mode: 'cart',
         title: 'Grocery Box Order',
@@ -1529,27 +1542,99 @@
       };
     }
 
-    // 5. Subscription Plan from saved configuration
-    const selectedPlan = getSelectedPlanConfig();
+    // 4. Stored Buy Now item
+    if (checkoutMode === 'buy_now') {
+      const buyNowRaw = localStorage.getItem('freshbox_buy_now_item') || sessionStorage.getItem('freshbox_buy_now_item');
+      if (buyNowRaw) {
+        try {
+          const item = JSON.parse(buyNowRaw);
+          if (item && item.name && item.price !== undefined) {
+            const canonicalProd = item.id ? getProductById(item.id) : getProductById(item.name);
+            const qty = Math.max(1, parseInt(qtyParam || item.qty || item.quantity || 1, 10));
+            return {
+              mode: 'buy_now',
+              title: item.name || (canonicalProd ? canonicalProd.name : 'Produce Item'),
+              frequencyLabel: 'One-time Order',
+              items: [{
+                id: item.id || (canonicalProd ? canonicalProd.id : 'prod-custom'),
+                name: item.name || (canonicalProd ? canonicalProd.name : 'Produce Item'),
+                price: Number(item.price !== undefined ? item.price : (canonicalProd ? canonicalProd.price : 0)),
+                quantity: qty,
+                unit: item.unit || (canonicalProd ? canonicalProd.unit : '1 pack'),
+                image: (canonicalProd && canonicalProd.image) || item.image || DEFAULT_FALLBACK_IMAGE,
+                category: item.category || (canonicalProd ? canonicalProd.category : 'groceries')
+              }]
+            };
+          }
+        } catch (e) {}
+      }
+    }
+
+    // 5. Stored Subscription Plan (when mode is explicitly plan)
+    if (checkoutMode === 'plan') {
+      const selectedPlan = getSelectedPlanConfig();
+      const planPrice = Number(selectedPlan.price || 1199);
+      const planTitle = selectedPlan.name.includes('Subscription') ? selectedPlan.name : `${selectedPlan.name} Subscription`;
+      return {
+        mode: 'plan',
+        title: planTitle,
+        frequencyLabel: selectedPlan.frequencyLabel || 'Weekly',
+        items: [{
+          id: 'plan_' + (selectedPlan.key || 'organic'),
+          name: planTitle,
+          price: planPrice,
+          quantity: 1,
+          unit: selectedPlan.frequencyLabel || 'Weekly',
+          image: selectedPlan.image || 'assets/images/organic-box.jpg',
+          category: 'subscription'
+        }]
+      };
+    }
+
+    // 6. Cart items fallback
+    if (cart && cart.length > 0) {
+      return {
+        mode: 'cart',
+        title: 'Grocery Box Order',
+        frequencyLabel: 'One-time Order',
+        items: cart.map(it => {
+          const canonical = getProductById(it.id || it.name);
+          return {
+            id: it.id,
+            name: it.name,
+            price: Number(it.price || 0),
+            quantity: Math.max(1, parseInt(it.qty || it.quantity || 1, 10)),
+            unit: it.unit || (canonical ? canonical.unit : '1 pack'),
+            image: it.image || (canonical ? canonical.image : DEFAULT_FALLBACK_IMAGE),
+            category: it.category || (canonical ? canonical.category : 'groceries')
+          };
+        })
+      };
+    }
+
+    // Default Fallback: Organic Subscription Plan
     return {
       mode: 'plan',
-      title: selectedPlan.name,
-      frequencyLabel: selectedPlan.frequencyLabel,
+      title: 'Organic Subscription',
+      frequencyLabel: 'Weekly',
       items: [{
-        id: 'plan_' + selectedPlan.key,
-        name: selectedPlan.itemName || selectedPlan.name,
-        price: Number(selectedPlan.price || 899),
+        id: 'plan_organic',
+        name: 'Organic Subscription',
+        price: 1199,
         quantity: 1,
-        unit: selectedPlan.frequencyLabel,
-        image: 'assets/images/plans/premium-harvest.jpg',
+        unit: 'Weekly',
+        image: 'assets/images/organic-box.jpg',
         category: 'subscription'
       }]
     };
   }
 
-  function buyNow(productOrId, qty = 1) {
+  function buyNow(productOrId, qty) {
     let item = null;
+    let resolvedQty = 1;
+
     if (typeof productOrId === 'string') {
+      resolvedQty = Math.max(1, parseInt(qty || 1, 10));
       const prod = getProductById(productOrId);
       if (prod) {
         item = {
@@ -1559,11 +1644,12 @@
           price: Number(prod.price),
           unit: prod.unit || '1 pack',
           image: prod.image,
-          qty: Math.max(1, parseInt(qty, 10))
+          qty: resolvedQty
         };
       }
     } else if (productOrId && typeof productOrId === 'object') {
       const canonical = productOrId.id ? getProductById(productOrId.id) : (productOrId.name ? getProductById(productOrId.name) : null);
+      resolvedQty = Math.max(1, parseInt(productOrId.qty !== undefined ? productOrId.qty : (productOrId.quantity !== undefined ? productOrId.quantity : (qty !== undefined ? qty : 1)), 10));
       item = {
         id: (canonical && canonical.id) || productOrId.id || 'prod-custom',
         name: (canonical && canonical.name) || productOrId.name,
@@ -1571,7 +1657,7 @@
         price: Number(productOrId.price !== undefined ? productOrId.price : (canonical ? canonical.price : 0)),
         unit: productOrId.unit || (canonical ? canonical.unit : '1 pack'),
         image: (canonical && canonical.image) || productOrId.image || DEFAULT_FALLBACK_IMAGE,
-        qty: Math.max(1, parseInt(qty || productOrId.qty || 1, 10))
+        qty: resolvedQty
       };
     }
 
@@ -1589,33 +1675,37 @@
     const checkoutData = getCheckoutItemsData();
     if (checkoutData.mode === 'buy_now') {
       const buyNowRaw = localStorage.getItem('freshbox_buy_now_item') || sessionStorage.getItem('freshbox_buy_now_item');
+      let updatedQty = 1;
       if (buyNowRaw) {
         try {
           const item = JSON.parse(buyNowRaw);
           let currentQty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
           currentQty = Math.max(1, currentQty + delta);
           item.qty = currentQty;
+          updatedQty = currentQty;
           localStorage.setItem('freshbox_buy_now_item', JSON.stringify(item));
           sessionStorage.setItem('freshbox_buy_now_item', JSON.stringify(item));
-          renderCheckoutSummary();
         } catch (e) {}
       } else {
         const params = new URLSearchParams(window.location.search);
         let q = Math.max(1, parseInt(params.get('qty') || '1', 10) + delta);
-        params.set('qty', String(q));
-        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-        renderCheckoutSummary();
+        updatedQty = q;
       }
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('qty')) {
+        params.set('qty', String(updatedQty));
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+      }
+      renderCheckoutSummary();
     } else if (checkoutData.mode === 'cart') {
       const cart = getCart();
-      const item = cart.find(i => i.id === itemId);
+      const item = cart.find(i => String(i.id) === String(itemId));
       if (item) {
         let currentQty = Math.max(1, parseInt(item.qty || item.quantity || 1, 10));
         currentQty = Math.max(1, currentQty + delta);
         item.qty = currentQty;
-        localStorage.setItem(getCartKey(), JSON.stringify(cart));
+        saveCart(cart);
         renderCheckoutSummary();
-        updateCartBadges();
       }
     }
   }
@@ -1648,14 +1738,20 @@
       return;
     }
 
+    const isPlan = checkoutData.mode === 'plan';
+
     listEl.innerHTML = items.map(item => {
       const price = Number(item.price || 0);
       const qty = Number(item.quantity || 1);
       const lineTotal = price * qty;
       const imgSrc = item.image || DEFAULT_FALLBACK_IMAGE;
 
-      const showQtyControls = checkoutData.mode !== 'plan';
-      const qtyControlsHtml = showQtyControls ? `
+      const detailsHtml = (isPlan || item.category === 'subscription') ? `
+        <div class="mt-1">
+          <small class="text-success fw-semibold">₹${price.toLocaleString('en-IN')} / ${item.unit || checkoutData.frequencyLabel || 'week'}</small>
+          <small class="text-muted ms-2">&bull; Qty: ${qty}</small>
+        </div>
+      ` : `
         <div class="d-flex align-items-center gap-2 mt-1">
           <div class="quantity-control quantity-control-sm d-inline-flex align-items-center">
             <button type="button" class="qty-btn py-0 px-2" onclick="freshboxApp.updateCheckoutItemQty('${item.id}', -1)">&minus;</button>
@@ -1664,8 +1760,6 @@
           </div>
           <small class="text-muted">× ₹${price} ${item.unit ? `(${item.unit})` : ''}</small>
         </div>
-      ` : `
-        <small class="text-muted d-block text-truncate mt-1">${qty} × ₹${price} (${item.unit || checkoutData.frequencyLabel})</small>
       `;
 
       return `
@@ -1676,11 +1770,11 @@
             </div>
             <div class="min-width-0 flex-grow-1">
               <span class="fw-semibold text-dark fs-6 d-block text-truncate" title="${item.name}">${item.name}</span>
-              ${qtyControlsHtml}
+              ${detailsHtml}
             </div>
           </div>
           <div class="checkout-item-price text-end ms-2 flex-shrink-0">
-            <span class="fw-bold text-dark fs-6">₹${lineTotal}</span>
+            <span class="fw-bold text-dark fs-6">₹${lineTotal.toLocaleString('en-IN')}</span>
           </div>
         </div>
       `;
@@ -1690,10 +1784,21 @@
     const delivery = 0;
     const coupon = getAppliedCoupon();
     let discount = 0;
-    if (coupon && coupon.discountPercent) {
-      discount = Math.round((subtotal * coupon.discountPercent) / 100);
-      if (discountRow) discountRow.classList.remove('d-none');
-      if (discountEl) discountEl.textContent = `-₹${discount}`;
+    if (coupon) {
+      if (coupon.type === 'percent') {
+        discount = Math.round(subtotal * (coupon.value || 0));
+      } else if (coupon.type === 'fixed') {
+        discount = Math.min(Number(coupon.value || 0), subtotal);
+      } else if (coupon.discountPercent) {
+        discount = Math.round((subtotal * coupon.discountPercent) / 100);
+      }
+      if (discount > 0) {
+        if (discountRow) discountRow.classList.remove('d-none');
+        if (discountEl) discountEl.textContent = `-₹${discount.toLocaleString('en-IN')}`;
+      } else {
+        if (discountRow) discountRow.classList.add('d-none');
+        if (discountEl) discountEl.textContent = '-₹0';
+      }
     } else {
       if (discountRow) discountRow.classList.add('d-none');
       if (discountEl) discountEl.textContent = '-₹0';
@@ -1701,11 +1806,12 @@
 
     const finalTotal = Math.max(0, subtotal - discount + delivery);
 
-    if (subtotalEl) subtotalEl.textContent = `₹${subtotal}`;
+    if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
     if (deliveryEl) deliveryEl.textContent = 'FREE';
-    if (totalEl) totalEl.textContent = `₹${finalTotal}`;
+    if (totalEl) totalEl.textContent = `₹${finalTotal.toLocaleString('en-IN')}`;
     if (payBtn) {
-      payBtn.innerHTML = `<i class="bi bi-lock-fill me-2"></i> Pay ₹${finalTotal}`;
+      const btnText = isPlan ? `Pay & Start Subscription (₹${finalTotal.toLocaleString('en-IN')})` : `Pay ₹${finalTotal.toLocaleString('en-IN')}`;
+      payBtn.innerHTML = `<i class="bi bi-lock-fill me-2"></i> ${btnText}`;
     }
   }
 
@@ -2079,6 +2185,8 @@
 
   function getUserOrders() {
     const user = getLoggedUser() || getCurrentCustomerProfile();
+    if (!user) return [];
+
     const normalizedEmail = (user.email || '').trim().toLowerCase();
     const userId = user.id || '';
     const orders = getStoredOrders();
@@ -2091,7 +2199,13 @@
       .filter(order => {
         const orderEmail = (order.customerEmail || '').trim().toLowerCase();
         const orderUserId = order.userId || '';
-        return (normalizedEmail && orderEmail === normalizedEmail) || (userId && orderUserId === userId);
+        if (userId && orderUserId) {
+          return orderUserId === userId;
+        }
+        if (userId && !orderUserId) {
+          return normalizedEmail && orderEmail === normalizedEmail;
+        }
+        return normalizedEmail && orderEmail === normalizedEmail;
       })
       .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
   }
@@ -3889,6 +4003,7 @@
     getStoredUsers,
     saveStoredUsers,
     getLoggedUser,
+    getUserOrders,
     getNotifications,
     addNotification,
     markAllNotificationsRead,
@@ -3910,6 +4025,8 @@
     applyCoupon: applyCouponCode,
     removeCoupon: removeCouponCode,
     openQuickView,
+    getCheckoutItemsData: getCheckoutItemsData,
+    renderCheckoutSummary: renderCheckoutSummary,
     processCheckout: processCheckout,
     buyNow: buyNow,
     updateCheckoutItemQty: updateCheckoutItemQty,

@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order History - FreshBox</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="../assets/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,7 +74,7 @@
           <div class="dropdown nav-user-dropdown ms-1">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
-              <span class="nav-user-name d-none d-sm-inline">User</span>
+              <span class="nav-user-name d-none d-sm-inline" id="dashboardUserName">User</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
@@ -163,41 +169,11 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold">Order Details #FB-8842</h5>
+          <h5 class="modal-title fw-bold" id="viewOrderModalTitle">Order Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-              <span class="text-muted small d-block">Scheduled Date:</span>
-              <span class="fw-bold">Aug 28, 2026</span>
-            </div>
-            <div class="col-6 col-md-3">
-              <span class="text-muted small d-block">Payment Status:</span>
-              <span class="badge bg-success">Paid via Visa (&#8377;899)</span>
-            </div>
-            <div class="col-6 col-md-3">
-              <span class="text-muted small d-block">Delivery Slot:</span>
-              <span class="fw-bold">07:00 AM – 11:00 AM</span>
-            </div>
-            <div class="col-6 col-md-3">
-              <span class="text-muted small d-block">Packing Status:</span>
-              <span class="badge bg-primary">Farm Packing</span>
-            </div>
-          </div>
-
-          <h6 class="fw-bold mb-2">Included Harvest Items:</h6>
-          <ul class="list-group list-group-flush small mb-3">
-            <li class="list-group-item d-flex justify-content-between"><span>Vine Ripe Tomatoes (1.5 kg)</span> <span class="fw-bold">&#8377;90</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Organic Baby Spinach (500 g)</span> <span class="fw-bold">&#8377;90</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Royal Gala Apples (1.0 kg)</span> <span class="fw-bold">&#8377;120</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Farm Fresh A2 Milk (2 Litres)</span> <span class="fw-bold">&#8377;150</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Seasonal Farm Vegetables & Herbs</span> <span class="fw-bold">&#8377;449</span></li>
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-          <a href="my-box.html" class="btn btn-primary">Edit Items</a>
+        <div class="modal-body" id="viewOrderModalBody">
+          <!-- Dynamic Content -->
         </div>
       </div>
     </div>
@@ -210,10 +186,3 @@
   <script src="../assets/js/dashboard.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
