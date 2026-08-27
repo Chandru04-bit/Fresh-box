@@ -133,7 +133,7 @@
       <div class="row g-5 align-items-start mb-5">
         <!-- Main Product Image Column -->
         <div class="col-lg-6">
-          <div class="position-relative rounded-4 overflow-hidden shadow-sm bg-light" style="height: 440px;">
+          <div class="position-relative rounded-4 overflow-hidden shadow-sm bg-light pd-main-img-wrap">
             <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 z-2" id="pdBadge">Organic</span>
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' style='background:%23f8f9fa;'%3E%3C/svg%3E" alt="Product Image" id="pdMainImg" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23f8fafc\'/%3E%3Ctext x=\'200\' y=\'150\' font-size=\'14\' fill=\'%2394a3b8\' text-anchor=\'middle\' font-family=\'system-ui,sans-serif\'%3EImage Unavailable%3C/text%3E%3C/svg%3E';">
           </div>
@@ -371,7 +371,7 @@
         </a>
       </div>
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="pdRelatedGrid">
+      <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2 g-sm-3 g-md-4" id="pdRelatedGrid">
         <!-- Dynamically populated via JS -->
       </div>
     </div>
@@ -664,30 +664,30 @@
         html += `
           <div class="col">
             <div class="product-card h-100 cursor-pointer position-relative shadow-sm bg-white rounded-4 overflow-hidden border border-light-subtle d-flex flex-column" onclick="window.location.href='product-details.html?id=${rel.id}'">
-              <button class="wishlist-btn ${isWished ? 'active' : ''} position-absolute top-0 end-0 m-3 z-2 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" data-wishlist-id="${rel.id}" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('${rel.id}')" title="Save to Wishlist">
+              <button class="wishlist-btn ${isWished ? 'active' : ''} position-absolute top-0 end-0 m-2 m-sm-3 z-2 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" data-wishlist-id="${rel.id}" onclick="event.stopPropagation(); freshboxApp.toggleWishlist('${rel.id}')" title="Save to Wishlist">
                 <i class="bi ${isWished ? 'bi-heart-fill text-danger' : 'bi-heart'}"></i>
               </button>
-              <div class="product-img-wrap position-relative overflow-hidden bg-light" style="height: 200px;">
-                <span class="badge bg-success position-absolute top-0 start-0 m-3 z-1">${rel.badge || 'Fresh'}</span>
+              <div class="product-img-wrap position-relative overflow-hidden bg-light">
+                <span class="badge bg-success product-badge z-1">${rel.badge || 'Fresh'}</span>
                 <img src="${rel.image}" alt="${rel.name}" loading="lazy" class="w-100 h-100 object-fit-cover transition-transform" onerror="this.onerror=null; this.src='${fallback}';">
               </div>
-              <div class="p-3 d-flex flex-column flex-grow-1">
-                <span class="text-muted small text-uppercase font-monospace mb-1">${rel.categoryName || 'Produce'}</span>
-                <h6 class="fw-bold text-dark mb-1">
+              <div class="product-content p-2 p-sm-3 d-flex flex-column flex-grow-1">
+                <span class="product-category text-muted small text-uppercase font-monospace mb-1">${rel.categoryName || 'Produce'}</span>
+                <h6 class="product-title fw-bold text-dark mb-1">
                   <a href="product-details.html?id=${rel.id}" class="text-dark text-decoration-none" onclick="event.stopPropagation();">${rel.name}</a>
                 </h6>
-                <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
+                <div class="product-rating-row d-flex align-items-center gap-1 mb-2 text-warning small">
                   <i class="bi bi-star-fill"></i>
                   <span class="fw-bold text-dark ms-1">${rel.rating || '4.8'}</span>
                   <span class="text-muted">(${rel.reviewsCount || '30'})</span>
                 </div>
-                <div class="d-flex align-items-baseline gap-2 mb-3 mt-auto">
+                <div class="product-price-row d-flex align-items-baseline gap-1 gap-sm-2 mb-3 mt-auto flex-wrap">
                   <span class="fs-5 fw-bold text-success">₹${rel.price}</span>
                   <span class="text-muted text-decoration-line-through small">₹${orig}</span>
                   <span class="badge bg-danger-subtle text-danger small">Save ${discount}%</span>
                   <span class="text-muted small">/ ${rel.unit}</span>
                 </div>
-                <button class="btn btn-outline-primary w-100 rounded-pill btn-sm mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: '${rel.id}', name: '${rel.name.replace(/'/g, "\\'")}', category: '${rel.category}', price: ${rel.price}, unit: '${rel.unit}', image: '${rel.image}' })">
+                <button class="btn btn-outline-primary w-100 add-to-cart-btn rounded-pill btn-sm mt-auto" onclick="event.stopPropagation(); freshboxApp.addToCart({ id: '${rel.id}', name: '${rel.name.replace(/'/g, "\\'")}', category: '${rel.category}', price: ${rel.price}, unit: '${rel.unit}', image: '${rel.image}' })">
                   <i class="bi bi-basket2 me-1"></i> Add to Box
                 </button>
               </div>

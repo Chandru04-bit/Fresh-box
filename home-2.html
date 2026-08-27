@@ -150,30 +150,30 @@
 
         <!-- Live Box Simulator Card (Right Column) -->
         <div class="col-lg-6">
-          <div class="live-simulator-card p-4 p-md-5">
+          <div class="live-simulator-card p-3 p-sm-4 p-md-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="badge bg-success px-3 py-2 rounded-pill fs-6 fw-semibold badge-glow">
                 <i class="bi bi-sliders me-1"></i> Live Box Simulator
               </span>
-              <span class="badge bg-light text-dark border px-3 py-1 rounded-pill small">
+              <span class="badge bg-light text-dark border px-2 px-sm-3 py-1 rounded-pill small">
                 <i class="bi bi-clock-history text-success me-1"></i> Dispatches in 24h
               </span>
             </div>
 
             <!-- Simulator Interactive Plan Switcher Tabs -->
-            <div class="btn-group w-100 mb-4 p-1 bg-light border rounded-3" role="group" id="simulatorTabs">
-              <button type="button" class="btn btn-sm btn-primary rounded-2 fw-bold" onclick="switchSimulatorPlan('organic', this)">100% Organic</button>
-              <button type="button" class="btn btn-sm btn-light text-dark rounded-2 fw-bold" onclick="switchSimulatorPlan('family', this)">Family Essentials</button>
-              <button type="button" class="btn btn-sm btn-light text-dark rounded-2 fw-bold" onclick="switchSimulatorPlan('veggie', this)">Veggie Box</button>
+            <div class="btn-group w-100 mb-4 p-1 bg-light border rounded-3 flex-wrap" role="group" id="simulatorTabs">
+              <button type="button" class="btn btn-sm btn-primary rounded-2 fw-bold flex-fill" onclick="switchSimulatorPlan('organic', this)">100% Organic</button>
+              <button type="button" class="btn btn-sm btn-light text-dark rounded-2 fw-bold flex-fill" onclick="switchSimulatorPlan('family', this)">Family Essentials</button>
+              <button type="button" class="btn btn-sm btn-light text-dark rounded-2 fw-bold flex-fill" onclick="switchSimulatorPlan('veggie', this)">Veggie Box</button>
             </div>
 
             <h5 class="fw-bold text-dark mb-1" id="simTitle">100% Organic Harvest Box</h5>
-            <p class="text-muted small mb-3" id="simSubtitle">Includes 6 organic produce items. Swap any item online before dispatch.</p>
+            <p class="text-muted small mb-3" id="simSubtitle">Includes 6 certified organic items. Swap any item online before dispatch.</p>
 
             <!-- Box Items Grid with Product Images -->
             <div class="row g-2 mb-4" id="simItemsGrid">
               <!-- Item 1 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <div class="simulator-item-pill">
                   <img src="assets/images/products/organic-baby-spinach.jpg" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
                   <div>
@@ -183,7 +183,7 @@
                 </div>
               </div>
               <!-- Item 2 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <div class="simulator-item-pill">
                   <img src="assets/images/products/fresh-vine-tomatoes.jpg" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
                   <div>
@@ -193,7 +193,7 @@
                 </div>
               </div>
               <!-- Item 3 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <div class="simulator-item-pill">
                   <img src="assets/images/products/farm-fresh-a2-milk.jpg" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
                   <div>
@@ -203,7 +203,7 @@
                 </div>
               </div>
               <!-- Item 4 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <div class="simulator-item-pill">
                   <img src="https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=200&auto=format&fit=crop&q=80" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
                   <div>
@@ -213,7 +213,7 @@
                 </div>
               </div>
               <!-- Item 5 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <div class="simulator-item-pill">
                   <img src="assets/images/products/farm-fresh-carrots.jpg" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
                   <div>
@@ -223,7 +223,7 @@
                 </div>
               </div>
               <!-- Item 6 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <div class="simulator-item-pill">
                   <img src="https://images.unsplash.com/photo-1587049352847-4a222e784d38?w=200&auto=format&fit=crop&q=80" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
                   <div>
@@ -236,14 +236,14 @@
 
             <!-- Price & Delivery Summary -->
             <div class="p-3 rounded-3 bg-success-subtle border border-success-subtle mb-3">
-              <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                 <div>
                   <span class="fw-bold text-success d-block fs-6">Estimated Weekly Price:</span>
                   <small class="text-muted"><i class="bi bi-truck text-success me-1"></i> Includes free eco-insulated shipping</small>
                 </div>
-                <div class="text-end">
+                <div class="text-sm-end">
                   <span class="fs-3 fw-bold text-success" id="simPrice">₹1,199</span>
-                  <small class="text-muted d-block">/ week</small>
+                  <small class="text-muted d-inline d-sm-block ms-1 ms-sm-0">/ week</small>
                 </div>
               </div>
             </div>
@@ -271,7 +271,7 @@
         <div class="col-lg-3 col-md-6">
           <div class="feature-box-card text-center p-4">
             <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
-              <img src="assets/images/24-Hour%20Dawn%20Harvest.jpeg" alt="Rice farmers harvesting at dawn" class="w-100 h-100 object-fit-cover">
+              <img src="assets/images/farmers-harvest-fresh.jpg" alt="Rice farmers harvesting at dawn" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
             <h5 class="fw-bold mb-2 text-dark">24-Hour Dawn Harvest</h5>
             <p class="text-muted small mb-0">Harvested at dawn by local growers and delivered to your doorstep by next morning at peak nutrition.</p>
@@ -282,7 +282,7 @@
         <div class="col-lg-3 col-md-6">
           <div class="feature-box-card text-center p-4">
             <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
-              <img src="assets/images/Total%20QR%20Traceability.jpeg" alt="Fresh vegetables for Total QR Traceability" class="w-100 h-100 object-fit-cover">
+              <img src="assets/images/hero-organic-produce.jpg" alt="Fresh vegetables for Total QR Traceability" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
             <h5 class="fw-bold mb-2 text-dark">Total QR Traceability</h5>
             <p class="text-muted small mb-0">Scan the QR code on your box to view exact partner farm GPS coordinates, harvest time, and soil reports.</p>
@@ -293,7 +293,7 @@
         <div class="col-lg-3 col-md-6">
           <div class="feature-box-card text-center p-4">
             <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
-              <img src="assets/images/item-swap-flexibility.jpg" alt="Customer swapping onions online for 100% Item Swap Flexibility" class="w-100 h-100 object-fit-cover">
+              <img src="assets/images/item-swap-flexibility.jpg" alt="Customer swapping onions online for 100% Item Swap Flexibility" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
             <h5 class="fw-bold mb-2 text-dark">100% Item Swap Flexibility</h5>
             <p class="text-muted small mb-0">Don't like onions this week? Swap any item online before dispatch or pause your subscription anytime.</p>
@@ -304,7 +304,7 @@
         <div class="col-lg-3 col-md-6">
           <div class="feature-box-card text-center p-4">
             <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
-              <img src="assets/images/zero-waste-crate-exchange.jpg" alt="Zero-Waste Crate Exchange" class="w-100 h-100 object-fit-cover">
+              <img src="assets/images/doorstep-delivery-swap.jpg" alt="Zero-Waste Crate Exchange" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
             <h5 class="fw-bold mb-2 text-dark">Zero-Waste Crate Exchange</h5>
             <p class="text-muted small mb-0">Delivered in returnable insulated crates and reusable glass bottles. We collect empties on your next run.</p>
@@ -320,12 +320,12 @@
       <div class="row align-items-center g-5">
         <div class="col-lg-6">
           <div class="position-relative">
-            <img src="assets/images/Total%20Transparency.jpg" alt="Partner farmers harvesting in a field at dawn" class="rounded-4 shadow-lg w-100">
-            <div class="position-absolute bottom-0 start-0 m-4 p-3 bg-white rounded-3 shadow-md border d-flex align-items-center gap-3">
-              <div class="feature-icon-bubble bg-success-subtle text-success mb-0"><i class="bi bi-geo-fill"></i></div>
+            <img src="assets/images/farmers-harvest-fresh.jpg" alt="Partner farmers harvesting in a field at dawn" class="rounded-4 shadow-lg w-100" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
+            <div class="position-absolute bottom-0 start-0 m-2 m-sm-3 p-2 p-sm-3 bg-white rounded-3 shadow-md border d-flex align-items-center gap-2 gap-sm-3" style="max-width: calc(100% - 1rem);">
+              <div class="feature-icon-bubble bg-success-subtle text-success mb-0" style="width: 38px; height: 38px; font-size: 1.1rem;"><i class="bi bi-geo-fill"></i></div>
               <div>
                 <div class="fw-bold text-dark small">80+ Partner Micro-Farms</div>
-                <small class="text-muted">Within 150 km of city limits</small>
+                <small class="text-muted d-block" style="font-size: 0.75rem;">Within 150 km of city limits</small>
               </div>
             </div>
           </div>
@@ -412,8 +412,7 @@
     </div>
   </section>
 
-  <!-- Clean Footer -->
-    <!-- Global Footer -->
+  <!-- Global Footer -->
   <footer class="footer bg-white border-top py-5 text-dark">
     <div class="container">
       <div class="row g-4 mb-5">
@@ -602,7 +601,7 @@
       let html = '';
       data.items.forEach(item => {
         html += `
-          <div class="col-6">
+          <div class="col-12 col-sm-6">
             <div class="simulator-item-pill">
               <img src="${item.img}" alt="" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\' viewBox=\'0 0 44 44\'%3E%3Crect width=\'44\' height=\'44\' fill=\'%23f8fafc\'/%3E%3C/svg%3E';" class="rounded-3 flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; min-height: 44px; max-height: 44px; object-fit: cover;">
               <div>
@@ -618,10 +617,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-

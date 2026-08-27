@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -77,29 +77,46 @@
       border-radius: 4px;
       font-size: 0.9em;
     }
-    pre code {
-      color: #f8fafc;
-      background: transparent;
-      padding: 0;
+    @media (max-width: 991.98px) {
+      .doc-sidebar {
+        position: relative;
+        top: 0;
+        margin-bottom: 24px;
+        padding: 16px;
+      }
+      .doc-card {
+        padding: 24px 18px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+      }
+    }
+    @media (max-width: 575.98px) {
+      .doc-card {
+        padding: 18px 14px;
+      }
+      pre {
+        padding: 12px 14px;
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Header -->
-  <header class="bg-white border-bottom py-4 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
+  <header class="bg-white border-bottom py-3 py-md-4 mb-4">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
       <div class="d-flex align-items-center gap-3">
-        <div class="bg-success text-white p-2 rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+        <div class="bg-success text-white p-2 rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
           <i class="bi bi-basket2-fill fs-4"></i>
         </div>
         <div>
-          <h4 class="mb-0 fw-bold">FreshBox Documentation</h4>
-          <small class="text-muted">Online Grocery Subscription Service HTML5 Template • v1.0.0</small>
+          <h4 class="mb-0 fw-bold fs-5 fs-md-4">FreshBox Documentation</h4>
+          <small class="text-muted d-block" style="font-size: 0.8rem;">Online Grocery Subscription Service HTML5 Template • v1.0.0</small>
         </div>
       </div>
       <div>
-        <a href="../index.html" class="btn btn-outline-success btn-sm"><i class="bi bi-eye"></i> View Live Demo</a>
+        <a href="../index.html" class="btn btn-outline-success btn-sm w-100"><i class="bi bi-eye"></i> View Live Demo</a>
       </div>
     </div>
   </header>

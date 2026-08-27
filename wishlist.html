@@ -127,7 +127,7 @@
   <!-- Wishlist Main Content -->
   <section class="section-padding bg-white min-vh-50 d-flex align-items-center">
     <div class="container">
-      <div id="wishlistGrid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
+      <div id="wishlistGrid" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2 g-sm-3 g-md-4 justify-content-center">
         <!-- Rendered dynamically by JS -->
       </div>
     </div>
@@ -259,25 +259,25 @@
         html += `
           <div class="col animate-on-scroll fade-up visible" id="wishlist-item-${p.id}">
             <div class="product-card h-100 position-relative shadow-sm hover-lift bg-white rounded-4 overflow-hidden border border-light-subtle d-flex flex-column">
-              <button class="wishlist-btn active position-absolute top-0 end-0 m-3 z-2 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" data-wishlist-id="${p.id}" onclick="handleRemoveWishlist('${p.id}')" title="Remove from Wishlist">
+              <button class="wishlist-btn active position-absolute top-0 end-0 m-2 m-sm-3 z-2 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" data-wishlist-id="${p.id}" onclick="handleRemoveWishlist('${p.id}')" title="Remove from Wishlist">
                 <i class="bi bi-heart-fill text-danger"></i>
               </button>
-              <div class="product-img-wrap cursor-pointer position-relative overflow-hidden bg-light" style="height: 200px;" onclick="window.location.href='product-details.html?id=${p.id}'">
-                <span class="badge bg-success position-absolute top-0 start-0 m-3 z-1">${p.badge || '100% Organic'}</span>
+              <div class="product-img-wrap cursor-pointer position-relative overflow-hidden bg-light" onclick="window.location.href='product-details.html?id=${p.id}'">
+                <span class="badge bg-success product-badge z-1">${p.badge || '100% Organic'}</span>
                 <img src="${p.image}" alt="${p.name}" class="w-100 h-100 object-fit-cover transition-transform" onerror="this.onerror=null; this.src='${fallback}';">
               </div>
-              <div class="product-content p-3 d-flex flex-column flex-grow-1">
+              <div class="product-content p-2 p-sm-3 d-flex flex-column flex-grow-1">
                 <span class="product-category text-uppercase small text-muted font-monospace">${catName}</span>
                 <h5 class="product-title fw-bold text-dark mt-1 mb-2">
                   <a href="product-details.html?id=${p.id}" class="text-dark text-decoration-none">${p.name}</a>
                 </h5>
-                <div class="d-flex align-items-center gap-1 mb-2 text-warning small">
+                <div class="product-rating-row d-flex align-items-center gap-1 mb-2 text-warning small">
                   <i class="bi bi-star-fill"></i>
                   <span class="fw-bold text-dark ms-1">${p.rating || '4.9'}</span>
                   <span class="text-muted">(${p.reviewsCount || '42'})</span>
                 </div>
-                <div class="d-flex align-items-baseline gap-2 mb-3 mt-auto">
-                  <span class="fs-4 fw-bold text-success">₹${p.price}</span>
+                <div class="product-price-row d-flex align-items-baseline gap-1 gap-sm-2 mb-3 mt-auto flex-wrap">
+                  <span class="fs-5 fw-bold text-success">₹${p.price}</span>
                   <span class="text-muted text-decoration-line-through small">₹${origPrice}</span>
                   <span class="badge bg-danger-subtle text-danger small">Save ${discountPercent}%</span>
                   <span class="text-muted small">/ ${p.unit}</span>

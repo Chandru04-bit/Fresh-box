@@ -589,6 +589,7 @@
   // --- Auth & User State Management ---
   const AUTH_KEY = 'freshbox_auth_user';
   const USERS_KEY = 'freshbox_users';
+  const CURRENT_CUSTOMER_KEY = 'freshbox_current_customer';
 
   function getStoredUsers() {
     try {
@@ -661,6 +662,8 @@
     if (!user || user.role === 'guest') {
       localStorage.setItem(AUTH_KEY, JSON.stringify({ role: 'guest' }));
       localStorage.removeItem(CURRENT_CUSTOMER_KEY);
+      sessionStorage.removeItem('freshbox_login_redirect');
+      sessionStorage.removeItem('freshbox_login_notice');
     } else {
       localStorage.setItem(AUTH_KEY, JSON.stringify(user));
     }
@@ -920,7 +923,7 @@
               <span class="nav-user-avatar">
                 <i class="bi bi-person-fill"></i>
               </span>
-              <span>${displayName}</span>
+              <span class="nav-user-name">${displayName}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
@@ -1840,7 +1843,7 @@
       <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
       <div class="row g-4 align-items-center">
         <div class="col-md-6">
-          <img src="${prod.image}" alt="${prod.name}" class="img-fluid rounded-4 shadow-sm w-100" style="height: 320px; object-fit: cover;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
+          <img src="${prod.image}" alt="${prod.name}" class="img-fluid rounded-4 shadow-sm w-100 object-fit-cover" style="max-height: 280px; width: 100%; aspect-ratio: 4 / 3;" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMAGE}';">
         </div>
         <div class="col-md-6">
           <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 mb-2">${prod.categoryName}</span>
@@ -2017,7 +2020,6 @@
   // --- Order Persistence & Dashboard Data ---
   const ORDERS_KEY = 'freshbox_orders';
   const LATEST_ORDER_KEY = 'freshbox_latest_order';
-  const CURRENT_CUSTOMER_KEY = 'freshbox_current_customer';
 
   function formatCurrency(value) {
     const numericValue = Number(value || 0);
@@ -3201,17 +3203,17 @@
   }
 
   function initLogoutTrigger() {
-    document.querySelectorAll('.sidebar-footer a, a[onclick*="setAuth"]').forEach(link => {
-      if (link.textContent.toLowerCase().includes('logout') || link.innerHTML.toLowerCase().includes('power')) {
+    document.querySelectorAll('.sidebar-footer a, a[onclick*="setAuth"], .logout-btn').forEach(link => {
+      if (link.textContent.toLowerCase().includes('logout') || link.innerHTML.toLowerCase().includes('power') || link.classList.contains('logout-btn')) {
         link.removeAttribute('onclick');
         link.addEventListener('click', (e) => {
           e.preventDefault();
-          localStorage.removeItem(AUTH_KEY);
-          showToast('Logged Out', 'Redirecting to login...', 'info');
+          setAuthUser({ role: 'guest' });
+          showToast('Logged Out', 'You have been signed out successfully.', 'info');
           setTimeout(() => {
             const isSubfolder = window.location.pathname.includes('/dashboard/');
             window.location.href = isSubfolder ? '../login.html' : 'login.html';
-          }, 500);
+          }, 400);
         });
       }
     });
@@ -3849,6 +3851,43 @@
     });
   }
 
+  function initNavbarWishlist() {
+    const isSubfolder = window.location.pathname.includes('/dashboard/');
+    const basePath = isSubfolder ? '../' : './';
+    const currentPath = window.location.pathname.toLowerCase();
+    const isWishlistPage = currentPath.endsWith('wishlist.html') || currentPath.endsWith('/wishlist');
+
+    document.querySelectorAll('.nav-actions').forEach(actionsContainer => {
+      let wishlistBtn = actionsContainer.querySelector('a[href*="wishlist.html"]');
+      if (!wishlistBtn) {
+        const cartBtn = actionsContainer.querySelector('[data-cart-drawer-trigger]') || actionsContainer.querySelector('.theme-toggle-btn');
+        wishlistBtn = document.createElement('a');
+        wishlistBtn.href = `${basePath}wishlist.html`;
+        wishlistBtn.className = `nav-action-btn position-relative${isWishlistPage ? ' text-danger active' : ''}`;
+        wishlistBtn.title = 'View Saved Wishlist';
+        wishlistBtn.innerHTML = `
+          <i class="bi ${isWishlistPage ? 'bi-heart-fill' : 'bi-heart'}"></i>
+          <span class="cart-badge bg-danger text-white wishlist-badge">0</span>
+        `;
+        if (cartBtn) {
+          actionsContainer.insertBefore(wishlistBtn, cartBtn);
+        } else {
+          actionsContainer.appendChild(wishlistBtn);
+        }
+      } else {
+        if (isWishlistPage) {
+          wishlistBtn.classList.add('text-danger', 'active');
+          const icon = wishlistBtn.querySelector('i');
+          if (icon) {
+            icon.className = 'bi bi-heart-fill';
+          }
+        }
+      }
+    });
+
+    updateWishlistBadges();
+  }
+
   // --- Scroll Animation Observer ---
   function initScrollAnimations() {
     if ('IntersectionObserver' in window) {
@@ -3945,6 +3984,7 @@
     initNotificationUI();
     updateDashboardHeader();
     initLogoutTrigger();
+    initNavbarWishlist();
     updateCartBadges();
     updateWishlistBadges();
     renderCartDrawer();
@@ -3969,8 +4009,9 @@
   // Keep open dashboard tabs in sync when checkout, profile, or orders change
   // in another tab. The checkout tab also updates its own state immediately.
   window.addEventListener('storage', (event) => {
-    if (![AUTH_KEY, USERS_KEY, ORDERS_KEY, LATEST_ORDER_KEY].includes(event.key)) return;
+    if (![AUTH_KEY, USERS_KEY, ORDERS_KEY, LATEST_ORDER_KEY, getWishlistKey()].includes(event.key)) return;
     renderAuthUI();
+    initNavbarWishlist();
     updateDashboardHeader();
     renderDashboardStats();
     renderDashboardOrders();
@@ -3997,6 +4038,8 @@
     getWishlist,
     toggleWishlist,
     isWishlisted,
+    initNavbarWishlist,
+    updateWishlistBadges,
     normalizeProdId,
     getAuth: getAuthUser,
     setAuth: setAuthUser,

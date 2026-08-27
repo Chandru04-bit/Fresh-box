@@ -314,7 +314,11 @@
         subscription: user.subscription || null,
         notifications: user.notifications || []
       });
-      let redirectTarget = sessionStorage.getItem('freshbox_login_redirect') || 'dashboard/index.html';
+      let redirectTarget = 'index.html';
+      const savedRedirect = sessionStorage.getItem('freshbox_login_redirect');
+      if (savedRedirect && !savedRedirect.toLowerCase().includes('dashboard')) {
+        redirectTarget = savedRedirect;
+      }
       sessionStorage.removeItem('freshbox_login_redirect');
       sessionStorage.removeItem('freshbox_login_notice');
       freshboxApp.showToast('Welcome back!', 'Signing you in...', 'success');

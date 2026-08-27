@@ -86,6 +86,21 @@ body.rtl-mode .hero-floating-card.card-2 {
   left: -15px;
 }
 
+@media (max-width: 767.98px) {
+  [dir="rtl"] .hero-floating-card.card-1,
+  body.rtl-mode .hero-floating-card.card-1 {
+    right: 8px !important;
+    left: auto !important;
+    max-width: calc(100% - 24px);
+  }
+  [dir="rtl"] .hero-floating-card.card-2,
+  body.rtl-mode .hero-floating-card.card-2 {
+    left: 8px !important;
+    right: auto !important;
+    max-width: calc(100% - 24px);
+  }
+}
+
 /* Step Numbers */
 [dir="rtl"] .step-number,
 body.rtl-mode .step-number {
