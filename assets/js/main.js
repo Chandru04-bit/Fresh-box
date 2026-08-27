@@ -332,7 +332,7 @@
       reviewsCount: 92,
       badge: 'Unpasteurized',
       inStock: true,
-      image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&auto=format&fit=crop&q=80',
+      image: 'assets/images/products/wild-forest-raw-honey.jpg',
       description: 'Pure, unfiltered wild honey collected ethically from reserved forest flora with natural pollen intact.',
       nutrition: { calories: '64 kcal / tbsp', sugars: '17g', minerals: 'Enzymes & Pollen' }
     },
