@@ -65,19 +65,23 @@
     [data-bs-theme="dark"] .register-card .input-group-text, [data-bs-theme="dark"] .register-card .password-toggle { color: #aab9ad; }
     [data-bs-theme="dark"] .register-card .form-control::placeholder { color: #829086; }
     [data-bs-theme="dark"] .register-card .form-check { background: #18231b; border-color: #3a4d3f; }
-    @media (max-width: 575.98px) { .register-page > .py-3 .container { gap: .7rem; } .register-main { padding: 1.5rem 0; align-items: flex-start !important; } .register-card { padding: 1.5rem 1.1rem; border-radius: 1rem; } .register-header { margin-bottom: 1.6rem !important; } }
+    [data-bs-theme="dark"] .register-page .navbar-brand { color: #ffffff; }
+    [data-bs-theme="dark"] .register-page .btn-outline-primary { color: #81c784; border-color: #81c784; }
+    [data-bs-theme="dark"] .register-page .btn-outline-primary:hover { background-color: #2e7d32; border-color: #2e7d32; color: #ffffff; }
+    @media (max-width: 575.98px) { .register-page .fresh-navbar .container { gap: .7rem; } .register-main { padding: 1.5rem 0; align-items: flex-start !important; } .register-card { padding: 1.5rem 1.1rem; border-radius: 1rem; } .register-header { margin-bottom: 1.6rem !important; } }
   </style>
 </head>
 <body class="register-page d-flex flex-column min-vh-100">
 
-  <div class="py-3 bg-white border-bottom">
+  <!-- Global Header / Navbar -->
+  <nav class="navbar navbar-expand-xl fresh-navbar sticky-top">
     <div class="container d-flex justify-content-between align-items-center">
       <a class="navbar-brand" href="index.html">
         <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
         <span>Fresh</span>Box
       </a>
       <div class="d-flex align-items-center gap-2">
-        <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode">
+        <button class="nav-action-btn theme-toggle-btn" type="button" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode">
           <i class="bi bi-moon-stars-fill"></i>
         </button>
         <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode">
@@ -86,7 +90,7 @@
         <a href="login.html" class="btn btn-outline-primary btn-sm">Sign In</a>
       </div>
     </div>
-  </div>
+  </nav>
 
   <main class="register-main flex-grow-1 d-flex align-items-center">
     <div class="container">
@@ -122,9 +126,9 @@
                   <label class="form-label" for="regPhone">Phone Number <span class="required-mark">*</span></label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                    <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210" autocomplete="tel" inputmode="tel" required>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="10-digit mobile number" autocomplete="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" required>
                   </div>
-                  <div class="invalid-feedback">Enter a valid phone number.</div>
+                  <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
                 </div>
               </div>
 
@@ -177,11 +181,9 @@
     <div class="container">
       <div class="row g-4 mb-5">
         <div class="col-lg-4 col-md-6">
-          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
-            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-              <i class="bi bi-basket2-fill fs-5"></i>
-            </div>
-            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          <a class="navbar-brand mb-3" href="index.html">
+            <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+            <span>Fresh</span>Box
           </a>
           <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
             FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
@@ -265,11 +267,20 @@
       const password = document.getElementById('regPass');
       const confirmPassword = document.getElementById('regConfirmPass');
       const terms = document.getElementById('termsCheck');
-      const phoneIsValid = /^[+]?[-()\s\d]{7,20}$/.test(phone.value.trim()) && /\d/.test(phone.value);
+
+      const phoneVal = phone.value.replace(/\D/g, '');
+      const phoneIsValid = /^\d{10}$/.test(phoneVal) && phoneVal.length === 10;
 
       [name, email, phone, password, confirmPassword, terms].forEach(field => field.classList.remove('is-invalid'));
-      phone.setCustomValidity(phoneIsValid ? '' : 'Please enter a valid phone number.');
+      phone.setCustomValidity(phoneIsValid ? '' : 'Please enter a valid 10-digit phone number.');
       confirmPassword.setCustomValidity(password.value === confirmPassword.value ? '' : 'Passwords must match.');
+
+      if (!phoneIsValid) {
+        phone.classList.add('is-invalid');
+        phone.focus();
+        freshboxApp.showToast('Invalid Phone Number', 'Please enter a valid 10-digit mobile number.', 'warning');
+        return;
+      }
 
       if (!form.checkValidity()) {
         [name, email, phone, password, confirmPassword, terms].forEach(field => {
@@ -296,7 +307,7 @@
         id: 'user_' + Date.now(),
         name: name.value.trim(),
         email: emailVal,
-        phone: phone.value.trim(),
+        phone: phoneVal,
         password: password.value,
         address: '',
         city: '',
@@ -324,6 +335,55 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const phoneInput = document.getElementById('regPhone');
+      if (phoneInput) {
+        // Prevent typing non-numeric characters
+        phoneInput.addEventListener('keydown', (e) => {
+          if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+            return;
+          }
+          if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x', 'z', 'A', 'C', 'V', 'X', 'Z'].includes(e.key)) {
+            return;
+          }
+          if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+            return;
+          }
+          const selectionLength = (phoneInput.selectionEnd || 0) - (phoneInput.selectionStart || 0);
+          if (phoneInput.value.length >= 10 && selectionLength === 0) {
+            e.preventDefault();
+          }
+        });
+
+        // Filter on input
+        phoneInput.addEventListener('input', () => {
+          const raw = phoneInput.value;
+          const sanitized = raw.replace(/\D/g, '').slice(0, 10);
+          if (raw !== sanitized) {
+            phoneInput.value = sanitized;
+          }
+          phoneInput.classList.remove('is-invalid');
+          if (sanitized.length === 10) {
+            phoneInput.setCustomValidity('');
+          } else {
+            phoneInput.setCustomValidity('Please enter a valid 10-digit phone number.');
+          }
+        });
+
+        // Filter on paste
+        phoneInput.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+          const numericOnly = pasteData.replace(/\D/g, '').slice(0, 10);
+          const start = phoneInput.selectionStart || 0;
+          const end = phoneInput.selectionEnd || 0;
+          const currentVal = phoneInput.value;
+          const newVal = (currentVal.slice(0, start) + numericOnly + currentVal.slice(end)).replace(/\D/g, '').slice(0, 10);
+          phoneInput.value = newVal;
+          phoneInput.dispatchEvent(new Event('input'));
+        });
+      }
+
       document.querySelectorAll('[data-password-toggle]').forEach(button => {
         button.addEventListener('click', () => {
           const input = document.getElementById(button.dataset.passwordToggle);

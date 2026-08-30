@@ -3963,8 +3963,64 @@
     handleScroll();
   }
 
+  // --- Phone Number Input Filtering & Sanitization ---
+  function initPhoneInputs() {
+    document.querySelectorAll('input[type="tel"]').forEach(input => {
+      if (input.dataset.phoneSanitized) return;
+      input.dataset.phoneSanitized = 'true';
+      if (!input.hasAttribute('maxlength')) {
+        input.setAttribute('maxlength', '10');
+      }
+      input.setAttribute('inputmode', 'numeric');
+
+      input.addEventListener('keydown', (e) => {
+        if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+          return;
+        }
+        if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x', 'z', 'A', 'C', 'V', 'X', 'Z'].includes(e.key)) {
+          return;
+        }
+        if (!/^\d$/.test(e.key)) {
+          e.preventDefault();
+          return;
+        }
+        const selectionLength = (input.selectionEnd || 0) - (input.selectionStart || 0);
+        if (input.value.length >= 10 && selectionLength === 0) {
+          e.preventDefault();
+        }
+      });
+
+      input.addEventListener('input', () => {
+        const raw = input.value;
+        const sanitized = raw.replace(/\D/g, '').slice(0, 10);
+        if (raw !== sanitized) {
+          input.value = sanitized;
+        }
+        input.classList.remove('is-invalid');
+        if (sanitized.length === 10) {
+          input.setCustomValidity('');
+        } else {
+          input.setCustomValidity('Please enter a valid 10-digit phone number.');
+        }
+      });
+
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+        const numericOnly = pasteData.replace(/\D/g, '').slice(0, 10);
+        const start = input.selectionStart || 0;
+        const end = input.selectionEnd || 0;
+        const currentVal = input.value;
+        const newVal = (currentVal.slice(0, start) + numericOnly + currentVal.slice(end)).replace(/\D/g, '').slice(0, 10);
+        input.value = newVal;
+        input.dispatchEvent(new Event('input'));
+      });
+    });
+  }
+
   // --- Initialize on DOMContentLoaded ---
   document.addEventListener('DOMContentLoaded', () => {
+    initPhoneInputs();
     const isDashboardRoute = window.location.pathname.toLowerCase().endsWith('/dashboard.html') || window.location.pathname.toLowerCase().includes('/dashboard/');
     const currentUser = getAuthUser();
     if (isDashboardRoute && (!currentUser || currentUser.role !== 'customer')) {
@@ -4077,6 +4133,7 @@
     handleFrequencyStep: handleFrequencyStepClick,
     handleEnjoyStep: handleEnjoyStepClick,
     initScrollAnimations,
+    initPhoneInputs,
     showToast
   };
   window.showToast = showToast;

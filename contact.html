@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -104,7 +104,7 @@
   <!-- Contact Cards & Form Section -->
   <section class="section-padding">
     <div class="container">
-      <div class="row g-5">
+      <div class="row g-4 g-lg-5">
         <!-- Contact Info Column -->
         <div class="col-lg-5">
           <div class="d-flex flex-column gap-4">
@@ -155,19 +155,20 @@
             <h3 class="fw-bold mb-2">Send Us a Message</h3>
             <p class="text-muted small mb-4">Fill in your inquiry details and our team will respond within 2 business hours.</p>
 
-            <form id="contactForm" onsubmit="event.preventDefault(); freshboxApp.showToast('Message Sent!', 'Thank you! A support specialist will contact you shortly.', 'success'); document.getElementById('contactForm').reset();">
+            <form id="contactForm" novalidate onsubmit="handleContactSubmit(event)">
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+                  <label class="form-label" for="contactName">Full Name <span class="text-danger">*</span></label>
+                  <input type="text" id="contactName" class="form-control" placeholder="e.g. Ramesh Kumar" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                  <input type="email" class="form-control" placeholder="name@example.com" required>
+                  <label class="form-label" for="contactEmail">Email Address <span class="text-danger">*</span></label>
+                  <input type="email" id="contactEmail" class="form-control" placeholder="name@example.com" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-                  <input type="tel" class="form-control" placeholder="+91 98765 43210" required>
+                  <label class="form-label" for="contactPhone">Phone Number <span class="text-danger">*</span></label>
+                  <input type="tel" id="contactPhone" class="form-control" placeholder="10-digit mobile number" autocomplete="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" required>
+                  <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Subject</label>
@@ -196,17 +197,14 @@
     </div>
   </section>
 
-  <!-- Footer -->
-    <!-- Global Footer -->
+  <!-- Global Footer -->
   <footer class="footer bg-white border-top py-5 text-dark">
     <div class="container">
       <div class="row g-4 mb-5">
         <div class="col-lg-4 col-md-6">
-          <a class="navbar-brand text-dark mb-3 d-inline-flex align-items-center gap-2 text-decoration-none" href="index.html">
-            <div class="brand-icon bg-success text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-              <i class="bi bi-basket2-fill fs-5"></i>
-            </div>
-            <span class="fw-bold fs-4 text-dark"><span class="text-success">Fresh</span>Box</span>
+          <a class="navbar-brand mb-3" href="index.html">
+            <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
+            <span>Fresh</span>Box
           </a>
           <p class="text-secondary small mt-3 mb-4 pe-lg-3" style="line-height: 1.6;">
             FreshBox delivers farm-to-table organic produce, hand-picked fruits, artisan dairy, and kitchen essentials on a weekly subscription model. Eat cleaner, live healthier.
@@ -314,13 +312,51 @@
   <script src="assets/js/theme.js"></script>
   <script src="assets/js/rtl.js"></script>
   <script src="assets/js/main.js"></script>
+  <script>
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('contactForm');
+      const phone = document.getElementById('contactPhone');
+      const name = document.getElementById('contactName');
+      const email = document.getElementById('contactEmail');
+      const message = form.querySelector('textarea');
+
+      const phoneVal = phone ? phone.value.replace(/\D/g, '') : '';
+      const phoneIsValid = /^\d{10}$/.test(phoneVal) && phoneVal.length === 10;
+
+      if (phone) {
+        phone.classList.remove('is-invalid');
+        if (!phoneIsValid) {
+          phone.classList.add('is-invalid');
+          phone.setCustomValidity('Please enter a valid 10-digit phone number.');
+          phone.focus();
+          freshboxApp.showToast('Invalid Phone Number', 'Please enter a valid 10-digit mobile number.', 'warning');
+          return;
+        } else {
+          phone.setCustomValidity('');
+        }
+      }
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      freshboxApp.showToast('Message Sent!', 'Thank you! A support specialist will contact you shortly.', 'success');
+      form.reset();
+      if (phone) {
+        phone.classList.remove('is-invalid');
+        phone.setCustomValidity('');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('#contactForm input, #contactForm textarea').forEach(field => {
+        field.addEventListener('input', () => {
+          field.classList.remove('is-invalid');
+        });
+      });
+    });
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-

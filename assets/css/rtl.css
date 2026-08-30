@@ -265,10 +265,24 @@ body.rtl-mode .navbar-nav .dropdown-toggle::after {
   margin-right: 6px;
 }
 
-[dir="rtl"] .nav-actions,
-body.rtl-mode .nav-actions {
-  margin-right: auto;
-  margin-left: 0;
+@media (min-width: 1200px) {
+  [dir="rtl"] .nav-actions,
+  body.rtl-mode .nav-actions {
+    margin-right: auto;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  [dir="rtl"] .nav-actions,
+  body.rtl-mode .nav-actions {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  [dir="rtl"] .nav-auth-slot,
+  body.rtl-mode .nav-auth-slot {
+    margin: 0 !important;
+  }
 }
 
 [dir="rtl"] .cart-badge,
