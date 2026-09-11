@@ -61,7 +61,6 @@
             <ul class="dropdown-menu shadow-sm">
               <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
               <li><a class="dropdown-item active" href="how-it-works.html">How It Works</a></li>
-              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
@@ -91,12 +90,51 @@
       </div>
     </div>
   </nav>
+  <!-- Secondary Navigation Bar (Sub-Header) -->
+  <div class="secondary-navbar" aria-label="Secondary navigation">
+    <div class="container">
+      <div class="secondary-navbar-inner d-flex align-items-center justify-content-between">
+        <!-- Left: Search Option -->
+        <div class="secondary-nav-left">
+          <div class="secondary-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" tabindex="0" title="Search produce, plans (Ctrl+K)">
+            <i class="bi bi-search secondary-search-icon"></i>
+            <span class="secondary-search-text"><span class="search-text-full">Search produce, plans...</span><span class="search-text-short">Search...</span></span>
+            <kbd class="secondary-search-kbd d-none d-lg-inline-block">Ctrl K</kbd>
+          </div>
+        </div>
+
+        <!-- Right: Wishlist | Add to Cart -->
+        <div class="secondary-nav-right d-flex align-items-center">
+          <!-- Wishlist Option -->
+          <a href="wishlist.html" class="secondary-nav-item secondary-nav-wishlist" title="View Saved Wishlist">
+            <span class="secondary-icon-wrap position-relative">
+              <i class="bi bi-heart"></i>
+              <span class="cart-badge bg-danger text-white wishlist-badge">0</span>
+            </span>
+            <span class="secondary-nav-label">Wishlist</span>
+          </a>
+
+          <!-- Divider -->
+          <span class="secondary-nav-divider" aria-hidden="true"></span>
+
+          <!-- Add to Cart Option -->
+          <a href="cart.html" class="secondary-nav-item secondary-nav-cart" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" role="button" title="View Current Box">
+            <span class="secondary-icon-wrap position-relative">
+              <i class="bi bi-cart3"></i>
+              <span class="cart-badge">0</span>
+            </span>
+            <span class="secondary-nav-label"><span class="label-full">Add to Cart</span><span class="label-short">Cart</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Page Header -->
-  <section class="py-5" style="background: linear-gradient(180deg, #edf7ee 0%, var(--body-bg) 100%);">
-    <div class="container text-center py-4">
+  <section class="page-hero" style="background: linear-gradient(180deg, #edf7ee 0%, var(--body-bg) 100%);">
+    <div class="container text-center">
       <span class="section-subtitle"><i class="bi bi-compass-fill"></i> Effortless Experience</span>
-      <h1 class="display-4 fw-bold mb-3">How FreshBox Subscription Works</h1>
+      <h1 class="display-4 fw-bold">How FreshBox Subscription Works</h1>
       <p class="text-muted fs-5 max-w-600 mx-auto">From hand-selecting seasonal harvest to morning doorstep drops, here is how we simplify your weekly eating habits.</p>
     </div>
   </section>
@@ -196,7 +234,7 @@
               <div class="fresh-card bg-success text-white p-4 text-center mt-3">
                 <h4 class="fw-bold mb-2"><i class="bi bi-arrow-repeat me-2"></i>7. Manage Future Deliveries Frictionlessly</h4>
                 <p class="mb-3 opacity-90">Traveling? Need extra avocados? Pause, skip, or modify your box anytime from your customer dashboard with one click.</p>
-                <a href="dashboard/subscription.html" class="btn btn-white"><i class="bi bi-gear-wide-connected text-success"></i> Manage Subscription Portal</a>
+                <a href="dashboard/index.html" class="btn btn-white"><i class="bi bi-speedometer2 text-success"></i> Customer Dashboard</a>
               </div>
             </div>
           </div>
@@ -279,7 +317,6 @@
           <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
             <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
             <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
-            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
             <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
           </ul>
         </div>

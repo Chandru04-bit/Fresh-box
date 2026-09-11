@@ -437,6 +437,40 @@
       image: 'assets/images/products/organic-pomegranate.jpg',
       description: 'Ruby-red juicy organic pomegranate arils packed with powerful polyphenols and antioxidants.',
       nutrition: { calories: '83 kcal', carbs: '19g', protein: '1.7g', fiber: '4g', vitaminC: '17%' }
+    },
+    {
+      id: 'prod-17',
+      slug: 'crisp-green-bell-peppers',
+      name: 'Crisp Green Bell Peppers',
+      category: 'vegetables',
+      categoryName: 'Vegetables',
+      price: 50,
+      originalPrice: 65,
+      unit: '500 g',
+      rating: 4.8,
+      reviewsCount: 31,
+      badge: 'Farm Fresh',
+      inStock: true,
+      image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=600&auto=format&fit=crop&q=80',
+      description: 'Crunchy, sweet farm-grown bell peppers harvested crisp and packed with vitamin C and essential dietary antioxidants.',
+      nutrition: { calories: '20 kcal', carbs: '4.6g', protein: '0.9g', fiber: '1.7g', vitaminC: '134%' }
+    },
+    {
+      id: 'prod-18',
+      slug: 'organic-english-cucumbers',
+      name: 'Organic English Cucumbers',
+      category: 'vegetables',
+      categoryName: 'Vegetables',
+      price: 40,
+      originalPrice: 50,
+      unit: '500 g',
+      rating: 4.9,
+      reviewsCount: 46,
+      badge: 'Hydroponic',
+      inStock: true,
+      image: 'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=600&auto=format&fit=crop&q=80',
+      description: 'Cool, crisp greenhouse-grown English cucumbers with tender skin and high hydration content, zero wax coating.',
+      nutrition: { calories: '15 kcal', carbs: '3.6g', protein: '0.7g', fiber: '0.5g', water: '95%' }
     }
   ];
 
@@ -2014,6 +2048,25 @@
           setTimeout(() => searchInput && searchInput.focus(), 300);
         }
       }
+    });
+
+    const modalEl = document.getElementById('searchModal');
+    if (modalEl) {
+      modalEl.addEventListener('shown.bs.modal', () => {
+        if (searchInput) searchInput.focus();
+      });
+    }
+
+    document.querySelectorAll('.secondary-search-bar').forEach(bar => {
+      bar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (modalEl && window.bootstrap) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+          }
+        }
+      });
     });
   }
 
@@ -3741,7 +3794,7 @@
     if (auth && auth.role === 'customer') {
       showToast('Welcome Subscriber', 'Redirecting to your delivery schedule and subscription portal...', 'success');
       setTimeout(() => {
-        window.location.href = 'dashboard/subscription.html';
+        window.location.href = 'dashboard/index.html';
       }, 400);
     } else if (latestOrder || hasActiveSub) {
       showToast('Order Found', 'Opening your active subscription dashboard...', 'success');
@@ -3763,9 +3816,9 @@
     const step4ActionLabel = document.getElementById('step4ActionLabel');
     if (step4ActionLabel) {
       if (auth && auth.role === 'customer') {
-        step4ActionLabel.innerHTML = 'My Subscription <i class="bi bi-arrow-right"></i>';
+        step4ActionLabel.textContent = 'View Customer Dashboard';
       } else {
-        step4ActionLabel.innerHTML = 'View Plans & Pricing <i class="bi bi-arrow-right"></i>';
+        step4ActionLabel.textContent = 'View Plans & Pricing';
       }
     }
   }
@@ -3845,9 +3898,20 @@
   }
 
   function updateWishlistBadges() {
-    const count = getWishlist().length;
+    const wishlist = getWishlist();
+    const count = wishlist.length;
     document.querySelectorAll('.wishlist-badge').forEach(badge => {
       badge.textContent = String(count);
+    });
+    document.querySelectorAll('[data-wishlist-id]').forEach(btn => {
+      const btnId = normalizeProdId(btn.getAttribute('data-wishlist-id'));
+      if (wishlist.includes(btnId)) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="bi bi-heart-fill"></i>';
+      } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="bi bi-heart"></i>';
+      }
     });
   }
 
@@ -3884,6 +3948,21 @@
         }
       }
     });
+
+    if (isWishlistPage) {
+      document.querySelectorAll('.secondary-nav-wishlist').forEach(btn => {
+        btn.classList.add('active');
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = 'bi bi-heart-fill';
+      });
+    }
+
+    const isCartPage = currentPath.endsWith('cart.html') || currentPath.endsWith('/cart');
+    if (isCartPage) {
+      document.querySelectorAll('.secondary-nav-cart').forEach(btn => {
+        btn.classList.add('active');
+      });
+    }
 
     updateWishlistBadges();
   }

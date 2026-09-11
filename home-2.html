@@ -63,7 +63,6 @@
             <ul class="dropdown-menu shadow-sm">
               <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
               <li><a class="dropdown-item" href="how-it-works.html">How It Works</a></li>
-              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
@@ -93,6 +92,45 @@
       </div>
     </div>
   </nav>
+  <!-- Secondary Navigation Bar (Sub-Header) -->
+  <div class="secondary-navbar" aria-label="Secondary navigation">
+    <div class="container">
+      <div class="secondary-navbar-inner d-flex align-items-center justify-content-between">
+        <!-- Left: Search Option -->
+        <div class="secondary-nav-left">
+          <div class="secondary-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" tabindex="0" title="Search produce, plans (Ctrl+K)">
+            <i class="bi bi-search secondary-search-icon"></i>
+            <span class="secondary-search-text"><span class="search-text-full">Search produce, plans...</span><span class="search-text-short">Search...</span></span>
+            <kbd class="secondary-search-kbd d-none d-lg-inline-block">Ctrl K</kbd>
+          </div>
+        </div>
+
+        <!-- Right: Wishlist | Add to Cart -->
+        <div class="secondary-nav-right d-flex align-items-center">
+          <!-- Wishlist Option -->
+          <a href="wishlist.html" class="secondary-nav-item secondary-nav-wishlist" title="View Saved Wishlist">
+            <span class="secondary-icon-wrap position-relative">
+              <i class="bi bi-heart"></i>
+              <span class="cart-badge bg-danger text-white wishlist-badge">0</span>
+            </span>
+            <span class="secondary-nav-label">Wishlist</span>
+          </a>
+
+          <!-- Divider -->
+          <span class="secondary-nav-divider" aria-hidden="true"></span>
+
+          <!-- Add to Cart Option -->
+          <a href="cart.html" class="secondary-nav-item secondary-nav-cart" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" role="button" title="View Current Box">
+            <span class="secondary-icon-wrap position-relative">
+              <i class="bi bi-cart3"></i>
+              <span class="cart-badge">0</span>
+            </span>
+            <span class="secondary-nav-label"><span class="label-full">Add to Cart</span><span class="label-short">Cart</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Hero Section 2 (Organic & Modern Farm-to-Table Focus) -->
   <header class="hero-home-2">
@@ -267,48 +305,48 @@
         <p class="section-desc">Experience grocery delivery built around peak freshness, health, and total supply-chain transparency.</p>
       </div>
 
-      <div class="row g-4">
+      <div class="row g-4 align-items-stretch">
         <!-- Feature 1 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="feature-box-card text-center p-4">
-            <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+          <div class="feature-box-card w-100 text-center p-4">
+            <div class="feature-box-img-wrap mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
               <img src="assets/images/farmers-harvest-fresh.jpg" alt="Rice farmers harvesting at dawn" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
-            <h5 class="fw-bold mb-2 text-dark">24-Hour Dawn Harvest</h5>
-            <p class="text-muted small mb-0">Harvested at dawn by local growers and delivered to your doorstep by next morning at peak nutrition.</p>
+            <h5 class="feature-box-title fw-bold mb-2 text-dark">24-Hour Dawn Harvest</h5>
+            <p class="feature-box-desc text-muted small mb-0">Harvested at dawn by local growers and delivered to your doorstep by next morning at peak nutrition.</p>
           </div>
         </div>
 
         <!-- Feature 2 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="feature-box-card text-center p-4">
-            <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+          <div class="feature-box-card w-100 text-center p-4">
+            <div class="feature-box-img-wrap mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
               <img src="assets/images/hero-organic-produce.jpg" alt="Fresh vegetables for Total QR Traceability" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
-            <h5 class="fw-bold mb-2 text-dark">Total QR Traceability</h5>
-            <p class="text-muted small mb-0">Scan the QR code on your box to view exact partner farm GPS coordinates, harvest time, and soil reports.</p>
+            <h5 class="feature-box-title fw-bold mb-2 text-dark">Total QR Traceability</h5>
+            <p class="feature-box-desc text-muted small mb-0">Scan the QR code on your box to view exact partner farm GPS coordinates, harvest time, and soil reports.</p>
           </div>
         </div>
 
         <!-- Feature 3 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="feature-box-card text-center p-4">
-            <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+          <div class="feature-box-card w-100 text-center p-4">
+            <div class="feature-box-img-wrap mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
               <img src="assets/images/item-swap-flexibility.jpg" alt="Customer swapping onions online for 100% Item Swap Flexibility" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
-            <h5 class="fw-bold mb-2 text-dark">100% Item Swap Flexibility</h5>
-            <p class="text-muted small mb-0">Don't like onions this week? Swap any item online before dispatch or pause your subscription anytime.</p>
+            <h5 class="feature-box-title fw-bold mb-2 text-dark">100% Item Swap Flexibility</h5>
+            <p class="feature-box-desc text-muted small mb-0">Don't like onions this week? Swap any item online before dispatch or pause your subscription anytime.</p>
           </div>
         </div>
 
         <!-- Feature 4 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="feature-box-card text-center p-4">
-            <div class="mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+          <div class="feature-box-card w-100 text-center p-4">
+            <div class="feature-box-img-wrap mb-3 rounded-3 overflow-hidden shadow-xs mx-auto" style="height: 140px; max-width: 220px;">
               <img src="assets/images/doorstep-delivery-swap.jpg" alt="Zero-Waste Crate Exchange" class="w-100 h-100 object-fit-cover" onerror="this.onerror=null; this.src='assets/images/categories/vegetables.jpg';">
             </div>
-            <h5 class="fw-bold mb-2 text-dark">Zero-Waste Crate Exchange</h5>
-            <p class="text-muted small mb-0">Delivered in returnable insulated crates and reusable glass bottles. We collect empties on your next run.</p>
+            <h5 class="feature-box-title fw-bold mb-2 text-dark">Zero-Waste Crate Exchange</h5>
+            <p class="feature-box-desc text-muted small mb-0">Delivered in returnable insulated crates and reusable glass bottles. We collect empties on your next run.</p>
           </div>
         </div>
       </div>
@@ -454,7 +492,6 @@
           <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
             <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
             <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
-            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
             <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
           </ul>
         </div>

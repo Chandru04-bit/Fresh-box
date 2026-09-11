@@ -1574,6 +1574,142 @@ body.dark-mode .promo-sidebar-card {
   border-color: #2e4d3a !important;
 }
 
+[data-bs-theme="dark"] .promo-sidebar-card h6,
+body.dark-mode .promo-sidebar-card h6 {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .promo-sidebar-card p,
+body.dark-mode .promo-sidebar-card p {
+  color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .promo-sidebar-card i.bi-box-seam-fill,
+body.dark-mode .promo-sidebar-card i.bi-box-seam-fill {
+  color: #81c784 !important;
+}
+
+/* Sample Box Dark Mode Contrast */
+[data-bs-theme="dark"] .sample-box-hero,
+body.dark-mode .sample-box-hero {
+  background: linear-gradient(180deg, #132218 0%, var(--body-bg) 100%) !important;
+}
+
+[data-bs-theme="dark"] .sample-box-hero::before,
+body.dark-mode .sample-box-hero::before {
+  background: radial-gradient(ellipse at top center, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+}
+
+[data-bs-theme="dark"] .sample-box-hero .section-subtitle,
+body.dark-mode .sample-box-hero .section-subtitle {
+  background: rgba(76, 175, 80, 0.18) !important;
+  color: #81c784 !important;
+  border-color: rgba(76, 175, 80, 0.35) !important;
+}
+
+[data-bs-theme="dark"] .sample-box-title,
+body.dark-mode .sample-box-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-bs-theme="dark"] .sample-box-desc,
+body.dark-mode .sample-box-desc {
+  color: #cbd5e1 !important;
+  text-shadow: none;
+}
+
+[data-bs-theme="dark"] .sample-box-value-pill,
+body.dark-mode .sample-box-value-pill {
+  background-color: #15221a !important;
+  border-color: #2e4d3a !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-bs-theme="dark"] .sample-box-pill-label,
+body.dark-mode .sample-box-pill-label {
+  color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-pill-value,
+body.dark-mode .sample-box-pill-value {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .sample-box-pill-price,
+body.dark-mode .sample-box-pill-price {
+  color: #81c784 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-pill-vr,
+body.dark-mode .sample-box-pill-vr {
+  background-color: #2e4d3a !important;
+}
+
+[data-bs-theme="dark"] .sample-box-pill-item,
+body.dark-mode .sample-box-pill-item {
+  border-bottom-color: rgba(76, 175, 80, 0.2) !important;
+}
+
+[data-bs-theme="dark"] .sample-box-products .product-category,
+body.dark-mode .sample-box-products .product-category {
+  color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-products .product-title,
+[data-bs-theme="dark"] .sample-box-products .product-title a,
+body.dark-mode .sample-box-products .product-title,
+body.dark-mode .sample-box-products .product-title a {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .sample-box-products .product-price-row .text-success,
+body.dark-mode .sample-box-products .product-price-row .text-success {
+  color: #81c784 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-products .product-price-row .text-muted,
+body.dark-mode .sample-box-products .product-price-row .text-muted {
+  color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-cta-container .btn-delivery-frequency,
+body.dark-mode .sample-box-cta-container .btn-delivery-frequency {
+  background-color: #18261e !important;
+  color: #ffffff !important;
+  border-color: #2e4d3a !important;
+}
+
+[data-bs-theme="dark"] .sample-box-cta-container .btn-delivery-frequency:hover,
+body.dark-mode .sample-box-cta-container .btn-delivery-frequency:hover {
+  background-color: #24352a !important;
+  color: #81c784 !important;
+  border-color: #4caf50 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-section .section-title,
+body.dark-mode .sample-box-section .section-title {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .sample-box-section .section-desc,
+body.dark-mode .sample-box-section .section-desc {
+  color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .sample-box-section .btn-outline-primary,
+body.dark-mode .sample-box-section .btn-outline-primary {
+  color: #81c784 !important;
+  border-color: #4caf50 !important;
+  background-color: #15221a !important;
+}
+
+[data-bs-theme="dark"] .sample-box-section .btn-outline-primary:hover,
+body.dark-mode .sample-box-section .btn-outline-primary:hover {
+  background-color: #4caf50 !important;
+  color: #ffffff !important;
+}
+
 [data-bs-theme="dark"] #checkoutOrderItemsList,
 body.dark-mode #checkoutOrderItemsList {
   scrollbar-color: rgba(129, 199, 132, 0.2) transparent;
@@ -1669,4 +1805,116 @@ body.dark-mode .feature-box-card {
   border-color: var(--border-color);
 }
 
+/* ==========================================================================
+   Dark Mode: Page Hero & Subpage Header Component Overrides
+   ========================================================================== */
+[data-bs-theme="dark"] .page-hero,
+body.dark-mode .page-hero {
+  background-color: transparent;
+}
 
+[data-bs-theme="dark"] .page-hero.bg-white,
+body.dark-mode .page-hero.bg-white {
+  background-color: var(--body-bg) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .page-hero.bg-light,
+body.dark-mode .page-hero.bg-light {
+  background-color: #121d16 !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .page-hero-breadcrumb.bg-white,
+body.dark-mode .page-hero-breadcrumb.bg-white {
+  background-color: var(--body-bg) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .page-hero-breadcrumb.bg-light,
+body.dark-mode .page-hero-breadcrumb.bg-light {
+  background-color: #121d16 !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .page-hero h1,
+[data-bs-theme="dark"] .page-hero .page-title,
+body.dark-mode .page-hero h1,
+body.dark-mode .page-hero .page-title {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .page-hero p,
+[data-bs-theme="dark"] .page-hero .page-desc,
+body.dark-mode .page-hero p,
+body.dark-mode .page-hero .page-desc {
+  color: #cbd5e1 !important;
+}
+
+/* Secondary Navigation Bar in Dark Mode */
+[data-bs-theme="dark"] .secondary-navbar,
+body.dark-mode .secondary-navbar {
+  background: var(--card-bg);
+  border-bottom-color: var(--border-color);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+[data-bs-theme="dark"] .secondary-search-bar,
+body.dark-mode .secondary-search-bar {
+  background: #1a2820;
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+[data-bs-theme="dark"] .secondary-search-bar:hover,
+[data-bs-theme="dark"] .secondary-search-bar:focus-visible,
+body.dark-mode .secondary-search-bar:hover,
+body.dark-mode .secondary-search-bar:focus-visible {
+  background: #203328;
+  border-color: var(--primary);
+  color: var(--text-main);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-bs-theme="dark"] .secondary-search-kbd,
+body.dark-mode .secondary-search-kbd {
+  background: #24382c;
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+[data-bs-theme="dark"] .secondary-nav-item,
+body.dark-mode .secondary-nav-item {
+  color: var(--text-main);
+}
+
+[data-bs-theme="dark"] .secondary-nav-item:hover,
+[data-bs-theme="dark"] .secondary-nav-item.active,
+body.dark-mode .secondary-nav-item:hover,
+body.dark-mode .secondary-nav-item.active {
+  background: var(--primary-subtle);
+  color: var(--primary-light);
+  border-color: rgba(76, 175, 80, 0.25);
+}
+
+[data-bs-theme="dark"] .secondary-nav-divider,
+body.dark-mode .secondary-nav-divider {
+  background-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .secondary-icon-wrap .cart-badge,
+body.dark-mode .secondary-icon-wrap .cart-badge {
+  border-color: var(--card-bg);
+}
+
+/* Mobile Navbar Toggler & Collapse in Dark Mode */
+[data-bs-theme="dark"] .navbar-toggler i,
+body.dark-mode .navbar-toggler i {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .navbar-collapse,
+body.dark-mode .navbar-collapse {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}

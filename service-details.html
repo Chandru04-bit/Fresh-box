@@ -61,7 +61,6 @@
             <ul class="dropdown-menu shadow-sm">
               <li><a class="dropdown-item" href="plans.html">Plans & Pricing</a></li>
               <li><a class="dropdown-item" href="how-it-works.html">How It Works</a></li>
-              <li><a class="dropdown-item" href="dashboard/subscription.html">Manage Subscription</a></li>
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
@@ -91,9 +90,48 @@
       </div>
     </div>
   </nav>
+  <!-- Secondary Navigation Bar (Sub-Header) -->
+  <div class="secondary-navbar" aria-label="Secondary navigation">
+    <div class="container">
+      <div class="secondary-navbar-inner d-flex align-items-center justify-content-between">
+        <!-- Left: Search Option -->
+        <div class="secondary-nav-left">
+          <div class="secondary-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" tabindex="0" title="Search produce, plans (Ctrl+K)">
+            <i class="bi bi-search secondary-search-icon"></i>
+            <span class="secondary-search-text"><span class="search-text-full">Search produce, plans...</span><span class="search-text-short">Search...</span></span>
+            <kbd class="secondary-search-kbd d-none d-lg-inline-block">Ctrl K</kbd>
+          </div>
+        </div>
+
+        <!-- Right: Wishlist | Add to Cart -->
+        <div class="secondary-nav-right d-flex align-items-center">
+          <!-- Wishlist Option -->
+          <a href="wishlist.html" class="secondary-nav-item secondary-nav-wishlist" title="View Saved Wishlist">
+            <span class="secondary-icon-wrap position-relative">
+              <i class="bi bi-heart"></i>
+              <span class="cart-badge bg-danger text-white wishlist-badge">0</span>
+            </span>
+            <span class="secondary-nav-label">Wishlist</span>
+          </a>
+
+          <!-- Divider -->
+          <span class="secondary-nav-divider" aria-hidden="true"></span>
+
+          <!-- Add to Cart Option -->
+          <a href="cart.html" class="secondary-nav-item secondary-nav-cart" data-bs-toggle="offcanvas" data-cart-drawer-trigger data-bs-target="#cartDrawer" role="button" title="View Current Box">
+            <span class="secondary-icon-wrap position-relative">
+              <i class="bi bi-cart3"></i>
+              <span class="cart-badge">0</span>
+            </span>
+            <span class="secondary-nav-label"><span class="label-full">Add to Cart</span><span class="label-short">Cart</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Breadcrumb -->
-  <div class="py-3 bg-light border-bottom">
+  <div class="page-hero-breadcrumb bg-light border-bottom">
     <div class="container">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
@@ -125,7 +163,7 @@
           <h1 class="fw-bold mb-2">Family Essentials Grocery Box</h1>
           <p class="text-muted fs-5 mb-4">A balanced mix of 14-16 kg seasonal vegetables, fresh fruits, and 2 Litres of farm fresh milk designed to feed a family of 3 to 5.</p>
 
-          <div class="d-flex align-items-baseline gap-3 p-3 bg-light rounded-3 mb-4">
+          <div class="d-flex flex-wrap align-items-baseline gap-2 gap-sm-3 p-3 bg-light rounded-3 mb-4">
             <span class="display-5 fw-bold text-success">₹899</span>
             <span class="text-muted">/ weekly shipment</span>
             <span class="badge bg-success-subtle text-success border border-success-subtle ms-auto">Free Morning Delivery</span>
@@ -134,7 +172,7 @@
           <!-- Frequency Options -->
           <div class="mb-4">
             <label class="form-label d-block fw-bold mb-2">Choose Delivery Frequency:</label>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
               <input type="radio" class="btn-check" name="planFreq" id="freqWeekly" autocomplete="off" checked>
               <label class="btn btn-outline-primary" for="freqWeekly"><i class="bi bi-calendar-week me-1"></i> Every Week</label>
 
@@ -265,7 +303,6 @@
           <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
             <li><a href="plans.html" class="text-secondary text-decoration-none hover-success">Plans & Pricing</a></li>
             <li><a href="how-it-works.html" class="text-secondary text-decoration-none hover-success">How It Works</a></li>
-            <li><a href="dashboard/subscription.html" class="text-secondary text-decoration-none hover-success">Manage Subscription</a></li>
             <li><a href="delivery-frequency.html" class="text-secondary text-decoration-none hover-success">Delivery Schedule</a></li>
           </ul>
         </div>
