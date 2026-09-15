@@ -2056,18 +2056,6 @@
         if (searchInput) searchInput.focus();
       });
     }
-
-    document.querySelectorAll('.secondary-search-bar').forEach(bar => {
-      bar.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          if (modalEl && window.bootstrap) {
-            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modal.show();
-          }
-        }
-      });
-    });
   }
 
   // --- Order Persistence & Dashboard Data ---
@@ -3948,21 +3936,6 @@
         }
       }
     });
-
-    if (isWishlistPage) {
-      document.querySelectorAll('.secondary-nav-wishlist').forEach(btn => {
-        btn.classList.add('active');
-        const icon = btn.querySelector('i');
-        if (icon) icon.className = 'bi bi-heart-fill';
-      });
-    }
-
-    const isCartPage = currentPath.endsWith('cart.html') || currentPath.endsWith('/cart');
-    if (isCartPage) {
-      document.querySelectorAll('.secondary-nav-cart').forEach(btn => {
-        btn.classList.add('active');
-      });
-    }
 
     updateWishlistBadges();
   }

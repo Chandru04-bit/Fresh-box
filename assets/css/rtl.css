@@ -318,18 +318,6 @@ body.rtl-mode .nav-user-dropdown .dropdown-menu {
   }
 }
 
-/* Secondary Navigation Bar RTL */
-[dir="rtl"] .secondary-search-bar,
-body.rtl-mode .secondary-search-bar {
-  text-align: right;
-}
-
-[dir="rtl"] .secondary-icon-wrap .cart-badge,
-body.rtl-mode .secondary-icon-wrap .cart-badge {
-  right: auto;
-  left: -8px;
-}
-
 /* Dropdown Menu alignment */
 [dir="rtl"] .dropdown-menu,
 body.rtl-mode .dropdown-menu {

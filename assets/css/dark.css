@@ -1851,62 +1851,6 @@ body.dark-mode .page-hero .page-desc {
   color: #cbd5e1 !important;
 }
 
-/* Secondary Navigation Bar in Dark Mode */
-[data-bs-theme="dark"] .secondary-navbar,
-body.dark-mode .secondary-navbar {
-  background: var(--card-bg);
-  border-bottom-color: var(--border-color);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-}
-
-[data-bs-theme="dark"] .secondary-search-bar,
-body.dark-mode .secondary-search-bar {
-  background: #1a2820;
-  border-color: var(--border-color);
-  color: var(--text-muted);
-}
-
-[data-bs-theme="dark"] .secondary-search-bar:hover,
-[data-bs-theme="dark"] .secondary-search-bar:focus-visible,
-body.dark-mode .secondary-search-bar:hover,
-body.dark-mode .secondary-search-bar:focus-visible {
-  background: #203328;
-  border-color: var(--primary);
-  color: var(--text-main);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
-}
-
-[data-bs-theme="dark"] .secondary-search-kbd,
-body.dark-mode .secondary-search-kbd {
-  background: #24382c;
-  border-color: var(--border-color);
-  color: var(--text-muted);
-}
-
-[data-bs-theme="dark"] .secondary-nav-item,
-body.dark-mode .secondary-nav-item {
-  color: var(--text-main);
-}
-
-[data-bs-theme="dark"] .secondary-nav-item:hover,
-[data-bs-theme="dark"] .secondary-nav-item.active,
-body.dark-mode .secondary-nav-item:hover,
-body.dark-mode .secondary-nav-item.active {
-  background: var(--primary-subtle);
-  color: var(--primary-light);
-  border-color: rgba(76, 175, 80, 0.25);
-}
-
-[data-bs-theme="dark"] .secondary-nav-divider,
-body.dark-mode .secondary-nav-divider {
-  background-color: var(--border-color);
-}
-
-[data-bs-theme="dark"] .secondary-icon-wrap .cart-badge,
-body.dark-mode .secondary-icon-wrap .cart-badge {
-  border-color: var(--card-bg);
-}
-
 /* Mobile Navbar Toggler & Collapse in Dark Mode */
 [data-bs-theme="dark"] .navbar-toggler i,
 body.dark-mode .navbar-toggler i {
