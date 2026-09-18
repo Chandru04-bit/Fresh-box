@@ -279,10 +279,18 @@ body.rtl-mode .navbar-nav .dropdown-toggle::after {
     margin: 0 !important;
     width: 100% !important;
   }
+  [dir="rtl"] .nav-dashboard-btn,
+  body.rtl-mode .nav-dashboard-btn,
   [dir="rtl"] .nav-auth-slot,
   body.rtl-mode .nav-auth-slot {
     margin: 0 !important;
   }
+}
+
+[dir="rtl"] .nav-dashboard-btn i,
+body.rtl-mode .nav-dashboard-btn i {
+  margin-right: 0;
+  margin-left: 4px;
 }
 
 [dir="rtl"] .cart-badge,

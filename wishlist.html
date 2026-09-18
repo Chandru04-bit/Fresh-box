@@ -73,14 +73,8 @@
           <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
         </ul>
 
-        <!-- Action Items: Search -> Wishlist -> Cart -> Theme -> RTL -> Login/User -->
+        <!-- Action Items: Wishlist -> Cart -> Theme -> RTL -> Dashboard -> Login/User -->
         <div class="nav-actions">
-          <!-- Search Bar Trigger -->
-          <div class="nav-search-bar" data-bs-toggle="modal" data-bs-target="#searchModal" role="button" title="Search produce, plans (Ctrl+K)">
-            <i class="bi bi-search search-icon"></i>
-            <span class="search-text">Search produce, plans...</span>
-          </div>
-
           <!-- Wishlist Action Button (Active) -->
           <a href="wishlist.html" class="nav-action-btn position-relative text-danger active" title="View Saved Wishlist">
             <i class="bi bi-heart-fill"></i>
@@ -102,6 +96,11 @@
           <button class="nav-action-btn rtl-toggle-btn" type="button" title="RTL Mode" aria-label="RTL Mode">
             <i class="bi bi-arrow-left-right"></i>
           </button>
+
+          <!-- My Dashboard Navigation Link -->
+          <a href="dashboard/index.html" class="btn btn-outline-success btn-sm nav-dashboard-btn" title="My Dashboard">
+            <i class="bi bi-speedometer2"></i> My Dashboard
+          </a>
 
           <!-- Login / Dynamic Auth Slot -->
           <div class="nav-auth-slot ms-1">

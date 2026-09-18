@@ -961,13 +961,6 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
-                <a class="dropdown-item" href="${basePath}dashboard/index.html">
-                  <i class="bi bi-grid-fill text-success"></i>
-                  <span>My Dashboard</span>
-                </a>
-              </li>
-              <li><hr class="dropdown-divider my-1"></li>
-              <li>
                 <a class="dropdown-item text-danger logout-btn" href="#">
                   <i class="bi bi-power"></i>
                   <span>Logout</span>
