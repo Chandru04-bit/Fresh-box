@@ -6,41 +6,6 @@
 (function () {
   'use strict';
 
-  // Synchronous route protection check
-  const AUTH_BOOTSTRAP_KEY = 'freshbox_auth_user';
-  const rawAuth = localStorage.getItem(AUTH_BOOTSTRAP_KEY);
-  let isCustomer = false;
-  if (rawAuth) {
-    try {
-      const parsed = JSON.parse(rawAuth);
-      if (parsed && parsed.role === 'customer') {
-        isCustomer = true;
-      }
-    } catch (e) {}
-  }
-
-  function getProtectedDashboardRedirect() {
-    const path = window.location.pathname.toLowerCase();
-    const isDashboardHtml = path.endsWith('/dashboard.html') || path.endsWith('/dashboard/index.html');
-    const isNestedDashboard = path.includes('/dashboard/');
-
-    if (!isDashboardHtml && !isNestedDashboard) {
-      return null;
-    }
-
-    return isNestedDashboard ? '../login.html' : 'login.html';
-  }
-
-  const dashboardRedirect = getProtectedDashboardRedirect();
-  if (dashboardRedirect && !isCustomer) {
-    sessionStorage.setItem('freshbox_login_notice', 'Please sign in to access your dashboard.');
-    const loginTarget = dashboardRedirect || 'login.html';
-    if (!window.location.pathname.toLowerCase().endsWith('/login.html')) {
-      window.location.href = loginTarget;
-    }
-    return;
-  }
-
   // Central social destination configuration. Replace these with FreshBox's
   // verified profile URLs when they are available; every social control on the
   // site is populated from this one object.
@@ -3768,39 +3733,17 @@
 
   function handleEnjoyStepClick(e) {
     if (e && e.preventDefault) e.preventDefault();
-    const auth = getAuthUser();
-    const latestOrder = sessionStorage.getItem('freshbox_latest_order');
-    const hasActiveSub = localStorage.getItem('freshbox_subscription_active') === 'true';
-
-    if (auth && auth.role === 'customer') {
-      showToast('Welcome Subscriber', 'Redirecting to your delivery schedule and subscription portal...', 'success');
-      setTimeout(() => {
-        window.location.href = 'dashboard/index.html';
-      }, 400);
-    } else if (latestOrder || hasActiveSub) {
-      showToast('Order Found', 'Opening your active subscription dashboard...', 'success');
-      setTimeout(() => {
-        window.location.href = 'dashboard/index.html';
-      }, 400);
-    } else {
-      showToast('No Active Subscription', 'Choose a subscription plan to start enjoying weekly farm-fresh deliveries!', 'info');
-      setTimeout(() => {
-        window.location.href = 'plans.html';
-      }, 600);
-    }
+    const isSubfolder = window.location.pathname.includes('/dashboard/');
+    const dashboardPath = isSubfolder ? 'index.html' : 'dashboard/index.html';
+    window.location.href = dashboardPath;
     return false;
   }
 
   // Update How It Works dynamic status labels on DOM ready
   function updateHowItWorksUI() {
-    const auth = getAuthUser();
     const step4ActionLabel = document.getElementById('step4ActionLabel');
     if (step4ActionLabel) {
-      if (auth && auth.role === 'customer') {
-        step4ActionLabel.textContent = 'View Customer Dashboard';
-      } else {
-        step4ActionLabel.textContent = 'View Plans & Pricing';
-      }
+      step4ActionLabel.textContent = 'View Customer Dashboard';
     }
   }
 
@@ -4066,16 +4009,6 @@
   // --- Initialize on DOMContentLoaded ---
   document.addEventListener('DOMContentLoaded', () => {
     initPhoneInputs();
-    const isDashboardRoute = window.location.pathname.toLowerCase().endsWith('/dashboard.html') || window.location.pathname.toLowerCase().includes('/dashboard/');
-    const currentUser = getAuthUser();
-    if (isDashboardRoute && (!currentUser || currentUser.role !== 'customer')) {
-      const redirectPath = window.location.pathname.toLowerCase().includes('/dashboard/') ? '../login.html' : 'login.html';
-      if (window.location.href.toLowerCase().indexOf('/login.html') === -1) {
-        window.location.href = redirectPath;
-      }
-      return;
-    }
-
     initSocialLinks();
     initStickyNavbar();
     initCartDrawerTriggers();
