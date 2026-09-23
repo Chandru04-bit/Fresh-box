@@ -29,7 +29,7 @@
 
   <div class="dashboard-wrapper">
     <!-- Sidebar -->
-    <aside class="dashboard-sidebar">
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
       <div class="sidebar-header d-flex align-items-center justify-content-between">
         <a class="navbar-brand mb-0" href="../index.html">
           <div class="brand-icon"><i class="bi bi-basket2-fill"></i></div>
@@ -94,8 +94,8 @@
     <div class="dashboard-main">
       <!-- Topbar -->
       <header class="dashboard-topbar">
-        <div class="d-flex align-items-center gap-3">
-          <button class="btn btn-outline-secondary btn-sm d-lg-none" id="sidebarToggle">
+        <div class="dashboard-topbar-heading d-flex align-items-center gap-3">
+          <button class="btn btn-outline-secondary btn-sm d-lg-none" id="sidebarToggle" type="button" aria-label="Open navigation menu" aria-controls="dashboardSidebar">
             <i class="bi bi-list fs-5"></i>
           </button>
           <div>
@@ -104,7 +104,7 @@
           </div>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="dashboard-topbar-actions d-flex align-items-center gap-2">
           <a href="../shop.html" class="btn btn-sm btn-outline-primary d-none d-sm-inline-flex">
             <i class="bi bi-plus-circle"></i> Add Extras
           </a>
@@ -113,7 +113,7 @@
           <div class="dropdown nav-user-dropdown ms-1">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               <span class="nav-user-avatar"><i class="bi bi-person-fill"></i></span>
-              <span class="nav-user-name d-none d-sm-inline" id="dashboardUserName">User</span>
+              <span class="nav-user-name" id="dashboardUserName">User</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
               <li>
@@ -174,7 +174,7 @@
           <!-- Next Delivery Card -->
           <div class="col-lg-7">
             <div class="fresh-card h-100 animate-fade-in">
-              <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="next-delivery-header d-flex justify-content-between align-items-center mb-3">
                 <span class="badge bg-success px-3 py-2 fs-6">Next Delivery Status</span>
                 <span class="text-muted small" id="nextDeliveryStatusCheck"><i class="bi bi-shield-check text-success"></i> Payment Confirmed</span>
               </div>
@@ -182,14 +182,14 @@
               <p class="text-muted small mb-3" id="nextDeliverySchedule">Scheduled for Friday, August 28, 2026 • Morning Slot (07:00 AM – 11:00 AM)</p>
 
               <div class="p-3 bg-light rounded-3 mb-4" id="nextDeliveryProgressContainer">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="next-delivery-progress-header d-flex justify-content-between align-items-center mb-2">
                   <span class="fw-bold fs-6 text-dark">Packing & Harvest Progress:</span>
                   <span class="badge bg-primary" id="nextDeliveryProgressBadge">Preparing on Farm</span>
                 </div>
                 <div class="progress" style="height: 8px;">
                   <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="nextDeliveryProgressBar" role="progressbar" style="width: 45%;"></div>
                 </div>
-                <div class="d-flex justify-content-between small text-muted mt-2">
+                <div class="next-delivery-progress-steps d-flex justify-content-between small text-muted mt-2">
                   <span>Harvested</span>
                   <span>Inspected</span>
                   <span>Dispatched</span>
@@ -215,7 +215,7 @@
           <div class="col-lg-5">
             <div class="fresh-card h-100 animate-fade-in">
               <h5 class="fw-bold mb-3">Subscription Controls</h5>
-              <ul class="list-unstyled d-flex flex-column gap-3 mb-4">
+              <ul class="subscription-controls-list list-unstyled d-flex flex-column gap-3 mb-4">
                 <li class="d-flex justify-content-between">
                   <span class="text-muted">Current Plan:</span>
                   <span class="fw-bold text-dark" id="controlsPlanName">Family Essentials (&#8377;899/wk)</span>
@@ -257,7 +257,7 @@
           <!-- Profile & Saved Address Card -->
           <div class="col-lg-6">
             <div class="fresh-card h-100 p-4">
-              <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="profile-card-header d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0"><i class="bi bi-person-badge text-success me-2"></i>Profile & Saved Addresses</h5>
                 <a href="profile.html" class="btn btn-sm btn-outline-primary">Edit Details</a>
               </div>
@@ -271,14 +271,14 @@
                 </div>
               </div>
               <div class="p-3 border rounded-3 mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="delivery-address-header d-flex justify-content-between align-items-center mb-1">
                   <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-house-door-fill me-1"></i>Primary Delivery Address</span>
                   <a href="profile.html" class="small text-success fw-semibold">Change</a>
                 </div>
                 <p class="text-dark small mb-1 fw-semibold">No delivery address saved.</p>
                 <p class="text-muted small mb-0">Add an address in your profile to use it for future deliveries.</p>
               </div>
-              <div class="d-flex justify-content-between align-items-center text-muted small">
+              <div class="profile-card-footer d-flex justify-content-between align-items-center text-muted small">
                 <span><i class="bi bi-bell-fill text-warning me-1"></i> Delivery Gate Code: <strong>#4402</strong></span>
                 <a href="profile.html" class="text-success fw-bold">+ Add New Address</a>
               </div>
@@ -315,7 +315,7 @@
                   <a href="settings.html" class="btn btn-sm btn-light py-1 px-2">Update</a>
                 </li>
               </ul>
-              <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+              <div class="account-card-footer pt-2 border-top d-flex justify-content-between align-items-center">
                 <span class="small text-muted" id="dashboardSignedInAs">Signed in as <strong>Account</strong></span>
                 <a href="../login.html" class="btn btn-outline-danger btn-sm logout-btn">
                   <i class="bi bi-power me-1"></i> Sign Out
